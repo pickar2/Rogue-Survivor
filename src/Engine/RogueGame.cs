@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using System.Windows.Forms;
 using System.IO;
 
 using djack.RogueSurvivor.Data;
@@ -19,6 +18,8 @@ using ItemRating = djack.RogueSurvivor.Gameplay.AI.BaseAI.ItemRating;
 using TradeRating = djack.RogueSurvivor.Gameplay.AI.BaseAI.TradeRating;
 using Microsoft.Xna.Framework;
 using RogueSurvivor.Extensions;
+using Microsoft.Xna.Framework.Input;
+using RogueSurvivor.UI;
 
 namespace djack.RogueSurvivor.Engine
 {
@@ -1338,18 +1339,18 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_Repaint();
 
                 // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                Key key = m_UI.UI_WaitKey();
+                switch (key)
                 {
-                    case Keys.Up:       // move up
+                    case Key.Up:       // move up
                         if (selected > 0) --selected;
                         else selected = menuEntries.Length - 1;
                         break;
-                    case Keys.Down:     // move down
+                    case Key.Down:     // move down
                         selected = (selected + 1) % menuEntries.Length;
                         break;
 
-                    case Keys.Enter:    // validate
+                    case Key.Enter:    // validate
                         {
                             switch (selected)
                             {
@@ -1570,23 +1571,23 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_Repaint();
 
                 // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                Key key = m_UI.UI_WaitKey();
+                switch (key)
                 {
-                    case Keys.Up:       // move up
+                    case Key.Up:       // move up
                         if (selected > 0) --selected;
                         else selected = menuEntries.Length - 1;
                         break;
-                    case Keys.Down:     // move down
+                    case Key.Down:     // move down
                         selected = (selected + 1) % menuEntries.Length;
                         break;
 
-                    case Keys.Escape:
+                    case Key.Escape:
                         choiceDone = false;
                         loop = false;
                         break;
 
-                    case Keys.Enter:    // validate
+                    case Key.Enter:    // validate
                         {
                             switch (selected)
                             {
@@ -1661,23 +1662,23 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_Repaint();
 
                 // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                Key key = m_UI.UI_WaitKey();
+                switch (key)
                 {
-                    case Keys.Up:       // move up
+                    case Key.Up:       // move up
                         if (selected > 0) --selected;
                         else selected = menuEntries.Length - 1;
                         break;
-                    case Keys.Down:     // move down
+                    case Key.Down:     // move down
                         selected = (selected + 1) % menuEntries.Length;
                         break;
 
-                    case Keys.Escape:
+                    case Key.Escape:
                         choiceDone = false;
                         loop = false;
                         break;
 
-                    case Keys.Enter:    // validate
+                    case Key.Enter:    // validate
                         {
                             switch (selected)
                             {
@@ -1754,23 +1755,23 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_Repaint();
 
                 // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                Key key = m_UI.UI_WaitKey();
+                switch (key)
                 {
-                    case Keys.Up:       // move up
+                    case Key.Up:       // move up
                         if (selected > 0) --selected;
                         else selected = menuEntries.Length - 1;
                         break;
-                    case Keys.Down:     // move down
+                    case Key.Down:     // move down
                         selected = (selected + 1) % menuEntries.Length;
                         break;
 
-                    case Keys.Escape:
+                    case Key.Escape:
                         choiceDone = false;
                         loop = false;
                         break;
 
-                    case Keys.Enter:    // validate
+                    case Key.Enter:    // validate
                         {
                             switch (selected)
                             {
@@ -1864,23 +1865,23 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_Repaint();
 
                 // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                Key key = m_UI.UI_WaitKey();
+                switch (key)
                 {
-                    case Keys.Up:       // move up
+                    case Key.Up:       // move up
                         if (selected > 0) --selected;
                         else selected = menuEntries.Length - 1;
                         break;
-                    case Keys.Down:     // move down
+                    case Key.Down:     // move down
                         selected = (selected + 1) % menuEntries.Length;
                         break;
 
-                    case Keys.Escape:
+                    case Key.Escape:
                         choiceDone = false;
                         loop = false;
                         break;
 
-                    case Keys.Enter:    // validate
+                    case Key.Enter:    // validate
                         {
                             switch (selected)
                             {
@@ -1991,23 +1992,23 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_Repaint();
 
                 // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                Key key = m_UI.UI_WaitKey();
+                switch (key)
                 {
-                    case Keys.Up:       // move up
+                    case Key.Up:       // move up
                         if (selected > 0) --selected;
                         else selected = menuEntries.Length - 1;
                         break;
-                    case Keys.Down:     // move down
+                    case Key.Down:     // move down
                         selected = (selected + 1) % menuEntries.Length;
                         break;
 
-                    case Keys.Escape:
+                    case Key.Escape:
                         choiceDone = false;
                         loop = false;
                         break;
 
-                    case Keys.Enter:    // validate
+                    case Key.Enter:    // validate
                         if (selected == 0) // random
                             skID = Skills.RollLiving(roller);
                         else
@@ -2425,26 +2426,26 @@ namespace djack.RogueSurvivor.Engine
 
                 // handle
                 // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                Key key = m_UI.UI_WaitKey();
+                switch (key)
                 {
-                    case Keys.Up:       // move up
+                    case Key.Up:       // move up
                         if (selected > 0) --selected;
                         else selected = menuEntries.Length - 1;
                         break;
-                    case Keys.Down:     // move down
+                    case Key.Down:     // move down
                         selected = (selected + 1) % menuEntries.Length;
                         break;
 
-                    case Keys.R:        // restore previous.
+                    case Key.R:        // restore previous.
                         s_Options = prevOptions;
                         break;
 
-                    case Keys.Escape:   // validate and leave
+                    case Key.Escape:   // validate and leave
                         loop = false;
                         break;
 
-                    case Keys.Left:
+                    case Key.Left:
                         switch ((GameOptions.IDs)list[selected])
                         {
                             case GameOptions.IDs.GAME_DISTRICT_SIZE: s_Options.DistrictSize -= 5; break;
@@ -2501,7 +2502,7 @@ namespace djack.RogueSurvivor.Engine
                                 break;
                         }
                         break;
-                    case Keys.Right:
+                    case Key.Right:
                         switch ((GameOptions.IDs)list[selected])
                         {
                             case GameOptions.IDs.GAME_DISTRICT_SIZE: s_Options.DistrictSize += 5; break;
@@ -2625,7 +2626,7 @@ namespace djack.RogueSurvivor.Engine
                     "Pull",  // alpha10
                     "Push",
                     "Quit Game",
-                    "Redefine Keys",
+                    "Redefine Key",
                     "Run",
                     "Save Game",
                     "Screenshot",
@@ -2759,43 +2760,40 @@ namespace djack.RogueSurvivor.Engine
 
                 // handle
                 // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                Key key = m_UI.UI_WaitKey();
+                switch (key)
                 {
-                    case Keys.Up:       // move up
+                    case Key.Up:       // move up
                         if (selected > 0) --selected;
                         else selected = menuEntries.Length - 1;
                         break;
-                    case Keys.Down:     // move down
+                    case Key.Down:     // move down
                         selected = (selected + 1) % menuEntries.Length;
                         break;
 
-                    case Keys.Escape:   // leave.
+                    case Key.Escape:   // leave.
                         if (!conflict)
                         {
                             loop = false;
                         }
                         break;
 
-                    case Keys.Enter: // rebind
+                    case Key.Enter: // rebind
                         // say.
                         m_UI.UI_DrawStringBold(Color.Yellow, String.Format("rebinding {0}, press the new key.", menuEntries[selected]), gx, gy);
                         m_UI.UI_Repaint();
 
                         // read new key.
                         bool loopNewKey = true;
-                        Keys newKeyData = Keys.None;
+                        Key newKeyData = Key.None;
                         do
                         {
-                            KeyEventArgs newKey = m_UI.UI_WaitKey();
+                            Key newKey = m_UI.UI_WaitKey();
                             // ignore Shift and Control alone.
-                            if (newKey.KeyCode == Keys.ShiftKey || newKey.KeyCode == Keys.ControlKey)
-                                continue;
-                            // always ignore Alt.
-                            if (newKey.Alt)
+                            if (newKey == Key.ShiftKey || newKey == Key.ControlKey)
                                 continue;
                             // done!
-                            newKeyData = newKey.KeyData;
+                            newKeyData = newKey;
                             loopNewKey = false;
                         }
                         while (loopNewKey);
@@ -5574,14 +5572,14 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_PeekKey();  // consume keys to avoid repeats.
                 bool inputLoop = true;
                 bool hasKey = false;
-                KeyEventArgs inKey;
+                Key inKey;
                 Point prevMousePos = m_UI.UI_GetMousePosition();
                 Point mousePos = new Point(-1, -1);
-                MouseButtons? mouseButtons = null;
+                MouseButton mouseButton = MouseButton.None;
                 do
                 {
                     inKey = m_UI.UI_PeekKey();
-                    if (inKey != null)
+                    if (inKey != Key.None)
                     {
                         hasKey = true;
                         inputLoop = false;
@@ -5589,8 +5587,8 @@ namespace djack.RogueSurvivor.Engine
                     else
                     {
                         mousePos = m_UI.UI_GetMousePosition();
-                        mouseButtons = m_UI.UI_PeekMouseButtons();
-                        if (mousePos != prevMousePos || mouseButtons != null)
+                        mouseButton = m_UI.UI_PeekMouseButtons();
+                        if (mousePos != prevMousePos || mouseButton != MouseButton.None)
                         {
                             inputLoop = false;
                         }
@@ -6053,7 +6051,7 @@ namespace djack.RogueSurvivor.Engine
 
                     // Inventory?
                     bool hasDoneInventoryAction;
-                    bool isInventory = HandleMouseInventory(mousePos, mouseButtons, out hasDoneInventoryAction);
+                    bool isInventory = HandleMouseInventory(mousePos, mouseButton, out hasDoneInventoryAction);
                     if (isInventory)
                     {
                         if (hasDoneInventoryAction)
@@ -6066,7 +6064,7 @@ namespace djack.RogueSurvivor.Engine
 
                     // Corpses?
                     bool hasDoneCorpsesAction;
-                    bool isCorpses = HandleMouseOverCorpses(mousePos, mouseButtons, out hasDoneCorpsesAction);
+                    bool isCorpses = HandleMouseOverCorpses(mousePos, mouseButton, out hasDoneCorpsesAction);
                     if (isCorpses)
                     {
                         if (hasDoneCorpsesAction)
@@ -6225,8 +6223,8 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_Repaint();
 
                 // get command.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                int choice = KeyToChoiceNumber(key.KeyCode);
+                Key key = m_UI.UI_WaitKey();
+                int choice = KeyToChoiceNumber(key);
 
                 if (choice >= 0)
                 {
@@ -6258,22 +6256,22 @@ namespace djack.RogueSurvivor.Engine
                 }
                 else
                 {
-                    switch (key.KeyCode)
+                    switch (key)
                     {
-                        case Keys.Escape:
+                        case Key.Escape:
                             loop = false;
                             break;
 
-                        case Keys.Up:
+                        case Key.Up:
                             --m_ManualLine;
                             break;
-                        case Keys.Down:
+                        case Key.Down:
                             ++m_ManualLine;
                             break;
-                        case Keys.PageUp:
+                        case Key.PageUp:
                             m_ManualLine -= TEXTFILE_LINES_PER_PAGE;
                             break;
-                        case Keys.PageDown:
+                        case Key.PageDown:
                             m_ManualLine += TEXTFILE_LINES_PER_PAGE;
                             break;
                     }
@@ -6347,27 +6345,27 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_Repaint();
 
                 // get command.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                Key key = m_UI.UI_WaitKey();
+                switch (key)
                 {
-                    case Keys.Escape:
+                    case Key.Escape:
                         loop = false;
                         break;
 
-                    case Keys.Up:
+                    case Key.Up:
                         --currentLine;
                         break;
-                    case Keys.Down:
+                    case Key.Down:
                         ++currentLine;
                         break;
-                    case Keys.PageUp:
+                    case Key.PageUp:
                         currentLine -= TEXTFILE_LINES_PER_PAGE;
                         break;
-                    case Keys.PageDown:
+                    case Key.PageDown:
                         currentLine += TEXTFILE_LINES_PER_PAGE;
                         break;
 
-                    case Keys.R:
+                    case Key.R:
                         // do it.
                         s_Hints.ResetAllHints();
 
@@ -6656,7 +6654,7 @@ namespace djack.RogueSurvivor.Engine
             return true;
         }
 
-        bool HandleMouseInventory(Point mousePos, MouseButtons? mouseButtons, out bool hasDoneAction)
+        bool HandleMouseInventory(Point mousePos, MouseButton mouseButton, out bool hasDoneAction)
         {
             // Ignore if not on an inventory slot.
             Inventory inv;
@@ -6685,11 +6683,11 @@ namespace djack.RogueSurvivor.Engine
                 AddOverlay(new OverlayPopup(lines, Color.White, Color.White, POPUP_FILLCOLOR, new Point(ovX, ovY)));
 
                 // item action?
-                if (mouseButtons.HasValue)
+                if (mouseButton != MouseButton.None)
                 {
-                    if (mouseButtons == MouseButtons.Left)
+                    if (mouseButton == MouseButton.Left)
                         hasDoneAction = OnLMBItem(inv, it);
-                    else if (mouseButtons == MouseButtons.Right)
+                    else if (mouseButton == MouseButton.Right)
                         hasDoneAction = OnRMBItem(inv, it);
                 }
             }
@@ -6822,7 +6820,7 @@ namespace djack.RogueSurvivor.Engine
         }
 
         #region Corpses
-        bool HandleMouseOverCorpses(Point mousePos, MouseButtons? mouseButtons, out bool hasDoneAction)
+        bool HandleMouseOverCorpses(Point mousePos, MouseButton mouseButton, out bool hasDoneAction)
         {
             // Ignore if not on a corpse slot.
             Point corpsePos;
@@ -6848,11 +6846,11 @@ namespace djack.RogueSurvivor.Engine
                 AddOverlay(new OverlayPopup(lines, Color.White, Color.White, POPUP_FILLCOLOR, new Point(ovX, ovY)));
 
                 // mouse action?
-                if (mouseButtons.HasValue)
+                if (mouseButton != MouseButton.None)
                 {
-                    if (mouseButtons == MouseButtons.Left)
+                    if (mouseButton == MouseButton.Left)
                         hasDoneAction = OnLMBCorpse(corpse);
-                    else if (mouseButtons == MouseButtons.Right)
+                    else if (mouseButton == MouseButton.Right)
                         hasDoneAction = OnRMBCorpse(corpse);
                 }
             }
@@ -7157,17 +7155,18 @@ namespace djack.RogueSurvivor.Engine
         }
         #endregion
 
-        bool DoPlayerItemSlot(Actor player, int slot, KeyEventArgs key)
+        bool DoPlayerItemSlot(Actor player, int slot, Key key)
         {
             // get key modifier and redirect to proper action.
             // Ctrl  -> equip/unequip/use item from player inv
             // Shift -> take item from ground inv
             // Alt -> drop item from player inv.
-            if ((key.Modifiers & Keys.Control) != 0)
+            KeyInfo keyInfo = new KeyInfo(key);
+            if (keyInfo.Control)
                 return DoPlayerItemSlotUse(player, slot);
-            else if (key.Shift)
+            else if (keyInfo.Shift)
                 return DoPlayerItemSlotTake(player, slot);
-            else if (key.Alt)
+            else if (keyInfo.Alt)
                 return DoPlayerItemSlotDrop(player, slot);
 
             // nope.
@@ -7579,9 +7578,9 @@ namespace djack.RogueSurvivor.Engine
                 else
                 {
                     // Select 1st or 2nd item
-                    KeyEventArgs inKey = m_UI.UI_WaitKey();
+                    Key inKey = m_UI.UI_WaitKey();
 
-                    if (inKey.KeyCode == Keys.Escape)  // back/abort
+                    if (inKey == Key.Escape)  // back/abort
                     {
                         if (state == 0)
                             loop = false;
@@ -7595,7 +7594,7 @@ namespace djack.RogueSurvivor.Engine
                             isOnPlayerInventory = !isOnPlayerInventory;
                         }
                     }
-                    else if (inKey.KeyCode == Keys.Tab)  // switch inventory
+                    else if (inKey == Key.Tab)  // switch inventory
                     {
                         if (state == 0)
                         {
@@ -7605,7 +7604,7 @@ namespace djack.RogueSurvivor.Engine
                     }
                     else
                     {
-                        int slot = KeyToChoiceNumber(inKey.KeyCode);
+                        int slot = KeyToChoiceNumber(inKey);
                         if (slot != -1) // select an item
                         {
                             if (slot == 0) slot = 9;
@@ -8153,19 +8152,19 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
 
                 // 2. Get input.
-                KeyEventArgs key = m_UI.UI_WaitKey();
+                Key key = m_UI.UI_WaitKey();
                 PlayerCommand command = InputTranslator.KeyToCommand(key);
 
                 // 3. Handle input
-                if (key.KeyCode == Keys.Escape) //command == PlayerCommand.EXIT_OR_CANCEL)
+                if (key == Key.Escape) //command == PlayerCommand.EXIT_OR_CANCEL)
                 {
                     loop = false;
                 }
-                else if (key.KeyCode == Keys.T)  // next target
+                else if (key == Key.T)  // next target
                 {
                     iCurrentTarget = (iCurrentTarget + 1) % potentialTargets.Count;
                 }
-                else if (key.KeyCode == Keys.M)    // next mode
+                else if (key == Key.M)    // next mode
                 {
                     // switch.
                     mode = (FireMode)(((int)mode + 1) % (int)FireMode._COUNT);
@@ -8175,7 +8174,7 @@ namespace djack.RogueSurvivor.Engine
                     // save preference to session
                     m_Session.Player_CurrentFireMode = mode;
                 }
-                else if (key.KeyCode == Keys.F) // do fire
+                else if (key == Key.F) // do fire
                 {
                     if (canFireAtTarget)
                     {
@@ -8249,20 +8248,20 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
 
                 // 2. Get input.
-                KeyEventArgs key = m_UI.UI_WaitKey();
+                Key key = m_UI.UI_WaitKey();
                 PlayerCommand command = InputTranslator.KeyToCommand(key);
 
                 // 3. Handle input
-                if (key.KeyCode == Keys.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
+                if (key == Key.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
                 {
                     loop = false;
                 }
-                else if (key.KeyCode == Keys.T)  // next actor
+                else if (key == Key.T)  // next actor
                 {
                     iCurrentActor = (iCurrentActor + 1) % visibleActors.Count;
                 }
 
-                else if (key.KeyCode == Keys.E) // toggle.
+                else if (key == Key.E) // toggle.
                 {
                     // never make enemies of leader/follower/enemy faction.
                     // FIXME put all that into a rule Rule.CanMakeEnemyOf()
@@ -8349,15 +8348,15 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
 
                 // 2. Get input.
-                KeyEventArgs key = m_UI.UI_WaitKey();
+                Key key = m_UI.UI_WaitKey();
                 PlayerCommand command = InputTranslator.KeyToCommand(key);
 
                 // 3. Handle input
-                if (key.KeyCode == Keys.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
+                if (key == Key.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
                 {
                     loop = false;
                 }
-                else if (key.KeyCode == Keys.F) // do throw.
+                else if (key == Key.F) // do throw.
                 {
                     if (canThrowAtTarget)
                     {
@@ -9395,11 +9394,11 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
 
                 // 2. Get input.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                int choice = KeyToChoiceNumber(key.KeyCode);
+                Key key = m_UI.UI_WaitKey();
+                int choice = KeyToChoiceNumber(key);
 
                 // 3. Handle input
-                if (key.KeyCode == Keys.Escape)
+                if (key == Key.Escape)
                 {
                     loop = false;
                 }
@@ -9466,11 +9465,11 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
 
                 // 2. Get input.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                int choice = KeyToChoiceNumber(key.KeyCode);
+                Key key = m_UI.UI_WaitKey();
+                int choice = KeyToChoiceNumber(key);
 
                 // 3. Handle input
-                if (key.KeyCode == Keys.Escape)
+                if (key == Key.Escape)
                 {
                     loop = false;
                 }
@@ -9565,11 +9564,11 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
 
                 // 2. Get input.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                int choice = KeyToChoiceNumber(key.KeyCode);
+                Key key = m_UI.UI_WaitKey();
+                int choice = KeyToChoiceNumber(key);
 
                 // 3. Handle input
-                if (key.KeyCode == Keys.Escape)
+                if (key == Key.Escape)
                 {
                     loop = false;
                 }
@@ -9661,9 +9660,9 @@ namespace djack.RogueSurvivor.Engine
                 #region
                 else
                 {
-                    switch (key.KeyCode)
+                    switch (key)
                     {
-                        case Keys.A:    // give items...
+                        case Key.A:    // give items...
                             if (HandlePlayerOrderFollowerToGiveItems(player, follower))
                             {
                                 loop = false;
@@ -9671,7 +9670,7 @@ namespace djack.RogueSurvivor.Engine
                             }
                             break;
 
-                        case Keys.B: // sleep now
+                        case Key.B: // sleep now
                             if (HandlePlayerOrderFollowerToSleep(player, follower))
                             {
                                 loop = false;
@@ -9679,7 +9678,7 @@ namespace djack.RogueSurvivor.Engine
                             }
                             break;
 
-                        case Keys.C: // toggle follow
+                        case Key.C: // toggle follow
                             if (HandlePlayerOrderFollowerToToggleFollow(player, follower))
                             {
                                 loop = false;
@@ -9687,7 +9686,7 @@ namespace djack.RogueSurvivor.Engine
                             }
                             break;
 
-                        case Keys.D: // where are ou?
+                        case Key.D: // where are ou?
                             if (HandlePlayerOrderFollowerToReportPosition(player, follower))
                             {
                                 loop = false;
@@ -9731,14 +9730,14 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
 
                 // 2. Get input.
-                KeyEventArgs key;
+                Key key;
                 Point mousePos;
-                MouseButtons? mouseButtons;
-                WaitKeyOrMouse(out key, out mousePos, out mouseButtons);
+                MouseButton mouseButton;
+                WaitKeyOrMouse(out key, out mousePos, out mouseButton);
 
-                if (key != null)
+                if (key != Key.None)
                 {
-                    if (key.KeyCode == Keys.Escape)
+                    if (key == Key.Escape)
                         loop = false;
                 }
                 else
@@ -9758,7 +9757,7 @@ namespace djack.RogueSurvivor.Engine
                                 highlightedTile = mapPos;
                                 highlightColor = Color.LightGreen;
                                 // if mouse down, give order.
-                                if (mouseButtons.HasValue && mouseButtons.Value == MouseButtons.Left)
+                                if (mouseButton == MouseButton.Left)
                                 {
                                     DoGiveOrderTo(player, follower, new ActorOrder(isLarge ? ActorTasks.BUILD_LARGE_FORTIFICATION : ActorTasks.BUILD_SMALL_FORTIFICATION, new Location(player.Location.Map, mapPos)));
                                     loop = false;
@@ -9772,7 +9771,7 @@ namespace djack.RogueSurvivor.Engine
                                 highlightColor = Color.Red;
 
                                 // if mouse down, illegal.
-                                if (mouseButtons.HasValue && mouseButtons.Value == MouseButtons.Left)
+                                if (mouseButton == MouseButton.Left)
                                 {
                                     AddMessage(MakeErrorMessage(String.Format("Can't build {0} fortification : {1}.", isLarge ? "large" : "small", reason)));
                                     AddMessagePressEnter();
@@ -9822,14 +9821,14 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
 
                 // 2. Get input.
-                KeyEventArgs key;
+                Key key;
                 Point mousePos;
-                MouseButtons? mouseButtons;
-                WaitKeyOrMouse(out key, out mousePos, out mouseButtons);
+                MouseButton mouseButton;
+                WaitKeyOrMouse(out key, out mousePos, out mouseButton);
 
-                if (key != null)
+                if (key != Key.None)
                 {
-                    if (key.KeyCode == Keys.Escape)
+                    if (key == Key.Escape)
                         loop = false;
                 }
                 else
@@ -9854,7 +9853,7 @@ namespace djack.RogueSurvivor.Engine
                                     highlightedTile = mapPos;
                                     highlightColor = Color.LightGreen;
                                     // if mouse down, give order.
-                                    if (mouseButtons.HasValue && mouseButtons.Value == MouseButtons.Left)
+                                    if (mouseButton == MouseButton.Left)
                                     {
                                         DoGiveOrderTo(player, follower, new ActorOrder(toTheMax ? ActorTasks.BARRICADE_MAX : ActorTasks.BARRICADE_ONE, door.Location));
                                         loop = false;
@@ -9867,7 +9866,7 @@ namespace djack.RogueSurvivor.Engine
                                     highlightedTile = mapPos;
                                     highlightColor = Color.Red;
                                     // if mouse down, illegal.
-                                    if (mouseButtons.HasValue && mouseButtons.Value == MouseButtons.Left)
+                                    if (mouseButton == MouseButton.Left)
                                     {
                                         AddMessage(MakeErrorMessage(String.Format("Can't barricade {0} : {1}.", door.TheName, reason)));
                                         AddMessagePressEnter();
@@ -9924,14 +9923,14 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
 
                 // 2. Get input.
-                KeyEventArgs key;
+                Key key;
                 Point mousePos;
-                MouseButtons? mouseButtons;
-                WaitKeyOrMouse(out key, out mousePos, out mouseButtons);
+                MouseButton mouseButton;
+                WaitKeyOrMouse(out key, out mousePos, out mouseButton);
 
-                if (key != null)
+                if (key != Key.None)
                 {
-                    if (key.KeyCode == Keys.Escape)
+                    if (key == Key.Escape)
                         loop = false;
                 }
                 else
@@ -9951,7 +9950,7 @@ namespace djack.RogueSurvivor.Engine
                                 highlightedTile = mapPos;
                                 highlightColor = Color.LightGreen;
                                 // if mouse down, give order.
-                                if (mouseButtons.HasValue && mouseButtons.Value == MouseButtons.Left)
+                                if (mouseButton == MouseButton.Left)
                                 {
                                     DoGiveOrderTo(player, follower, new ActorOrder(ActorTasks.GUARD, new Location(map, mapPos)));
                                     loop = false;
@@ -9964,7 +9963,7 @@ namespace djack.RogueSurvivor.Engine
                                 highlightedTile = mapPos;
                                 highlightColor = Color.Red;
                                 // if mouse down, illegal.
-                                if (mouseButtons.HasValue && mouseButtons.Value == MouseButtons.Left)
+                                if (mouseButton == MouseButton.Left)
                                 {
                                     AddMessage(MakeErrorMessage(String.Format("Can't guard here : {0}", reason)));
                                     AddMessagePressEnter();
@@ -10028,14 +10027,14 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
 
                 // 2. Get input.
-                KeyEventArgs key;
+                Key key;
                 Point mousePos;
-                MouseButtons? mouseButtons;
-                WaitKeyOrMouse(out key, out mousePos, out mouseButtons);
+                MouseButton mouseButton;
+                WaitKeyOrMouse(out key, out mousePos, out mouseButton);
 
-                if (key != null)
+                if (key != Key.None)
                 {
-                    if (key.KeyCode == Keys.Escape)
+                    if (key == Key.Escape)
                         loop = false;
                 }
                 else
@@ -10068,7 +10067,7 @@ namespace djack.RogueSurvivor.Engine
                                 highlightedTile = mapPos;
                                 highlightColor = Color.LightGreen;
                                 // if mouse down, give order.
-                                if (mouseButtons.HasValue && mouseButtons.Value == MouseButtons.Left)
+                                if (mouseButton == MouseButton.Left)
                                 {
                                     DoGiveOrderTo(player, follower, new ActorOrder(ActorTasks.PATROL, new Location(map, mapPos)));
                                     loop = false;
@@ -10081,7 +10080,7 @@ namespace djack.RogueSurvivor.Engine
                                 highlightedTile = mapPos;
                                 highlightColor = Color.Red;
                                 // if mouse down, illegal.
-                                if (mouseButtons.HasValue && mouseButtons.Value == MouseButtons.Left)
+                                if (mouseButton == MouseButton.Left)
                                 {
                                     AddMessage(MakeErrorMessage(String.Format("Can't patrol here : {0}", reason)));
                                     AddMessagePressEnter();
@@ -10211,11 +10210,11 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
 
                 // 2. Get input.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                int choice = KeyToChoiceNumber(key.KeyCode);
+                Key key = m_UI.UI_WaitKey();
+                int choice = KeyToChoiceNumber(key);
 
                 // 3. Handle input
-                if (key.KeyCode == Keys.Escape)
+                if (key == Key.Escape)
                 {
                     loop = false;
                 }
@@ -10917,7 +10916,7 @@ namespace djack.RogueSurvivor.Engine
                             String.Format("You can view and redefine the KEYS by pressing <{0}>.", s_KeyBindings.Get(PlayerCommand.KEYBINDING_MODE).ToString()),
                             String.Format("You can change OPTIONS by pressing <{0}>.", s_KeyBindings.Get(PlayerCommand.OPTIONS_MODE).ToString()),
                             "Some option changes will only take effect when starting a new game.",
-                            "Keys and Options are saved."
+                            "Key and Options are saved."
                         };
                     break;
 
@@ -11237,18 +11236,18 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Input helpers
-        void WaitKeyOrMouse(out KeyEventArgs key, out Point mousePos, out MouseButtons? mouseButtons)
+        void WaitKeyOrMouse(out Key key, out Point mousePos, out MouseButton mouseButton)
         {
             // Peek keyboard & mouse until we got an event.
             m_UI.UI_PeekKey();  // consume keys to avoid repeats.
-            KeyEventArgs inKey;
+            Key inKey;
             Point prevMousePos = m_UI.UI_GetMousePosition();
             mousePos = new Point(-1, -1);
-            mouseButtons = null;
+            mouseButton = MouseButton.None;
             for (; ; )
             {
                 inKey = m_UI.UI_PeekKey();
-                if (inKey != null)
+                if (inKey != Key.None)
                 {
                     key = inKey;
                     return;
@@ -11256,10 +11255,10 @@ namespace djack.RogueSurvivor.Engine
                 else
                 {
                     mousePos = m_UI.UI_GetMousePosition();
-                    mouseButtons = m_UI.UI_PeekMouseButtons();
-                    if (mousePos != prevMousePos || mouseButtons != null)
+                    mouseButton = m_UI.UI_PeekMouseButtons();
+                    if (mousePos != prevMousePos || mouseButton != MouseButton.None)
                     {
-                        key = null;
+                        key = Key.None;
                         return;
                     }
                 }
@@ -11274,9 +11273,9 @@ namespace djack.RogueSurvivor.Engine
         {
             for (; ; )
             {
-                KeyEventArgs inKey = m_UI.UI_WaitKey();
+                Key inKey = m_UI.UI_WaitKey();
                 PlayerCommand command = InputTranslator.KeyToCommand(inKey);
-                if (inKey.KeyCode == Keys.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
+                if (inKey == Key.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
                     return null;
                 Direction dir = CommandToDirection(command);
                 if (dir != null)
@@ -11288,8 +11287,8 @@ namespace djack.RogueSurvivor.Engine
         {
             for (; ; )
             {
-                KeyEventArgs inKey = m_UI.UI_WaitKey();
-                if (inKey.KeyCode == Keys.Enter)
+                Key inKey = m_UI.UI_WaitKey();
+                if (inKey == Key.Enter)
                     return;
             }
         }
@@ -11298,8 +11297,8 @@ namespace djack.RogueSurvivor.Engine
         {
             for (; ; )
             {
-                KeyEventArgs inKey = m_UI.UI_WaitKey();
-                if (inKey.KeyCode == Keys.Escape)
+                Key inKey = m_UI.UI_WaitKey();
+                if (inKey == Key.Escape)
                     return;
             }
         }
@@ -11309,48 +11308,48 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        int KeyToChoiceNumber(Keys key)
+        int KeyToChoiceNumber(Key key)
         {
             switch (key)
             {
-                case Keys.NumPad0:
-                case Keys.D0:
+                case Key.NumPad0:
+                case Key.D0:
                     return 0;
 
-                case Keys.NumPad1:
-                case Keys.D1:
+                case Key.NumPad1:
+                case Key.D1:
                     return 1;
 
-                case Keys.NumPad2:
-                case Keys.D2:
+                case Key.NumPad2:
+                case Key.D2:
                     return 2;
 
-                case Keys.NumPad3:
-                case Keys.D3:
+                case Key.NumPad3:
+                case Key.D3:
                     return 3;
 
-                case Keys.NumPad4:
-                case Keys.D4:
+                case Key.NumPad4:
+                case Key.D4:
                     return 4;
 
-                case Keys.NumPad5:
-                case Keys.D5:
+                case Key.NumPad5:
+                case Key.D5:
                     return 5;
 
-                case Keys.NumPad6:
-                case Keys.D6:
+                case Key.NumPad6:
+                case Key.D6:
                     return 6;
 
-                case Keys.NumPad7:
-                case Keys.D7:
+                case Key.NumPad7:
+                case Key.D7:
                     return 7;
 
-                case Keys.NumPad8:
-                case Keys.D8:
+                case Key.NumPad8:
+                case Key.D8:
                     return 8;
 
-                case Keys.NumPad9:
-                case Keys.D9:
+                case Key.NumPad9:
+                case Key.D9:
                     return 9;
 
                 default:
@@ -11362,10 +11361,10 @@ namespace djack.RogueSurvivor.Engine
         {
             for (; ; )
             {
-                KeyEventArgs inKey = m_UI.UI_WaitKey();
-                if (inKey.KeyCode == Keys.Y)
+                Key inKey = m_UI.UI_WaitKey();
+                if (inKey == Key.Y)
                     return true;
-                else if (inKey.KeyCode == Keys.N || inKey.KeyCode == Keys.Escape)
+                else if (inKey == Key.N || inKey == Key.Escape)
                     return false;
             }
         }
@@ -17441,11 +17440,11 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
 
                 // 2. Read input
-                KeyEventArgs inKey = m_UI.UI_WaitKey();
+                Key inKey = m_UI.UI_WaitKey();
 
                 // 3. Handle input
                 PlayerCommand command = InputTranslator.KeyToCommand(inKey);
-                if (inKey.KeyCode == Keys.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
+                if (inKey == Key.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
                 {
                     loop = false;
                     if (popup != null) RemoveOverlay(popup);
@@ -17454,7 +17453,7 @@ namespace djack.RogueSurvivor.Engine
                 else
                 {
                     // get choice.
-                    int choice = KeyToChoiceNumber(inKey.KeyCode);
+                    int choice = KeyToChoiceNumber(inKey);
 
                     if (choice >= 1 && choice <= upgradeChoices.Count)
                     {
@@ -21316,8 +21315,8 @@ namespace djack.RogueSurvivor.Engine
 
                         // check for abort.
                         #region
-                        KeyEventArgs key = m_UI.UI_PeekKey();
-                        if (key != null && key.KeyCode == Keys.Escape)
+                        Key key = m_UI.UI_PeekKey();
+                        if (key == Key.Escape)
                         {
                             // jump in time for each map.
                             foreach (Map map in district.Maps)
@@ -22086,22 +22085,22 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_Repaint();
 
                 // get menu action.
-                KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                Key key = m_UI.UI_WaitKey();
+                switch (key)
                 {
-                    case Keys.Up:       // move up
+                    case Key.Up:       // move up
                         if (selected > 0) --selected;
                         else selected = entries.Length - 1;
                         break;
-                    case Keys.Down:     // move down
+                    case Key.Down:     // move down
                         selected = (selected + 1) % entries.Length;
                         break;
-                    case Keys.Escape:   // cancel & end game
+                    case Key.Escape:   // cancel & end game
                         choiceMade = true;
                         avatar = null;
                         break;
 
-                    case Keys.Enter:    // validate
+                    case Key.Enter:    // validate
                         {
                             switch (selected)
                             {

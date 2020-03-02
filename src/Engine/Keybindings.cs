@@ -1,9 +1,8 @@
-﻿using System;
+﻿using RogueSurvivor.UI;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -12,16 +11,13 @@ namespace djack.RogueSurvivor.Engine
     [Serializable]
     class Keybindings
     {
-        #region Fields
-        Dictionary<PlayerCommand, Keys> m_CommandToKeyData;
-        Dictionary<Keys, PlayerCommand> m_KeyToCommand;
-        #endregion
+        Dictionary<PlayerCommand, Key> m_CommandToKeyData;
+        Dictionary<Key, PlayerCommand> m_KeyToCommand;
 
-        #region Init
         public Keybindings()
         {
-            m_CommandToKeyData = new Dictionary<PlayerCommand, Keys>();
-            m_KeyToCommand = new Dictionary<Keys, PlayerCommand>();
+            m_CommandToKeyData = new Dictionary<PlayerCommand, Key>();
+            m_KeyToCommand = new Dictionary<Key, PlayerCommand>();
             ResetToDefaults();
         }
 
@@ -30,77 +26,75 @@ namespace djack.RogueSurvivor.Engine
             m_CommandToKeyData.Clear();
             m_KeyToCommand.Clear();
 
-            Set(PlayerCommand.BARRICADE_MODE, Keys.B);
-            Set(PlayerCommand.BREAK_MODE, Keys.K);
-            Set(PlayerCommand.CLOSE_DOOR, Keys.C);
-            Set(PlayerCommand.FIRE_MODE, Keys.F);
-            Set(PlayerCommand.HELP_MODE, Keys.H);
-            Set(PlayerCommand.KEYBINDING_MODE, Keys.K | Keys.Shift);
+            Set(PlayerCommand.BARRICADE_MODE, Key.B);
+            Set(PlayerCommand.BREAK_MODE, Key.K);
+            Set(PlayerCommand.CLOSE_DOOR, Key.C);
+            Set(PlayerCommand.FIRE_MODE, Key.F);
+            Set(PlayerCommand.HELP_MODE, Key.H);
+            Set(PlayerCommand.KEYBINDING_MODE, Key.K | Key.Shift);
 
-            Set(PlayerCommand.ITEM_SLOT_0, Keys.D1);
-            Set(PlayerCommand.ITEM_SLOT_1, Keys.D2);
-            Set(PlayerCommand.ITEM_SLOT_2, Keys.D3);
-            Set(PlayerCommand.ITEM_SLOT_3, Keys.D4);
-            Set(PlayerCommand.ITEM_SLOT_4, Keys.D5);
-            Set(PlayerCommand.ITEM_SLOT_5, Keys.D6);
-            Set(PlayerCommand.ITEM_SLOT_6, Keys.D7);
-            Set(PlayerCommand.ITEM_SLOT_7, Keys.D8);
-            Set(PlayerCommand.ITEM_SLOT_8, Keys.D9);
-            Set(PlayerCommand.ITEM_SLOT_9, Keys.D0);
+            Set(PlayerCommand.ITEM_SLOT_0, Key.D1);
+            Set(PlayerCommand.ITEM_SLOT_1, Key.D2);
+            Set(PlayerCommand.ITEM_SLOT_2, Key.D3);
+            Set(PlayerCommand.ITEM_SLOT_3, Key.D4);
+            Set(PlayerCommand.ITEM_SLOT_4, Key.D5);
+            Set(PlayerCommand.ITEM_SLOT_5, Key.D6);
+            Set(PlayerCommand.ITEM_SLOT_6, Key.D7);
+            Set(PlayerCommand.ITEM_SLOT_7, Key.D8);
+            Set(PlayerCommand.ITEM_SLOT_8, Key.D9);
+            Set(PlayerCommand.ITEM_SLOT_9, Key.D0);
 
-            Set(PlayerCommand.ABANDON_GAME, Keys.A | Keys.Shift);
-            Set(PlayerCommand.ADVISOR, Keys.H | Keys.Shift);
-            Set(PlayerCommand.BUILD_LARGE_FORTIFICATION, Keys.N | Keys.Control);
-            Set(PlayerCommand.BUILD_SMALL_FORTIFICATION, Keys.N);
-            Set(PlayerCommand.CITY_INFO, Keys.I);
-            Set(PlayerCommand.EAT_CORPSE, Keys.E | Keys.Shift);
-            Set(PlayerCommand.GIVE_ITEM, Keys.G);
-            Set(PlayerCommand.HINTS_SCREEN_MODE, Keys.H | Keys.Control);
-            Set(PlayerCommand.NEGOCIATE_TRADE, Keys.E);
-            Set(PlayerCommand.LOAD_GAME, Keys.L | Keys.Shift);
-            Set(PlayerCommand.MARK_ENEMIES_MODE, Keys.E | Keys.Control);
-            Set(PlayerCommand.MESSAGE_LOG, Keys.M | Keys.Shift);
-            Set(PlayerCommand.MOVE_E, Keys.NumPad6);
-            Set(PlayerCommand.MOVE_N, Keys.NumPad8);
-            Set(PlayerCommand.MOVE_NE, Keys.NumPad9);
-            Set(PlayerCommand.MOVE_NW, Keys.NumPad7);
-            Set(PlayerCommand.MOVE_S, Keys.NumPad2);
-            Set(PlayerCommand.MOVE_SE, Keys.NumPad3);
-            Set(PlayerCommand.MOVE_SW, Keys.NumPad1);
-            Set(PlayerCommand.MOVE_W, Keys.NumPad4);
-            Set(PlayerCommand.OPTIONS_MODE, Keys.O | Keys.Shift);
-            Set(PlayerCommand.ORDER_MODE, Keys.O);
-            Set(PlayerCommand.PULL_MODE, Keys.P | Keys.Control); // alpha10
-            Set(PlayerCommand.PUSH_MODE, Keys.P);
-            Set(PlayerCommand.QUIT_GAME, Keys.Q | Keys.Shift);
-            Set(PlayerCommand.REVIVE_CORPSE, Keys.R | Keys.Shift);
-            Set(PlayerCommand.RUN_TOGGLE, Keys.R);
-            Set(PlayerCommand.SAVE_GAME, Keys.S | Keys.Shift);
-            Set(PlayerCommand.SCREENSHOT, Keys.N | Keys.Shift);
-            Set(PlayerCommand.SHOUT, Keys.S);
-            Set(PlayerCommand.SLEEP, Keys.Z);
-            Set(PlayerCommand.SWITCH_PLACE, Keys.S | Keys.Control);
-            Set(PlayerCommand.LEAD_MODE, Keys.T);
-            Set(PlayerCommand.USE_SPRAY, Keys.A);
-            Set(PlayerCommand.USE_EXIT, Keys.X);
-            Set(PlayerCommand.WAIT_OR_SELF, Keys.NumPad5);
-            Set(PlayerCommand.WAIT_LONG, Keys.W);
+            Set(PlayerCommand.ABANDON_GAME, Key.A | Key.Shift);
+            Set(PlayerCommand.ADVISOR, Key.H | Key.Shift);
+            Set(PlayerCommand.BUILD_LARGE_FORTIFICATION, Key.N | Key.Control);
+            Set(PlayerCommand.BUILD_SMALL_FORTIFICATION, Key.N);
+            Set(PlayerCommand.CITY_INFO, Key.I);
+            Set(PlayerCommand.EAT_CORPSE, Key.E | Key.Shift);
+            Set(PlayerCommand.GIVE_ITEM, Key.G);
+            Set(PlayerCommand.HINTS_SCREEN_MODE, Key.H | Key.Control);
+            Set(PlayerCommand.NEGOCIATE_TRADE, Key.E);
+            Set(PlayerCommand.LOAD_GAME, Key.L | Key.Shift);
+            Set(PlayerCommand.MARK_ENEMIES_MODE, Key.E | Key.Control);
+            Set(PlayerCommand.MESSAGE_LOG, Key.M | Key.Shift);
+            Set(PlayerCommand.MOVE_E, Key.NumPad6);
+            Set(PlayerCommand.MOVE_N, Key.NumPad8);
+            Set(PlayerCommand.MOVE_NE, Key.NumPad9);
+            Set(PlayerCommand.MOVE_NW, Key.NumPad7);
+            Set(PlayerCommand.MOVE_S, Key.NumPad2);
+            Set(PlayerCommand.MOVE_SE, Key.NumPad3);
+            Set(PlayerCommand.MOVE_SW, Key.NumPad1);
+            Set(PlayerCommand.MOVE_W, Key.NumPad4);
+            Set(PlayerCommand.OPTIONS_MODE, Key.O | Key.Shift);
+            Set(PlayerCommand.ORDER_MODE, Key.O);
+            Set(PlayerCommand.PULL_MODE, Key.P | Key.Control); // alpha10
+            Set(PlayerCommand.PUSH_MODE, Key.P);
+            Set(PlayerCommand.QUIT_GAME, Key.Q | Key.Shift);
+            Set(PlayerCommand.REVIVE_CORPSE, Key.R | Key.Shift);
+            Set(PlayerCommand.RUN_TOGGLE, Key.R);
+            Set(PlayerCommand.SAVE_GAME, Key.S | Key.Shift);
+            Set(PlayerCommand.SCREENSHOT, Key.N | Key.Shift);
+            Set(PlayerCommand.SHOUT, Key.S);
+            Set(PlayerCommand.SLEEP, Key.Z);
+            Set(PlayerCommand.SWITCH_PLACE, Key.S | Key.Control);
+            Set(PlayerCommand.LEAD_MODE, Key.T);
+            Set(PlayerCommand.USE_SPRAY, Key.A);
+            Set(PlayerCommand.USE_EXIT, Key.X);
+            Set(PlayerCommand.WAIT_OR_SELF, Key.NumPad5);
+            Set(PlayerCommand.WAIT_LONG, Key.W);
         }
-        #endregion
 
-        #region Getting & Setting
         /// <summary>
         /// Get KeyData (key code & modifiers).
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public Keys Get(PlayerCommand command)
+        public Key Get(PlayerCommand command)
         {
-            Keys key;
+            Key key;
             if (m_CommandToKeyData.TryGetValue(command, out key))
                 return key;
             else
-                return Keys.None;
+                return Key.None;
         }
 
         /// <summary>
@@ -108,7 +102,7 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         /// <param name="key">KeyData</param>
         /// <returns></returns>
-        public PlayerCommand Get(Keys key)
+        public PlayerCommand Get(Key key)
         {
             PlayerCommand cmd;
             if (m_KeyToCommand.TryGetValue(key, out cmd))
@@ -121,7 +115,7 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         /// <param name="command"></param>
         /// <param name="key">KeyData</param>
-        public void Set(PlayerCommand command, Keys key)
+        public void Set(PlayerCommand command, Key key)
         {
             // remove previous bind.
             PlayerCommand prevCommand = Get(key);
@@ -129,22 +123,20 @@ namespace djack.RogueSurvivor.Engine
             {
                 m_CommandToKeyData.Remove(prevCommand);
             }
-            Keys prevKey = Get(command);
-            if (prevKey != Keys.None)
+            Key prevKey = Get(command);
+            if (prevKey != Key.None)
             {
                 m_KeyToCommand.Remove(prevKey);
             }
-                     
+
             // rebind.
             m_CommandToKeyData[command] = key;
             m_KeyToCommand[key] = command;
-       }
-        #endregion
+        }
 
-        #region Checking for keys conflict
         public bool CheckForConflict()
         {
-            foreach (Keys key1 in m_CommandToKeyData.Values)
+            foreach (Key key1 in m_CommandToKeyData.Values)
             {
                 int bound = m_KeyToCommand.Keys.Count((k) => k == key1);
                 if (bound > 1)
@@ -153,9 +145,7 @@ namespace djack.RogueSurvivor.Engine
 
             return false;
         }
-        #endregion
 
-        #region Saving & Loading
         public static void Save(Keybindings kb, string filepath)
         {
             if (kb == null)
@@ -216,6 +206,5 @@ namespace djack.RogueSurvivor.Engine
                 save ? FileAccess.Write : FileAccess.Read,
                 FileShare.None);
         }
-        #endregion
     }
 }

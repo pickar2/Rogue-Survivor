@@ -5,29 +5,25 @@ using System.Text;
 using System.Windows.Forms;
 
 using djack.RogueSurvivor.Engine;
+using RogueSurvivor.UI;
 
 namespace djack.RogueSurvivor.Engine
 {
     static class InputTranslator
     {
-        public static PlayerCommand KeyToCommand(KeyEventArgs key)
+        public static PlayerCommand KeyToCommand(Key key)
         {
-            PlayerCommand command = RogueGame.KeyBindings.Get(key.KeyData);
+            PlayerCommand command = RogueGame.KeyBindings.Get(key);
             if (command != PlayerCommand.NONE)
                 return command;
 
             // check special case for item slot keys.
             // slots keys are always used with Ctrl, Shift or Alt modifiers so they are unbound in keybindings.
-            if (key.Modifiers != Keys.None)
+            KeyInfo keyInfo = new KeyInfo(key);
+            if (keyInfo.Modifiers != Key.None)
             {
                 // clear modifiers.
-                Keys unmodifiedKey = key.KeyData;
-                if ((key.Modifiers & Keys.Control) != Keys.None)
-                    unmodifiedKey ^= Keys.Control;
-                if ((key.Modifiers & Keys.Shift) != Keys.None)
-                    unmodifiedKey ^= Keys.Shift;
-                if ((key.Modifiers & Keys.Alt) != Keys.None)
-                    unmodifiedKey ^= Keys.Alt;
+                Key unmodifiedKey = keyInfo.KeyCode;
 
                 // slot key?
                 if (unmodifiedKey == RogueGame.KeyBindings.Get(PlayerCommand.ITEM_SLOT_0))

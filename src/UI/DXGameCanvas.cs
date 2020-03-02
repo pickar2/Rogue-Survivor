@@ -255,16 +255,16 @@ namespace djack.RogueSurvivor.UI
             m_RogueForm.UI_PostKey(e);
         }
 
-        protected override bool IsInputKey(Keys keyData)
+        protected override bool IsInputKey(Key keyData)
         {
             return true;
 #if false
             switch (keyData)
             {
-                case Keys.Up:
-                case Keys.Down:
-                case Keys.Left:
-                case Keys.Right:
+                case Key.Up:
+                case Key.Down:
+                case Key.Left:
+                case Key.Right:
                     return true;
 
                 default:

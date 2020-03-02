@@ -1,22 +1,24 @@
 ﻿using djack.RogueSurvivor.Engine;
 using djack.RogueSurvivor.Gameplay;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using RogueSurvivor.UI;
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace djack.RogueSurvivor
 {
     public class RogueForm : Game, IRogueUI
     {
         private GraphicsDeviceManager graphics;
-        private bool initialized;
+        private SpriteBatch spriteBatch;
 
         RogueGame m_Game;
-        // FIXME
-        //Font m_NormalFont;
-        //Font m_BoldFont;
+        SpriteFont m_NormalFont;
+        SpriteFont m_BoldFont;
 
         internal RogueGame Game
         {
@@ -36,11 +38,6 @@ namespace djack.RogueSurvivor
             //graphics.IsFullScreen = true; 
             // FIXME
 
-            // FIXME
-            //Logger.WriteLine(Logger.Stage.INIT_MAIN, "create font 1...");
-            //m_NormalFont = new Font("Lucida Console", 8.25f, FontStyle.Regular);
-            //Logger.WriteLine(Logger.Stage.INIT_MAIN, "create font 2...");
-            //m_BoldFont = new Font("Lucida Console", 8.25f, FontStyle.Bold);
         }
 
         protected override void Initialize()
@@ -51,42 +48,115 @@ namespace djack.RogueSurvivor
 
             Window.Title = "Rogue Survivor - " + SetupConfig.GAME_VERSION;
 
+            spriteBatch = new SpriteBatch(graphics.GraphicsDevice);
+
+            Content.RootDirectory = "Resources/Content";
+            m_NormalFont = Content.Load<SpriteFont>("NormalFont");
+            m_BoldFont = Content.Load<SpriteFont>("BoldFont");
+
             m_Game = new RogueGame(this);
 
-           
+
         }
 
         /*protected override void LoadContent()
         {
             
 
-            m_Game.Init();
+            
 
             SuppressDraw();
         }*/
 
         protected override void Update(GameTime gameTime)
         {
-            if(!initialized)
+            base.Update(gameTime);
+
+            switch (frame)
             {
-                Logger.WriteLine(Logger.Stage.INIT_GFX, "loading images...");
-                GameImages.LoadResources(this);
-                Logger.WriteLine(Logger.Stage.INIT_GFX, "loading images done");
+                case 0:
+                    // do nothing on first frame
+                    break;
+                case 1:
+                    Logger.WriteLine(Logger.Stage.INIT_GFX, "loading images...");
+                    GameImages.LoadResources(this);
+                    Logger.WriteLine(Logger.Stage.INIT_GFX, "loading images done");
+
+                    m_Game.Init();
+                    break;
+                default:
+                    if (!m_Game.Update())
+                        EndRun();
+                    break;
             }
-            //if (!m_Game.Update())
-            //    EndRun();
+
+            ++frame;
         }
 
-        public KeyEventArgs UI_WaitKey()
+        protected override bool BeginDraw()
         {
-            // FIXME
-            return null;
+            return false;
         }
 
-        public KeyEventArgs UI_PeekKey()
+        public Key UI_WaitKey()
         {
-            // FIXME
-            return null;
+            while (true)
+            {
+                Key key = UI_PeekKey();
+                if (key != Key.None)
+                    return key;
+                Thread.Sleep(10);
+            }
+        }
+
+        public Key UI_PeekKey()
+        {
+            Keys[] keys = Keyboard.GetState().GetPressedKeys();
+            if (keys.Length == 0)
+                return Key.None;
+
+            Key key = Key.None;
+            bool control = false, alt = false, shift = false;
+            foreach (Keys k in keys)
+            {
+                switch (k)
+                {
+                    case Keys.LeftControl:
+                    case Keys.RightControl:
+                        control = true;
+                        break;
+                    case Keys.LeftShift:
+                    case Keys.RightShift:
+                        shift = true;
+                        break;
+                    case Keys.LeftAlt:
+                    case Keys.RightAlt:
+                        alt = true;
+                        break;
+                    default:
+                        key = (Key)k;
+                        break;
+                }
+            }
+
+            if (key != Key.None)
+            {
+                if (control)
+                    key |= Key.Control;
+                if (alt)
+                    key |= Key.Alt;
+                if (shift)
+                    key |= Key.Shift;
+                return key;
+            }
+            else
+            {
+                if (control)
+                    return Key.ControlKey;
+                if (shift)
+                    return Key.ShiftKey;
+                return Key.None;
+            }
         }
 
         // FIXME
@@ -125,15 +195,15 @@ namespace djack.RogueSurvivor
             // ignore Shift/Ctrl/Alt alone.
             switch (e.KeyCode)
             {
-                case Keys.ShiftKey:
-                case Keys.Shift:
-                case Keys.LShiftKey:
-                case Keys.RShiftKey:
-                case Keys.Control:
-                case Keys.ControlKey:
-                case Keys.RControlKey:
-                case Keys.LControlKey:
-                case Keys.Alt:
+                case Key.ShiftKey:
+                case Key.Shift:
+                case Key.LShiftKey:
+                case Key.RShiftKey:
+                case Key.Control:
+                case Key.ControlKey:
+                case Key.RControlKey:
+                case Key.LControlKey:
+                case Key.Alt:
                     return;
                 default:
                     break;
@@ -148,7 +218,7 @@ namespace djack.RogueSurvivor
             ///////////
 #if DEBUG
             // F6 - CHEAT - reveal all
-            if (e.KeyCode == Keys.F6)
+            if (e.KeyCode == Key.F6)
             {
                 if (m_Game.Session != null && m_Game.Session.CurrentMap != null)
                 {
@@ -157,14 +227,14 @@ namespace djack.RogueSurvivor
                 }
             }
             // F7 - DEV - toggle FPS
-            if (e.KeyCode == Keys.F7)
+            if (e.KeyCode == Key.F7)
             {
                 // FIXME
                 //m_GameCanvas.ShowFPS = !m_GameCanvas.ShowFPS;
                 UI_Repaint();
             }
             // F8 - DEV - resize to normal size
-            if (e.KeyCode == Keys.F8)
+            if (e.KeyCode == Key.F8)
             {
                 // FIXME
                 //m_GameCanvas.NeedRedraw = true;
@@ -172,14 +242,14 @@ namespace djack.RogueSurvivor
                 UI_Repaint();
             }
             // F9 - DEV - Show actors stats
-            if (e.KeyCode == Keys.F9)
+            if (e.KeyCode == Key.F9)
             {
                 m_Game.DEV_ToggleShowActorsStats();
                 UI_Repaint();
             }
             // F10 - DEV - Show pop graph.
 #if DEBUG_STATS
-            if (e.KeyCode == Keys.F10)
+            if (e.KeyCode == Key.F10)
             {
                 District d = m_Game.Player.Location.Map.District;
 
@@ -216,14 +286,14 @@ namespace djack.RogueSurvivor
 #endif
 
             // F11 - DEV - Toggle player invincibility
-            if (e.KeyCode == Keys.F11)
+            if (e.KeyCode == Key.F11)
             {
                 m_Game.DEV_TogglePlayerInvincibility();
                 UI_Repaint();
             }
 
             // F12 - DEV - Max trust for all player followers
-            if (e.KeyCode == Keys.F12)
+            if (e.KeyCode == Key.F12)
             {
                 m_Game.DEV_MaxTrust();
                 UI_Repaint();
@@ -231,7 +301,7 @@ namespace djack.RogueSurvivor
 
             // alpha10.1
             // INSERT - DEV - Toggle bot mode
-            if (e.KeyCode == Keys.Insert)
+            if (e.KeyCode == Key.Insert)
             {
                 m_Game.BotToggleControl();
                 UI_Repaint();
@@ -254,20 +324,20 @@ namespace djack.RogueSurvivor
             m_MouseButtons = buttons;
         }*/
 
-        public MouseButtons? UI_PeekMouseButtons()
+        public MouseButton UI_PeekMouseButtons()
         {
-            // FIXME
-            /*if (!m_HasMouseButtons)
-                return null;
-
-            m_HasMouseButtons = false;
-            return m_MouseButtons;*/
-            return null;
+            MouseState mouseState = Mouse.GetState();
+            if (mouseState.LeftButton == ButtonState.Pressed)
+                return MouseButton.Left;
+            else if (mouseState.RightButton == ButtonState.Pressed)
+                return MouseButton.Right;
+            else
+                return MouseButton.None;
         }
 
-        public void UI_SetCursor(Cursor cursor)
+        public void UI_SetCursor(System.Windows.Forms.Cursor cursor)
         {
-            // FIXME
+            throw new NotImplementedException();
             /*if (cursor == Cursor)
                 return;
 
@@ -281,75 +351,105 @@ namespace djack.RogueSurvivor
             Thread.Sleep(msecs);
         }
 
+        private int frame = 0;
+
         public void UI_Repaint()
         {
-            // FIXME
-            //Refresh();
-            //Application.DoEvents();
+            spriteBatch.Begin();
+
+            foreach (DrawItem drawItem in drawItems)
+            {
+                if (drawItem.shadowColor.HasValue)
+                    spriteBatch.DrawString(drawItem.font, drawItem.text, new Vector2(drawItem.pos.X + 1, drawItem.pos.Y + 1), drawItem.shadowColor.Value);
+                spriteBatch.DrawString(drawItem.font, drawItem.text, drawItem.pos, drawItem.color);
+            }
+
+            spriteBatch.End();
+
+            EndDraw();
         }
 
         public void UI_Clear(Color clearColor)
         {
-            // FIXME
-            //m_GameCanvas.Clear(clearColor);
+            graphics.GraphicsDevice.Clear(clearColor);
+            drawItems.Clear();
         }
 
         public void UI_DrawImage(string imageID, int gx, int gy)
         {
-            // FIXME
+            throw new NotImplementedException();
             //m_GameCanvas.AddImage(GameImages.Get(imageID), gx, gy);
         }
 
         public void UI_DrawImage(string imageID, int gx, int gy, Color tint)
         {
-            // FIXME
+            throw new NotImplementedException();
             //m_GameCanvas.AddImage(GameImages.Get(imageID), gx, gy, tint);
         }
 
         public void UI_DrawImageTransform(string imageID, int gx, int gy, float rotation, float scale)
         {
-            // FIXME
+            throw new NotImplementedException();
             //m_GameCanvas.AddImageTransform(GameImages.Get(imageID), gx, gy, rotation, scale);
         }
 
         public void UI_DrawGrayLevelImage(string imageID, int gx, int gy)
         {
-            // FIXME
+            throw new NotImplementedException();
             //m_GameCanvas.AddImage(GameImages.GetGrayLevel(imageID), gx, gy);
         }
 
         public void UI_DrawTransparentImage(float alpha, string imageID, int gx, int gy)
         {
-            // FIXME
+            throw new NotImplementedException();
             //m_GameCanvas.AddTransparentImage(alpha, GameImages.Get(imageID), gx, gy);
         }
 
         public void UI_DrawPoint(Color color, int gx, int gy)
         {
-            // FIXME
+            throw new NotImplementedException();
             //m_GameCanvas.AddPoint(color, gx, gy);
         }
 
         public void UI_DrawLine(Color color, int gxFrom, int gyFrom, int gxTo, int gyTo)
         {
-            // FIXME
+            throw new NotImplementedException();
             //m_GameCanvas.AddLine(color, gxFrom, gyFrom, gxTo, gyTo);
         }
 
+        class DrawItem
+        {
+            public Color color;
+            public Color? shadowColor;
+            public SpriteFont font;
+            public string text;
+            public Vector2 pos;
+        }
+
+        private List<DrawItem> drawItems = new List<DrawItem>();
+
         public void UI_DrawString(Color color, string text, int gx, int gy, Color? shadowColor)
         {
-            // FIXME
-            //if (shadowColor != null)
-            //    m_GameCanvas.AddString(m_NormalFont, shadowColor.Value, text, gx + 1, gy + 1);
-            //m_GameCanvas.AddString(m_NormalFont, color, text, gx, gy);
+            drawItems.Add(new DrawItem
+            {
+                color = color,
+                text = text,
+                font = m_NormalFont,
+                pos = new Vector2(gx, gy),
+                shadowColor = shadowColor
+            });
         }
 
         public void UI_DrawStringBold(Color color, string text, int gx, int gy, Color? shadowColor)
         {
-            // FIXME
-            //if (shadowColor != null)
-            //    m_GameCanvas.AddString(m_BoldFont, shadowColor.Value, text, gx + 1, gy + 1);
-            //m_GameCanvas.AddString(m_BoldFont, color, text, gx, gy);
+            drawItems.Add(new DrawItem
+            {
+                color = color,
+                text = text,
+                font = m_BoldFont,
+                pos = new Vector2(gx, gy),
+                shadowColor = shadowColor
+            });
         }
 
         public void UI_DrawRect(Color color, Rectangle rect)
@@ -357,7 +457,7 @@ namespace djack.RogueSurvivor
             if (rect.Width <= 0 || rect.Height <= 0)
                 throw new ArgumentOutOfRangeException("rectangle Width/Height <= 0");
 
-            // FIXME
+            throw new NotImplementedException();
             //m_GameCanvas.AddRect(color, rect);
         }
 
@@ -366,13 +466,13 @@ namespace djack.RogueSurvivor
             if (rect.Width <= 0 || rect.Height <= 0)
                 throw new ArgumentOutOfRangeException("rectangle Width/Height <= 0");
 
-            // FIXME
+            throw new NotImplementedException();
             //m_GameCanvas.AddFilledRect(color, rect);
         }
 
         public void UI_DrawPopup(string[] lines, Color textColor, Color boxBorderColor, Color boxFillColor, int gx, int gy)
         {
-            // FIXME
+            throw new NotImplementedException();
 
             /////////////////
             // Measure lines
@@ -417,7 +517,7 @@ namespace djack.RogueSurvivor
         // alpha10
         public void UI_DrawPopupTitle(string title, Color titleColor, string[] lines, Color textColor, Color boxBorderColor, Color boxFillColor, int gx, int gy)
         {
-            // FIXME
+            throw new NotImplementedException();
 
             /////////////////
             // Measure lines
@@ -479,7 +579,7 @@ namespace djack.RogueSurvivor
         // alpha10
         public void UI_DrawPopupTitleColors(string title, Color titleColor, string[] lines, Color[] colors, Color boxBorderColor, Color boxFillColor, int gx, int gy)
         {
-            // FIXME
+            throw new NotImplementedException();
 
             /////////////////
             // Measure lines
@@ -540,40 +640,40 @@ namespace djack.RogueSurvivor
 
         public void UI_ClearMinimap(Color color)
         {
-            // FIXME
+            throw new NotImplementedException();
             //m_GameCanvas.ClearMinimap(color);
         }
 
         public void UI_SetMinimapColor(int x, int y, Color color)
         {
-            // FIXME
+            throw new NotImplementedException();
             //m_GameCanvas.SetMinimapColor(x, y, color);
         }
 
         public void UI_DrawMinimap(int gx, int gy)
         {
-            // FIXME
+            throw new NotImplementedException();
             //m_GameCanvas.DrawMinimap(gx, gy);
         }
 
         public float UI_GetCanvasScaleX()
         {
-            return 1;
-            // FIXME
+            //return 1;
+            throw new NotImplementedException();
             //return m_GameCanvas.ScaleX;
         }
 
         public float UI_GetCanvasScaleY()
         {
-            return 1;
-            // FIXME
+            //return 1;
+            throw new NotImplementedException();
             //return m_GameCanvas.ScaleY;
         }
 
         public string UI_SaveScreenshot(string filePath)
         {
-            return "";
-            // FIXME
+            //return "";
+            throw new NotImplementedException();
             //return m_GameCanvas.SaveScreenShot(filePath);
         }
     }

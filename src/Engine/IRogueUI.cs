@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using System.Windows.Forms;
+using RogueSurvivor.UI;
 
 namespace djack.RogueSurvivor.Engine
 {
@@ -11,14 +11,14 @@ namespace djack.RogueSurvivor.Engine
         GraphicsDeviceManager Graphics { get; }
 
         // FIXME
-        KeyEventArgs UI_WaitKey();
-        KeyEventArgs UI_PeekKey();
+        Key UI_WaitKey();
+        Key UI_PeekKey();
         //void UI_PostKey(KeyEventArgs e);
         Point UI_GetMousePosition();
         // FIXME
-        MouseButtons? UI_PeekMouseButtons();
+        MouseButton UI_PeekMouseButtons();
         //void UI_PostMouseButtons(MouseButtons buttons);
-        void UI_SetCursor(Cursor cursor);
+        void UI_SetCursor(System.Windows.Forms.Cursor cursor);
         void UI_Wait(int msecs);
         void UI_Repaint();
         void UI_Clear(Color clearColor);
