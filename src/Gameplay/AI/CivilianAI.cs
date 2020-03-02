@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;   // Point
+using Microsoft.Xna.Framework;   // Point
 
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;

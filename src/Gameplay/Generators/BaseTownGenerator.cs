@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
+using Microsoft.Xna.Framework;
 
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
@@ -11,6 +11,7 @@ using djack.RogueSurvivor.Engine.MapObjects;
 using djack.RogueSurvivor.Gameplay;
 using djack.RogueSurvivor.Gameplay.AI;
 using djack.RogueSurvivor.UI;
+using RogueSurvivor.Extensions;
 
 namespace djack.RogueSurvivor.Gameplay.Generators
 {
@@ -1220,7 +1221,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 --alleysEndY;
                 centralAlley = b.InsideRect.Top + b.InsideRect.Height / 2;
             }
-            Rectangle alleysRect = Rectangle.FromLTRB(alleysStartX, alleysStartY, alleysEndX, alleysEndY);
+            Rectangle alleysRect = RectangleExtensions.Create(alleysStartX, alleysStartY, alleysEndX, alleysEndY);
 
             base.MapObjectFill(map, alleysRect,
                 (pt) =>
@@ -2218,16 +2219,16 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             if (horizontalCorridor)
             {
                 // top side.
-                wingOne = Rectangle.FromLTRB(b.BuildingRect.Left, b.BuildingRect.Top, b.BuildingRect.Right, corridorRect.Top);
+                wingOne = RectangleExtensions.Create(b.BuildingRect.Left, b.BuildingRect.Top, b.BuildingRect.Right, corridorRect.Top);
                 // bottom side.
-                wingTwo = Rectangle.FromLTRB(b.BuildingRect.Left, corridorRect.Bottom, b.BuildingRect.Right, b.BuildingRect.Bottom);
+                wingTwo = RectangleExtensions.Create(b.BuildingRect.Left, corridorRect.Bottom, b.BuildingRect.Right, b.BuildingRect.Bottom);
             }
             else
             {
                 // left side
-                wingOne = Rectangle.FromLTRB(b.BuildingRect.Left, b.BuildingRect.Top, corridorRect.Left, b.BuildingRect.Bottom);
+                wingOne = RectangleExtensions.Create(b.BuildingRect.Left, b.BuildingRect.Top, corridorRect.Left, b.BuildingRect.Bottom);
                 // right side
-                wingTwo = Rectangle.FromLTRB(corridorRect.Right, b.BuildingRect.Top, b.BuildingRect.Right, b.BuildingRect.Bottom);
+                wingTwo = RectangleExtensions.Create(corridorRect.Right, b.BuildingRect.Top, b.BuildingRect.Right, b.BuildingRect.Bottom);
             }
 
             // make apartements in each wing with doors leaving toward corridor and windows to the outside
@@ -2815,15 +2816,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 int benchesLine;
                 if (digDirection == Direction.S)
                 {
-                    platformRect = Rectangle.FromLTRB(platformLeft, digPos.Y - platformWidth, platformRight, digPos.Y);
+                    platformRect = RectangleExtensions.Create(platformLeft, digPos.Y - platformWidth, platformRight, digPos.Y);
                     benchesLine = platformRect.Top;
-                    map.AddZone(MakeUniqueZone("corridor", Rectangle.FromLTRB(entryFenceX - 1, entryFenceY, entryFenceX + 1 + 1, platformRect.Top)));
+                    map.AddZone(MakeUniqueZone("corridor", RectangleExtensions.Create(entryFenceX - 1, entryFenceY, entryFenceX + 1 + 1, platformRect.Top)));
                 }
                 else
                 {
-                    platformRect = Rectangle.FromLTRB(platformLeft, digPos.Y + 1, platformRight, digPos.Y + 1 + platformWidth);
+                    platformRect = RectangleExtensions.Create(platformLeft, digPos.Y + 1, platformRight, digPos.Y + 1 + platformWidth);
                     benchesLine = platformRect.Bottom - 1;
-                    map.AddZone(MakeUniqueZone("corridor", Rectangle.FromLTRB(entryFenceX - 1, platformRect.Bottom, entryFenceX + 1 + 1, entryFenceY + 1)));
+                    map.AddZone(MakeUniqueZone("corridor", RectangleExtensions.Create(entryFenceX - 1, platformRect.Bottom, entryFenceX + 1 + 1, entryFenceY + 1)));
                 }
                 TileFill(map, m_Game.GameTiles.FLOOR_CONCRETE, platformRect);
 
@@ -2862,13 +2863,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     // west.
                     powerRoomEntry = new Point(entryFenceX - 2, entryFenceY + powerRoomHalfHeight * digDirection.Vector.Y);
-                    powerRoomRect = Rectangle.FromLTRB(powerRoomEntry.X - powerRoomWidth, powerRoomEntry.Y - powerRoomHalfHeight, powerRoomEntry.X + 1, powerRoomEntry.Y + powerRoomHalfHeight + 1);
+                    powerRoomRect = RectangleExtensions.Create(powerRoomEntry.X - powerRoomWidth, powerRoomEntry.Y - powerRoomHalfHeight, powerRoomEntry.X + 1, powerRoomEntry.Y + powerRoomHalfHeight + 1);
                 }
                 else
                 {
                     // east.
                     powerRoomEntry = new Point(entryFenceX + 2, entryFenceY + powerRoomHalfHeight * digDirection.Vector.Y);
-                    powerRoomRect = Rectangle.FromLTRB(powerRoomEntry.X, powerRoomEntry.Y - powerRoomHalfHeight, powerRoomEntry.X + powerRoomWidth, powerRoomEntry.Y + powerRoomHalfHeight + 1);
+                    powerRoomRect = RectangleExtensions.Create(powerRoomEntry.X, powerRoomEntry.Y - powerRoomHalfHeight, powerRoomEntry.X + powerRoomWidth, powerRoomEntry.Y + powerRoomHalfHeight + 1);
                 }
 
                 // carve power room.
@@ -3912,10 +3913,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             #region
             // make 4 quarters, splitted by a crossed corridor.
             const int corridorHalfWidth = 1;
-            Rectangle qTopLeft = Rectangle.FromLTRB(0, 0, underground.Width / 2 - corridorHalfWidth, underground.Height / 2 - corridorHalfWidth);
-            Rectangle qTopRight = Rectangle.FromLTRB(underground.Width / 2 + 1 + corridorHalfWidth, 0, underground.Width, qTopLeft.Bottom);
-            Rectangle qBotLeft = Rectangle.FromLTRB(0, underground.Height / 2 + 1 + corridorHalfWidth, qTopLeft.Right, underground.Height);
-            Rectangle qBotRight = Rectangle.FromLTRB(qTopRight.Left, qBotLeft.Top, underground.Width, underground.Height);
+            Rectangle qTopLeft = RectangleExtensions.Create(0, 0, underground.Width / 2 - corridorHalfWidth, underground.Height / 2 - corridorHalfWidth);
+            Rectangle qTopRight = RectangleExtensions.Create(underground.Width / 2 + 1 + corridorHalfWidth, 0, underground.Width, qTopLeft.Bottom);
+            Rectangle qBotLeft = RectangleExtensions.Create(0, underground.Height / 2 + 1 + corridorHalfWidth, qTopLeft.Right, underground.Height);
+            Rectangle qBotRight = RectangleExtensions.Create(qTopRight.Left, qBotLeft.Top, underground.Width, underground.Height);
 
             // split all the map in rooms.
             const int minRoomSize = 6;
@@ -4374,7 +4375,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             surfaceMap.GetTileAt(entryDoorPos.X + 1, entryDoorPos.Y).AddDecoration(GameImages.DECO_POLICE_STATION);
 
             // Entry hall.
-            Rectangle entryHall = Rectangle.FromLTRB(policeBlock.BuildingRect.Left, policeBlock.BuildingRect.Top + 2, policeBlock.BuildingRect.Right, policeBlock.BuildingRect.Bottom);
+            Rectangle entryHall = RectangleExtensions.Create(policeBlock.BuildingRect.Left, policeBlock.BuildingRect.Top + 2, policeBlock.BuildingRect.Right, policeBlock.BuildingRect.Bottom);
             TileRectangle(surfaceMap, m_Game.GameTiles.WALL_POLICE_STATION, entryHall);
             PlaceDoor(surfaceMap, entryHall.Left + entryHall.Width / 2, entryHall.Top, m_Game.GameTiles.FLOOR_TILES, MakeObjIronDoor());
             PlaceDoor(surfaceMap, entryDoorPos.X, entryDoorPos.Y, m_Game.GameTiles.FLOOR_TILES, MakeObjGlassDoor());
@@ -4416,12 +4417,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             TileFill(map, m_Game.GameTiles.FLOOR_TILES);
             TileRectangle(map, m_Game.GameTiles.WALL_POLICE_STATION, map.Rect);
             // - offices rooms on the east side, doors leading west.
-            Rectangle officesRect = Rectangle.FromLTRB(3, 0, map.Width, map.Height);
+            Rectangle officesRect = RectangleExtensions.Create(3, 0, map.Width, map.Height);
             List<Rectangle> roomsList = new List<Rectangle>();
             MakeRoomsPlan(map, ref roomsList, officesRect, 5, 5);
             foreach (Rectangle roomRect in roomsList)
             {
-                Rectangle inRoomRect = Rectangle.FromLTRB(roomRect.Left + 1, roomRect.Top + 1, roomRect.Right - 1, roomRect.Bottom - 1);
+                Rectangle inRoomRect = RectangleExtensions.Create(roomRect.Left + 1, roomRect.Top + 1, roomRect.Right - 1, roomRect.Bottom - 1);
                 // 2 kind of rooms.
                 // - farthest east from corridor : security.
                 // - others : offices.
@@ -4590,7 +4591,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 map.AddZone(MakeUniqueZone(RogueGame.NAME_POLICE_STATION_JAILS_CELL, cellRoom));
             }
             // - corridor.
-            Rectangle corridor = Rectangle.FromLTRB(1, 1, map.Width, yCells);
+            Rectangle corridor = RectangleExtensions.Create(1, 1, map.Width, yCells);
             map.AddZone(MakeUniqueZone("cells corridor", corridor));
             // - the switch to open/close the cells.
             map.PlaceMapObjectAt(MakeObjPowerGenerator(GameImages.OBJ_POWERGEN_OFF, GameImages.OBJ_POWERGEN_ON), new Point(map.Width - 2, 1));
@@ -4748,7 +4749,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             surfaceMap.GetTileAt(entryRightDoorPos.X + 1, entryRightDoorPos.Y).AddDecoration(GameImages.DECO_HOSPITAL);
 
             // Entry hall = whole building.
-            Rectangle entryHall = Rectangle.FromLTRB(block.BuildingRect.Left, block.BuildingRect.Top, block.BuildingRect.Right, block.BuildingRect.Bottom);
+            Rectangle entryHall = RectangleExtensions.Create(block.BuildingRect.Left, block.BuildingRect.Top, block.BuildingRect.Right, block.BuildingRect.Bottom);
             PlaceDoor(surfaceMap, entryRightDoorPos.X, entryRightDoorPos.Y, m_Game.GameTiles.FLOOR_TILES, MakeObjGlassDoor());
             PlaceDoor(surfaceMap, entryLeftDoorPos.X, entryLeftDoorPos.Y, m_Game.GameTiles.FLOOR_TILES, MakeObjGlassDoor());
             DoForEachTile(surfaceMap, entryHall,
@@ -5004,13 +5005,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
             // 1 north corridor linking stairs.
             const int northCorridorHeight = 4;
-            Rectangle northCorridorRect = Rectangle.FromLTRB(0, 0, map.Width, northCorridorHeight);
+            Rectangle northCorridorRect = RectangleExtensions.Create(0, 0, map.Width, northCorridorHeight);
             TileRectangle(map, m_Game.GameTiles.WALL_HOSPITAL, northCorridorRect);
             map.AddZone(MakeUniqueZone("north corridor", northCorridorRect));
 
             // 1 corridor to storage rooms, locked by an iron gate.
             const int corridorHeight = 4;
-            Rectangle centralCorridorRect = Rectangle.FromLTRB(0, northCorridorRect.Bottom - 1, map.Width, northCorridorRect.Bottom - 1 + corridorHeight);
+            Rectangle centralCorridorRect = RectangleExtensions.Create(0, northCorridorRect.Bottom - 1, map.Width, northCorridorRect.Bottom - 1 + corridorHeight);
             TileRectangle(map, m_Game.GameTiles.WALL_HOSPITAL, centralCorridorRect);
             map.SetTileModelAt(1, centralCorridorRect.Top, m_Game.GameTiles.FLOOR_TILES);
             map.PlaceMapObjectAt(MakeObjIronGate(GameImages.OBJ_GATE_CLOSED), new Point(1, centralCorridorRect.Top));
@@ -5027,7 +5028,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             map.SetTileModelAt(1, storageCentral.Top, m_Game.GameTiles.FLOOR_TILES);
 
             // 1 south corridor to other storage rooms.
-            Rectangle southCorridorRect = Rectangle.FromLTRB(0, storageCentral.Bottom - 1, map.Width, storageCentral.Bottom - 1 + corridorHeight);
+            Rectangle southCorridorRect = RectangleExtensions.Create(0, storageCentral.Bottom - 1, map.Width, storageCentral.Bottom - 1 + corridorHeight);
             TileRectangle(map, m_Game.GameTiles.WALL_HOSPITAL, southCorridorRect);
             map.SetTileModelAt(1, southCorridorRect.Top, m_Game.GameTiles.FLOOR_TILES);
             map.AddZone(MakeUniqueZone("south corridor", southCorridorRect));
@@ -5095,13 +5096,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // barricade room for the Enraged Patient.
 
             // corridor with fences.
-            Rectangle corridor = Rectangle.FromLTRB(1, 1, 3, map.Height);
+            Rectangle corridor = RectangleExtensions.Create(1, 1, 3, map.Height);
             map.AddZone(MakeUniqueZone("corridor", corridor));
             for (int yFence = 1; yFence < map.Height - 2; yFence++)
                 map.PlaceMapObjectAt(MakeObjIronFence(GameImages.OBJ_IRON_FENCE), new Point(2, yFence));
 
             // power room.
-            Rectangle room = Rectangle.FromLTRB(3, 0, map.Width, map.Height);
+            Rectangle room = RectangleExtensions.Create(3, 0, map.Width, map.Height);
             map.AddZone(MakeUniqueZone("power room", room));
 
             // power generators.

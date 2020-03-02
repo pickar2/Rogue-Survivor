@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Drawing;
+using Microsoft.Xna.Framework;
 
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;

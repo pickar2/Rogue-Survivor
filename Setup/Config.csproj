@@ -8,7 +8,7 @@
     <ProjectGuid>{3D086882-3C12-47E1-A983-D3A2DB799CB8}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Setup</RootNamespace>
+    <RootNamespace>RSConfig</RootNamespace>
     <AssemblyName>RSConfig</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

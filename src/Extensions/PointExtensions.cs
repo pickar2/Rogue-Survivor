@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
+﻿using Microsoft.Xna.Framework;
 
-namespace djack.RogueSurvivor
+namespace RogueSurvivor.Extensions
 {
     public static class PointExtensions
     {

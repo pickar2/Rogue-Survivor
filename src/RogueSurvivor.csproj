@@ -8,7 +8,7 @@
     <ProjectGuid>{E0E05544-927E-41B0-A5CA-77200E326E18}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>djack.RogueSurvivor</RootNamespace>
+    <RootNamespace>RogueSurvivor</RootNamespace>
     <AssemblyName>RogueSurvivor</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -45,6 +45,8 @@
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -109,6 +111,9 @@
       <HintPath>libs\mdx\Microsoft.DirectX.Direct3DX.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualC" />
+    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.7.1.189\lib\net45\MonoGame.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="sfmlnet-audio, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>libs\sfml\Release\sfmlnet-audio.dll</HintPath>
@@ -116,6 +121,33 @@
     <Reference Include="sfmlnet-window, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>libs\sfml\Release\sfmlnet-window.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.4.0.1\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct2D1.4.0.1\lib\net45\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D11.4.0.1\lib\net45\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D9, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D9.4.0.1\lib\net45\SharpDX.Direct3D9.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.DXGI.4.0.1\lib\net45\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Mathematics, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Mathematics.4.0.1\lib\net45\SharpDX.Mathematics.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.MediaFoundation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.MediaFoundation.4.0.1\lib\net45\SharpDX.MediaFoundation.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.XAudio2, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.XAudio2.4.0.1\lib\net45\SharpDX.XAudio2.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.XInput, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.XInput.4.0.1\lib\net45\SharpDX.XInput.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -196,6 +228,8 @@
     <Compile Include="Engine\Actions\ActionEatFoodOnGround.cs" />
     <Compile Include="Engine\Actions\ActionTrade.cs" />
     <Compile Include="Engine\Actions\ActionReviveCorpse.cs" />
+    <Compile Include="Extensions\ColorExtensions.cs" />
+    <Compile Include="Extensions\RectangleExtensions.cs" />
     <Compile Include="Gameplay\AI\Tools\RouteFinder.cs" />
     <Compile Include="Engine\CSVParser.cs" />
     <Compile Include="Engine\GameHints.cs" />
@@ -316,30 +350,14 @@
     <Compile Include="Gameplay\ZoneAttributes.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Engine\GameOptions.cs" />
-    <Compile Include="PointExtensions.cs" />
+    <Compile Include="Extensions\PointExtensions.cs" />
     <Compile Include="SetupConfig.cs" />
-    <Compile Include="UI\DXGameCanvas.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\DXGameCanvas.designer.cs">
-      <DependentUpon>DXGameCanvas.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RogueForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RogueForm.Designer.cs">
-      <DependentUpon>RogueForm.cs</DependentUpon>
-    </Compile>
+    <Compile Include="UI\DXGameCanvas.cs" />
+    <Compile Include="RogueForm.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Bugreport.resx">
       <DependentUpon>Bugreport.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\DXGameCanvas.resx">
-      <DependentUpon>DXGameCanvas.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RogueForm.resx">
-      <DependentUpon>RogueForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -354,6 +372,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -480,14 +499,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="UI\GDIPlusGameCanvas.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\GDIPlusGameCanvas.Designer.cs">
-      <DependentUpon>GDIPlusGameCanvas.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\IGameCanvas.cs">
     </Compile>
     <None Include="Resources\Sfx\sfx - nightmare.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1866,4 +1877,11 @@ copy "$(SolutionDir)\Docs\readme.txt" "$(SolutionDir)Final Release\Rogue Survivo
 copy "$(SolutionDir)\Docs\readme_alpha10_1.txt" "$(SolutionDir)Final Release\Rogue Survivor alpha 10.1\" /y
 )</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\MonoGame.Framework.WindowsDX.3.7.1.189\build\MonoGame.Framework.WindowsDX.targets" Condition="Exists('..\packages\MonoGame.Framework.WindowsDX.3.7.1.189\build\MonoGame.Framework.WindowsDX.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\MonoGame.Framework.WindowsDX.3.7.1.189\build\MonoGame.Framework.WindowsDX.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MonoGame.Framework.WindowsDX.3.7.1.189\build\MonoGame.Framework.WindowsDX.targets'))" />
+  </Target>
 </Project>

@@ -1,18 +1,19 @@
-﻿using System;
+﻿using djack.RogueSurvivor.Engine;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using RogueSurvivor.Extensions;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
-
-using djack.RogueSurvivor.Engine;
+using System.IO;
 
 namespace djack.RogueSurvivor.Gameplay
 {
     static class GameImages
     {
-        #region Constants
+        private static GraphicsDevice graphicsDevice;
+
         const float GRAYLEVEL_DIM_FACTOR = 0.55f;
-        #endregion
+        const string FOLDER = @"Resources\Images\";
 
         #region Images IDs
 
@@ -97,7 +98,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string TILE_FLOOR_SEWER_WATER_ANIM2 = @"Tiles\floor_sewer_water_anim2";
         public const string TILE_FLOOR_SEWER_WATER_ANIM3 = @"Tiles\floor_sewer_water_anim3";
         public const string TILE_FLOOR_SEWER_WATER_COVER = @"Tiles\floor_sewer_water_cover";
-        public const string TILE_FLOOR_TILES = @"Tiles\floor_tiles";             
+        public const string TILE_FLOOR_TILES = @"Tiles\floor_tiles";
         public const string TILE_FLOOR_WALKWAY = @"Tiles\floor_walkway";
 
         public const string TILE_ROAD_ASPHALT_NS = @"Tiles\road_asphalt_ns";
@@ -108,7 +109,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string TILE_WALL_CHAR_OFFICE = @"Tiles\wall_char_office";
         public const string TILE_WALL_HOSPITAL = @"Tiles\wall_hospital";
         public const string TILE_WALL_SEWER = @"Tiles\wall_sewer";
-        public const string TILE_WALL_STONE = @"Tiles\wall_stone";        
+        public const string TILE_WALL_STONE = @"Tiles\wall_stone";
         #endregion
 
         #region Tile decorations
@@ -143,7 +144,7 @@ namespace djack.RogueSurvivor.Gameplay
 
         public const string DECO_PLAYER_TAG1 = @"Tiles\Decoration\player_tag";
         public const string DECO_PLAYER_TAG2 = @"Tiles\Decoration\player_tag2";
-        public const string DECO_PLAYER_TAG3= @"Tiles\Decoration\player_tag3";
+        public const string DECO_PLAYER_TAG3 = @"Tiles\Decoration\player_tag3";
         public const string DECO_PLAYER_TAG4 = @"Tiles\Decoration\player_tag4";
 
         public const string DECO_ROGUEDJACK_TAG = @"Tiles\Decoration\roguedjack";
@@ -377,7 +378,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_AMMO_LIGHT_RIFLE = @"Items\item_ammo_light_rifle";
         public const string ITEM_AMMO_HEAVY_RIFLE = @"Items\item_ammo_heavy_rifle";
         public const string ITEM_AMMO_SHOTGUN = @"Items\item_ammo_shotgun";
-        public const string ITEM_AMMO_BOLTS =  @"Items\item_ammo_bolts";
+        public const string ITEM_AMMO_BOLTS = @"Items\item_ammo_bolts";
 
         public const string ITEM_ARMY_BODYARMOR = @"Items\item_army_bodyarmor";
         public const string ITEM_ARMY_PISTOL = @"Items\item_army_pistol";
@@ -488,15 +489,13 @@ namespace djack.RogueSurvivor.Gameplay
 
         #endregion
 
-        #region Static fields
-        const string FOLDER = @"Resources\Images\";
-        static readonly Dictionary<string, Image> s_Images = new Dictionary<string, Image>();
-        static readonly Dictionary<string, Image> s_GrayLevelImages = new Dictionary<string, Image>();
-        #endregion
+        static readonly Dictionary<string, Texture2D> s_Images = new Dictionary<string, Texture2D>();
+        static readonly Dictionary<string, Texture2D> s_GrayLevelImages = new Dictionary<string, Texture2D>();
 
-        #region Loading resources
         public static void LoadResources(IRogueUI ui)
         {
+            graphicsDevice = ui.Graphics.GraphicsDevice;
+
             #region Icons
             Notify(ui, "icons...");
             Load(ACTIVITY_CHASING);
@@ -984,14 +983,12 @@ namespace djack.RogueSurvivor.Gameplay
             string file = FOLDER + id + ".png";
             try
             {
-                Bitmap img = new Bitmap(file);
+                FileStream fileStream = new FileStream(file, FileMode.Open);
+                Texture2D img = Texture2D.FromStream(graphicsDevice, fileStream);
+                fileStream.Dispose();
 
-                // fixes retarded GDI+ display bug with some png 32 images.
-                Bitmap imgFixed = new Bitmap(img);
-                img.Dispose();
-
-                s_Images.Add(id, imgFixed);
-                s_GrayLevelImages.Add(id, MakeGrayLevel(imgFixed));
+                s_Images.Add(id, img);
+                s_GrayLevelImages.Add(id, MakeGrayLevel(img));
             }
             catch (Exception)
             {
@@ -999,18 +996,21 @@ namespace djack.RogueSurvivor.Gameplay
             }
         }
 
-        static Image MakeGrayLevel(Bitmap img)
+        static Texture2D MakeGrayLevel(Texture2D img)
         {
-            Bitmap grayed = new Bitmap(img);
+            Color[] inBufer = new Color[img.Width * img.Height];
+            img.GetData(inBufer);
 
-            for(int x = 0; x < grayed.Width; x++)
-                for (int y = 0; y < grayed.Height; y++)
+            Texture2D grayed = new Texture2D(graphicsDevice, img.Width, img.Height);
+            Color[] outBufer = new Color[img.Width * img.Height];
+
+            for (int x = 0; x < img.Width; x++)
+                for (int y = 0; y < img.Height; y++)
                 {
-                    Color pixelColor = img.GetPixel(x, y);
+                    Color pixelColor = inBufer[x + y * img.Width];
                     float brightness = pixelColor.GetBrightness();
                     int rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR * brightness);
-
-                    grayed.SetPixel(x, y, Color.FromArgb(pixelColor.A, rgb, rgb, rgb));
+                    outBufer[x + y * img.Width] = new Color(rgb, rgb, rgb, pixelColor.A);
                 }
 
             return grayed;
@@ -1022,27 +1022,24 @@ namespace djack.RogueSurvivor.Gameplay
             ui.UI_DrawStringBold(Color.White, "Loading resources: " + stage, 0, 0);
             ui.UI_Repaint();
         }
-        #endregion
 
-        #region Retrieving resources
-        public static Image Get(string imageID)
+        public static Texture2D Get(string imageID)
         {
-            Image img;
+            Texture2D img;
             if (s_Images.TryGetValue(imageID, out img))
                 return img;
             else
                 return s_Images[UNDEF];
         }
 
-        public static Image GetGrayLevel(string imageID)
+        public static Texture2D GetGrayLevel(string imageID)
         {
-            Image img;
+            Texture2D img;
             if (s_GrayLevelImages.TryGetValue(imageID, out img))
                 return img;
             else
                 return s_GrayLevelImages[UNDEF];
         }
-        #endregion
     }
 }
 

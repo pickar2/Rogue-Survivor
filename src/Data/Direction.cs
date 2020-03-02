@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
 
 namespace djack.RogueSurvivor.Data
 {
@@ -94,7 +92,7 @@ namespace djack.RogueSurvivor.Data
         public static Direction ApproximateFromVector(Point v)
         {
             // compute normalized vector.
-            PointF vF = v;
+            Vector2 vF = new Vector2(v.X, v.Y);
             float length = (float)Math.Sqrt(vF.X * vF.X + vF.Y * vF.Y);
             if (length == 0)
                 return Direction.N;
@@ -146,7 +144,7 @@ namespace djack.RogueSurvivor.Data
         int m_Index;
         string m_Name;
         Point m_Vector;
-        PointF m_NormalizedVector;
+        Vector2 m_NormalizedVector;
         #endregion
 
         #region Properties
@@ -165,7 +163,7 @@ namespace djack.RogueSurvivor.Data
             get { return m_Vector; }
         }
 
-        public PointF NormalizedVector
+        public Vector2 NormalizedVector
         {
             get { return m_NormalizedVector; }
         }
@@ -181,10 +179,10 @@ namespace djack.RogueSurvivor.Data
             float length = (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y);
             if (length != 0)
             {
-                m_NormalizedVector = new PointF(vector.X / length, vector.Y / length);
+                m_NormalizedVector = new Vector2(vector.X / length, vector.Y / length);
             }
             else
-                m_NormalizedVector = PointF.Empty;
+                m_NormalizedVector = Vector2.Zero;
         }
         #endregion
 

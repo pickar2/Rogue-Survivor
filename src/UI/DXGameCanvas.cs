@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
+using Microsoft.Xna.Framework;
 using System.Data;
 using System.Text;
 using System.Threading;
@@ -17,7 +17,7 @@ using djack.RogueSurvivor.Engine;
 
 namespace djack.RogueSurvivor.UI
 {
-    public partial class DXGameCanvas : UserControl, IGameCanvas
+    /*public class DXGameCanvas
     {
         #region Types
         interface IGfx
@@ -401,7 +401,7 @@ namespace djack.RogueSurvivor.UI
 
         public void AddTransparentImage(float alpha, Image img, int x, int y)
         {
-            m_Gfxs.Add(new GfxSprite(m_Sprite, new SizeF(img.Width, img.Height), img.Width, img.Height, GetTexture(img), Color.FromArgb((int)(255 * alpha), Color.White), x, y));
+            m_Gfxs.Add(new GfxSprite(m_Sprite, new SizeF(img.Width, img.Height), img.Width, img.Height, GetTexture(img), new Color((int)(255 * alpha), Color.White), x, y));
             m_NeedRedraw = true;
         }
 
@@ -506,7 +506,7 @@ namespace djack.RogueSurvivor.UI
 
         public string SaveScreenShot(string filePath)
         {
-            string file = filePath + "." + ScreenshotExtension();
+            string file = filePath + ".png";
             Logger.WriteLine(Logger.Stage.RUN_GFX, "taking screenshot...");
             try
             {
@@ -519,11 +519,6 @@ namespace djack.RogueSurvivor.UI
             }
             Logger.WriteLine(Logger.Stage.RUN_GFX, "taking screenshot... done!");
             return file;
-        }
-
-        public string ScreenshotExtension()
-        {
-            return "png";
         }
 
         public void DisposeUnmanagedResources()
@@ -786,5 +781,5 @@ namespace djack.RogueSurvivor.UI
             Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing done.");
         }
         #endregion
-    }
+    }*/
 }
