@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using RogueSurvivor.UI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 
@@ -86,7 +87,7 @@ namespace djack.RogueSurvivor
                     break;
                 default:
                     if (!m_Game.Update())
-                        EndRun();
+                        Exit();
                     break;
             }
 
@@ -109,11 +110,20 @@ namespace djack.RogueSurvivor
             }
         }
 
+        KeyboardState prevKeyboardState;
+
         public Key UI_PeekKey()
         {
-            Keys[] keys = Keyboard.GetState().GetPressedKeys();
+            System.Windows.Forms.Application.DoEvents();
+
+            KeyboardState keyboardState = Keyboard.GetState();
+
+            Keys[] keys = keyboardState.GetPressedKeys();
             if (keys.Length == 0)
+            {
+                prevKeyboardState = keyboardState;
                 return Key.None;
+            }
 
             Key key = Key.None;
             bool control = false, alt = false, shift = false;
@@ -141,22 +151,21 @@ namespace djack.RogueSurvivor
 
             if (key != Key.None)
             {
-                if (control)
-                    key |= Key.Control;
-                if (alt)
-                    key |= Key.Alt;
-                if (shift)
-                    key |= Key.Shift;
-                return key;
+                if (prevKeyboardState.GetPressedKeys().Contains((Keys)key))
+                    key = Key.None;
+                else
+                {
+                    if (control)
+                        key |= Key.Control;
+                    if (alt)
+                        key |= Key.Alt;
+                    if (shift)
+                        key |= Key.Shift;
+                }
             }
-            else
-            {
-                if (control)
-                    return Key.ControlKey;
-                if (shift)
-                    return Key.ShiftKey;
-                return Key.None;
-            }
+
+            prevKeyboardState = keyboardState;
+            return key;
         }
 
         // FIXME
@@ -326,6 +335,7 @@ namespace djack.RogueSurvivor
 
         public MouseButton UI_PeekMouseButtons()
         {
+            System.Windows.Forms.Application.DoEvents();
             MouseState mouseState = Mouse.GetState();
             if (mouseState.LeftButton == ButtonState.Pressed)
                 return MouseButton.Left;

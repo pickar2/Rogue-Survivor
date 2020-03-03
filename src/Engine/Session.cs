@@ -518,7 +518,9 @@ namespace djack.RogueSurvivor.Engine
 
         public void Reset()
         {
-            this.Seed = (int)DateTime.UtcNow.TimeOfDay.Ticks;
+            // FIXME
+            Seed = 1488618496;
+            //this.Seed = (int)DateTime.UtcNow.TimeOfDay.Ticks;
             m_CurrentMap = null;
             m_Scoring = new Scoring();
             m_World = null;

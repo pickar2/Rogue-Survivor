@@ -2789,10 +2789,6 @@ namespace djack.RogueSurvivor.Engine
                         do
                         {
                             Key newKey = m_UI.UI_WaitKey();
-                            // ignore Shift and Control alone.
-                            if (newKey == Key.ShiftKey || newKey == Key.ControlKey)
-                                continue;
-                            // done!
                             newKeyData = newKey;
                             loopNewKey = false;
                         }
