@@ -5495,7 +5495,6 @@ namespace djack.RogueSurvivor.Engine
                 ///////////////////
 
                 // 1. Redraw
-                m_UI.UI_SetCursor(null);
 
                 // alpha10.1 bot mode?
 #if DEBUG
@@ -16788,9 +16787,6 @@ namespace djack.RogueSurvivor.Engine
         {
             // stop sim thread.
             StopSimThread(true);   // alpha10 abort allowed when dying
-
-            // mouse.
-            m_UI.UI_SetCursor(null);
 
             // music.
             m_MusicManager.Stop();

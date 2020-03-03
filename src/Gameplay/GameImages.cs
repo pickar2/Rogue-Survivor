@@ -1013,6 +1013,7 @@ namespace djack.RogueSurvivor.Gameplay
                     outBufer[x + y * img.Width] = new Color(rgb, rgb, rgb, pixelColor.A);
                 }
 
+            grayed.SetData(outBufer);
             return grayed;
         }
 

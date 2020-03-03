@@ -1,5 +1,11 @@
-﻿namespace RogueSurvivor.UI
+﻿using System;
+using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace RogueSurvivor.UI
 {
+    [Flags]
+    [TypeConverter(typeof(KeysConverter))]
     public enum Key
     {
         //

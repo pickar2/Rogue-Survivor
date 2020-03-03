@@ -230,6 +230,7 @@
     <Compile Include="Engine\Actions\ActionReviveCorpse.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Extensions\RectangleExtensions.cs" />
+    <Compile Include="Extensions\SpriteBatchExtensions.cs" />
     <Compile Include="Gameplay\AI\Tools\RouteFinder.cs" />
     <Compile Include="Engine\CSVParser.cs" />
     <Compile Include="Engine\GameHints.cs" />
@@ -352,6 +353,7 @@
     <Compile Include="Engine\GameOptions.cs" />
     <Compile Include="Extensions\PointExtensions.cs" />
     <Compile Include="SetupConfig.cs" />
+    <Compile Include="UI\DrawItems.cs" />
     <Compile Include="UI\DXGameCanvas.cs" />
     <Compile Include="RogueForm.cs" />
     <Compile Include="Program.cs" />

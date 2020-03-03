@@ -3,6 +3,7 @@ using djack.RogueSurvivor.Gameplay;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using RogueSurvivor.Extensions;
 using RogueSurvivor.UI;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace djack.RogueSurvivor
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
+        private List<IDrawItem> drawItems = new List<IDrawItem>();
+        private int frame = 0;
 
         RogueGame m_Game;
         SpriteFont m_NormalFont;
@@ -38,7 +41,6 @@ namespace djack.RogueSurvivor
             graphics.HardwareModeSwitch = false;
             //graphics.IsFullScreen = true; 
             // FIXME
-
         }
 
         protected override void Initialize()
@@ -48,6 +50,7 @@ namespace djack.RogueSurvivor
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "Initializing game...");
 
             Window.Title = "Rogue Survivor - " + SetupConfig.GAME_VERSION;
+            IsMouseVisible = true;
 
             spriteBatch = new SpriteBatch(graphics.GraphicsDevice);
 
@@ -56,18 +59,7 @@ namespace djack.RogueSurvivor
             m_BoldFont = Content.Load<SpriteFont>("BoldFont");
 
             m_Game = new RogueGame(this);
-
-
         }
-
-        /*protected override void LoadContent()
-        {
-            
-
-            
-
-            SuppressDraw();
-        }*/
 
         protected override void Update(GameTime gameTime)
         {
@@ -110,8 +102,7 @@ namespace djack.RogueSurvivor
             }
         }
 
-        KeyboardState prevKeyboardState;
-
+        private KeyboardState prevKeyboardState;
         public Key UI_PeekKey()
         {
             System.Windows.Forms.Application.DoEvents();
@@ -167,36 +158,6 @@ namespace djack.RogueSurvivor
             prevKeyboardState = keyboardState;
             return key;
         }
-
-        // FIXME
-        /*bool m_HasKey = false;
-        KeyEventArgs m_InKey;
-
-        public KeyEventArgs UI_WaitKey()
-        {
-            m_HasKey = false;
-            while (true)
-            {
-                Application.DoEvents();
-                if (m_HasKey)
-                    break;
-                Thread.Sleep(1);
-            }
-            return m_InKey;
-        }
-
-        public KeyEventArgs UI_PeekKey()
-        {
-            Thread.Sleep(1);
-            Application.DoEvents();
-            if (m_HasKey)
-            {
-                m_HasKey = false;
-                return m_InKey;
-            }
-            else
-                return null;
-        }*/
 
         // FIXME
         /*public void UI_PostKey(KeyEventArgs e)
@@ -318,24 +279,33 @@ namespace djack.RogueSurvivor
 #endif
         }*/
 
+        private object window;
+        private MethodInfo updateMouseState;
+
+        private void RefreshMouse()
+        {
+            if (updateMouseState == null)
+            {
+                object platform = GetType()
+                    .GetField("Platform", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField)
+                    .GetValue(this);
+                window = platform.GetType()
+                    .GetField("_window", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField)
+                    .GetValue(platform);
+                updateMouseState = window.GetType().GetMethod("UpdateMouseState", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod);
+            }
+
+            updateMouseState.Invoke(window, new object[0]);
+        }
+
         public Point UI_GetMousePosition()
         {
+            RefreshMouse();
             return Mouse.GetState().Position;
         }
 
-        // FIXME
-        /*bool m_HasMouseButtons = false;
-        MouseButtons m_MouseButtons;
-
-        public void UI_PostMouseButtons(MouseButtons buttons)
-        {
-            m_HasMouseButtons = true;
-            m_MouseButtons = buttons;
-        }*/
-
         public MouseButton UI_PeekMouseButtons()
         {
-            System.Windows.Forms.Application.DoEvents();
             MouseState mouseState = Mouse.GetState();
             if (mouseState.LeftButton == ButtonState.Pressed)
                 return MouseButton.Left;
@@ -345,33 +315,50 @@ namespace djack.RogueSurvivor
                 return MouseButton.None;
         }
 
-        public void UI_SetCursor(System.Windows.Forms.Cursor cursor)
-        {
-            throw new NotImplementedException();
-            /*if (cursor == Cursor)
-                return;
-
-            this.Cursor = cursor;
-            Application.DoEvents();*/
-        }
-
         public void UI_Wait(int msecs)
         {
             UI_Repaint();
             Thread.Sleep(msecs);
         }
 
-        private int frame = 0;
-
         public void UI_Repaint()
         {
             spriteBatch.Begin();
 
-            foreach (DrawItem drawItem in drawItems)
+            foreach (IDrawItem drawItem in drawItems)
             {
-                if (drawItem.shadowColor.HasValue)
-                    spriteBatch.DrawString(drawItem.font, drawItem.text, new Vector2(drawItem.pos.X + 1, drawItem.pos.Y + 1), drawItem.shadowColor.Value);
-                spriteBatch.DrawString(drawItem.font, drawItem.text, drawItem.pos, drawItem.color);
+                switch (drawItem)
+                {
+                    case DrawTextItem drawText:
+                        if (drawText.shadowColor.HasValue)
+                            spriteBatch.DrawString(drawText.font, drawText.text, new Vector2(drawText.pos.X + 1, drawText.pos.Y + 1), drawText.shadowColor.Value);
+                        spriteBatch.DrawString(drawText.font, drawText.text, drawText.pos, drawText.color);
+                        break;
+                    case DrawLineItem drawLine:
+                        spriteBatch.DrawLine(drawLine.from, drawLine.to, drawLine.color);
+                        break;
+                    case DrawImageItem drawImage:
+                        if (drawImage.transform)
+                        {
+                            spriteBatch.Draw(drawImage.image, drawImage.pos, null, drawImage.tint, drawImage.rotation,
+                                new Vector2(drawImage.image.Width / 2, drawImage.image.Height / 2), drawImage.scale, SpriteEffects.None, 0.0f);
+                        }
+                        else
+                            spriteBatch.Draw(drawImage.image, drawImage.pos, drawImage.tint);
+                        break;
+                    case DrawRectangleItem drawRectangle:
+                        if (drawRectangle.filled)
+                            spriteBatch.DrawRectangle(drawRectangle.rectangle, drawRectangle.color);
+                        else
+                        {
+                            Rectangle rect = drawRectangle.rectangle;
+                            spriteBatch.DrawLine(new Vector2(rect.Left, rect.Bottom), new Vector2(rect.Right, rect.Bottom), drawRectangle.color);
+                            spriteBatch.DrawLine(new Vector2(rect.Left, rect.Top), new Vector2(rect.Right, rect.Top), drawRectangle.color);
+                            spriteBatch.DrawLine(new Vector2(rect.Left, rect.Bottom), new Vector2(rect.Left, rect.Top), drawRectangle.color);
+                            spriteBatch.DrawLine(new Vector2(rect.Right, rect.Bottom), new Vector2(rect.Right, rect.Top), drawRectangle.color);
+                        }
+                        break;
+                }
             }
 
             spriteBatch.End();
@@ -387,60 +374,70 @@ namespace djack.RogueSurvivor
 
         public void UI_DrawImage(string imageID, int gx, int gy)
         {
-            throw new NotImplementedException();
-            //m_GameCanvas.AddImage(GameImages.Get(imageID), gx, gy);
+            drawItems.Add(new DrawImageItem
+            {
+                image = GameImages.Get(imageID),
+                pos = new Vector2(gx, gy),
+                tint = Color.White
+            });
         }
 
         public void UI_DrawImage(string imageID, int gx, int gy, Color tint)
         {
-            throw new NotImplementedException();
-            //m_GameCanvas.AddImage(GameImages.Get(imageID), gx, gy, tint);
+            drawItems.Add(new DrawImageItem
+            {
+                image = GameImages.Get(imageID),
+                pos = new Vector2(gx, gy),
+                tint = tint
+            });
         }
 
         public void UI_DrawImageTransform(string imageID, int gx, int gy, float rotation, float scale)
         {
-            throw new NotImplementedException();
-            //m_GameCanvas.AddImageTransform(GameImages.Get(imageID), gx, gy, rotation, scale);
+            drawItems.Add(new DrawImageItem
+            {
+                image = GameImages.Get(imageID),
+                pos = new Vector2(gx, gy),
+                tint = Color.White,
+                rotation = rotation,
+                scale = scale,
+                transform = true
+            });
         }
 
         public void UI_DrawGrayLevelImage(string imageID, int gx, int gy)
         {
-            throw new NotImplementedException();
-            //m_GameCanvas.AddImage(GameImages.GetGrayLevel(imageID), gx, gy);
+            drawItems.Add(new DrawImageItem
+            {
+                image = GameImages.GetGrayLevel(imageID),
+                pos = new Vector2(gx, gy),
+                tint = Color.White
+            });
         }
 
         public void UI_DrawTransparentImage(float alpha, string imageID, int gx, int gy)
         {
-            throw new NotImplementedException();
-            //m_GameCanvas.AddTransparentImage(alpha, GameImages.Get(imageID), gx, gy);
-        }
-
-        public void UI_DrawPoint(Color color, int gx, int gy)
-        {
-            throw new NotImplementedException();
-            //m_GameCanvas.AddPoint(color, gx, gy);
+            drawItems.Add(new DrawImageItem
+            {
+                image = GameImages.Get(imageID),
+                pos = new Vector2(gx, gy),
+                tint = new Color(0.0f, 0.0f, 0.0f, alpha)
+            });
         }
 
         public void UI_DrawLine(Color color, int gxFrom, int gyFrom, int gxTo, int gyTo)
         {
-            throw new NotImplementedException();
-            //m_GameCanvas.AddLine(color, gxFrom, gyFrom, gxTo, gyTo);
+            drawItems.Add(new DrawLineItem
+            {
+                color = color,
+                from = new Vector2(gxFrom, gyFrom),
+                to = new Vector2(gxTo, gyTo)
+            });
         }
-
-        class DrawItem
-        {
-            public Color color;
-            public Color? shadowColor;
-            public SpriteFont font;
-            public string text;
-            public Vector2 pos;
-        }
-
-        private List<DrawItem> drawItems = new List<DrawItem>();
 
         public void UI_DrawString(Color color, string text, int gx, int gy, Color? shadowColor)
         {
-            drawItems.Add(new DrawItem
+            drawItems.Add(new DrawTextItem
             {
                 color = color,
                 text = text,
@@ -452,7 +449,7 @@ namespace djack.RogueSurvivor
 
         public void UI_DrawStringBold(Color color, string text, int gx, int gy, Color? shadowColor)
         {
-            drawItems.Add(new DrawItem
+            drawItems.Add(new DrawTextItem
             {
                 color = color,
                 text = text,
@@ -466,36 +463,40 @@ namespace djack.RogueSurvivor
         {
             if (rect.Width <= 0 || rect.Height <= 0)
                 throw new ArgumentOutOfRangeException("rectangle Width/Height <= 0");
-
-            throw new NotImplementedException();
-            //m_GameCanvas.AddRect(color, rect);
+            drawItems.Add(new DrawRectangleItem
+            {
+                color = color,
+                rectangle = rect,
+                filled = false
+            });
         }
 
         public void UI_FillRect(Color color, Rectangle rect)
         {
             if (rect.Width <= 0 || rect.Height <= 0)
                 throw new ArgumentOutOfRangeException("rectangle Width/Height <= 0");
-
-            throw new NotImplementedException();
-            //m_GameCanvas.AddFilledRect(color, rect);
+            drawItems.Add(new DrawRectangleItem
+            {
+                color = color,
+                rectangle = rect,
+                filled = true
+            });
         }
 
         public void UI_DrawPopup(string[] lines, Color textColor, Color boxBorderColor, Color boxFillColor, int gx, int gy)
         {
-            throw new NotImplementedException();
-
             /////////////////
             // Measure lines
             /////////////////
-            /*int longestLineWidth = 0;
+            int longestLineWidth = 0;
             int totalLineHeight = 0;
-            Size[] linesSize = new Point[lines.Length];
+            Point[] linesSize = new Point[lines.Length];
             for (int i = 0; i < lines.Length; i++)
             {
-                linesSize[i] = TextRenderer.MeasureText(lines[i], m_BoldFont);
-                if (linesSize[i].Width > longestLineWidth)
-                    longestLineWidth = linesSize[i].Width;
-                totalLineHeight += linesSize[i].Height;
+                linesSize[i] = m_BoldFont.MeasureString(lines[i]).ToPoint();
+                if (linesSize[i].X > longestLineWidth)
+                    longestLineWidth = linesSize[i].X;
+                totalLineHeight += linesSize[i].Y;
             }
 
             ///////////////////
@@ -503,14 +504,14 @@ namespace djack.RogueSurvivor
             ///////////////////
             const int BOX_MARGIN = 2;
             Point boxPos = new Point(gx, gy);
-            Size boxSize = new Point(longestLineWidth + 2 * BOX_MARGIN, totalLineHeight + 2 * BOX_MARGIN);
+            Point boxSize = new Point(longestLineWidth + 2 * BOX_MARGIN, totalLineHeight + 2 * BOX_MARGIN);
             Rectangle boxRect = new Rectangle(boxPos, boxSize);
 
             //////////////////
             // Draw popup box
             //////////////////
-            m_GameCanvas.AddFilledRect(boxFillColor, boxRect);
-            m_GameCanvas.AddRect(boxBorderColor, boxRect);
+            UI_FillRect(boxFillColor, boxRect);
+            UI_DrawRect(boxBorderColor, boxRect);
 
             //////////////
             // Draw lines
@@ -519,34 +520,32 @@ namespace djack.RogueSurvivor
             int lineY = boxPos.Y + BOX_MARGIN;
             for (int i = 0; i < lines.Length; i++)
             {
-                m_GameCanvas.AddString(m_BoldFont, textColor, lines[i], lineX, lineY);
-                lineY += linesSize[i].Height;
-            }*/
+                UI_DrawStringBold(textColor, lines[i], lineX, lineY, null);
+                lineY += linesSize[i].Y;
+            }
         }
 
         // alpha10
         public void UI_DrawPopupTitle(string title, Color titleColor, string[] lines, Color textColor, Color boxBorderColor, Color boxFillColor, int gx, int gy)
         {
-            throw new NotImplementedException();
-
             /////////////////
             // Measure lines
             /////////////////
-            /*int longestLineWidth = 0;
+            int longestLineWidth = 0;
             int totalLineHeight = 0;
-            Size[] linesSize = new Point[lines.Length];
+            Point[] linesSize = new Point[lines.Length];
             for (int i = 0; i < lines.Length; i++)
             {
-                linesSize[i] = TextRenderer.MeasureText(lines[i], m_BoldFont);
-                if (linesSize[i].Width > longestLineWidth)
-                    longestLineWidth = linesSize[i].Width;
-                totalLineHeight += linesSize[i].Height;
+                linesSize[i] = m_BoldFont.MeasureString(lines[i]).ToPoint();
+                if (linesSize[i].X > longestLineWidth)
+                    longestLineWidth = linesSize[i].X;
+                totalLineHeight += linesSize[i].Y;
             }
 
-            Size titleSize = TextRenderer.MeasureText(title, m_BoldFont);
-            if (titleSize.Width > longestLineWidth)
-                longestLineWidth = titleSize.Width;
-            totalLineHeight += titleSize.Height;
+            Point titleSize = m_BoldFont.MeasureString(title).ToPoint();
+            if (titleSize.X > longestLineWidth)
+                longestLineWidth = titleSize.X;
+            totalLineHeight += titleSize.Y;
             const int TITLE_BAR_LINE = 1;
             totalLineHeight += TITLE_BAR_LINE;
 
@@ -555,23 +554,23 @@ namespace djack.RogueSurvivor
             ///////////////////
             const int BOX_MARGIN = 2;
             Point boxPos = new Point(gx, gy);
-            Size boxSize = new Point(longestLineWidth + 2 * BOX_MARGIN, totalLineHeight + 2 * BOX_MARGIN);
+            Point boxSize = new Point(longestLineWidth + 2 * BOX_MARGIN, totalLineHeight + 2 * BOX_MARGIN);
             Rectangle boxRect = new Rectangle(boxPos, boxSize);
 
             //////////////////
             // Draw popup box
             //////////////////
-            m_GameCanvas.AddFilledRect(boxFillColor, boxRect);
-            m_GameCanvas.AddRect(boxBorderColor, boxRect);
+            UI_FillRect(boxFillColor, boxRect);
+            UI_DrawRect(boxBorderColor, boxRect);
 
             //////////////
             // Draw title
             //////////////
-            int titleX = boxPos.X + BOX_MARGIN + (longestLineWidth - titleSize.Width) / 2;
+            int titleX = boxPos.X + BOX_MARGIN + (longestLineWidth - titleSize.X) / 2;
             int titleY = boxPos.Y + BOX_MARGIN;
-            int titleLineY = titleY + titleSize.Height + TITLE_BAR_LINE;
-            m_GameCanvas.AddString(m_BoldFont, titleColor, title, titleX, titleY);
-            m_GameCanvas.AddLine(boxBorderColor, boxRect.Left, titleLineY, boxRect.Right, titleLineY);
+            int titleLineY = titleY + titleSize.Y + TITLE_BAR_LINE;
+            UI_DrawStringBold(titleColor, title, titleX, titleY, null);
+            UI_DrawLine(boxBorderColor, boxRect.Left, titleLineY, boxRect.Right, titleLineY);
 
             //////////////
             // Draw lines
@@ -581,34 +580,32 @@ namespace djack.RogueSurvivor
 
             for (int i = 0; i < lines.Length; i++)
             {
-                m_GameCanvas.AddString(m_BoldFont, textColor, lines[i], lineX, lineY);
-                lineY += linesSize[i].Height;
-            }*/
+                UI_DrawStringBold(textColor, lines[i], lineX, lineY, null);
+                lineY += linesSize[i].Y;
+            }
         }
 
         // alpha10
         public void UI_DrawPopupTitleColors(string title, Color titleColor, string[] lines, Color[] colors, Color boxBorderColor, Color boxFillColor, int gx, int gy)
         {
-            throw new NotImplementedException();
-
             /////////////////
             // Measure lines
             /////////////////
-            /*int longestLineWidth = 0;
+            int longestLineWidth = 0;
             int totalLineHeight = 0;
-            Size[] linesSize = new Point[lines.Length];
+            Point[] linesSize = new Point[lines.Length];
             for (int i = 0; i < lines.Length; i++)
             {
-                linesSize[i] = TextRenderer.MeasureText(lines[i], m_BoldFont);
-                if (linesSize[i].Width > longestLineWidth)
-                    longestLineWidth = linesSize[i].Width;
-                totalLineHeight += linesSize[i].Height;
+                linesSize[i] = m_BoldFont.MeasureString(lines[i]).ToPoint();
+                if (linesSize[i].X > longestLineWidth)
+                    longestLineWidth = linesSize[i].X;
+                totalLineHeight += linesSize[i].Y;
             }
 
-            Size titleSize = TextRenderer.MeasureText(title, m_BoldFont);
-            if (titleSize.Width > longestLineWidth)
-                longestLineWidth = titleSize.Width;
-            totalLineHeight += titleSize.Height;
+            Point titleSize = m_BoldFont.MeasureString(title).ToPoint();
+            if (titleSize.X > longestLineWidth)
+                longestLineWidth = titleSize.X;
+            totalLineHeight += titleSize.Y;
             const int TITLE_BAR_LINE = 1;
             totalLineHeight += TITLE_BAR_LINE;
 
@@ -617,23 +614,23 @@ namespace djack.RogueSurvivor
             ///////////////////
             const int BOX_MARGIN = 2;
             Point boxPos = new Point(gx, gy);
-            Size boxSize = new Point(longestLineWidth + 2 * BOX_MARGIN, totalLineHeight + 2 * BOX_MARGIN);
+            Point boxSize = new Point(longestLineWidth + 2 * BOX_MARGIN, totalLineHeight + 2 * BOX_MARGIN);
             Rectangle boxRect = new Rectangle(boxPos, boxSize);
 
             //////////////////
             // Draw popup box
             //////////////////
-            m_GameCanvas.AddFilledRect(boxFillColor, boxRect);
-            m_GameCanvas.AddRect(boxBorderColor, boxRect);
+            UI_FillRect(boxFillColor, boxRect);
+            UI_DrawRect(boxBorderColor, boxRect);
 
             //////////////
             // Draw title
             //////////////
-            int titleX = boxPos.X + BOX_MARGIN + (longestLineWidth - titleSize.Width) / 2;
+            int titleX = boxPos.X + BOX_MARGIN + (longestLineWidth - titleSize.X) / 2;
             int titleY = boxPos.Y + BOX_MARGIN;
-            int titleLineY = titleY + titleSize.Height + TITLE_BAR_LINE;
-            m_GameCanvas.AddString(m_BoldFont, titleColor, title, titleX, titleY);
-            m_GameCanvas.AddLine(boxBorderColor, boxRect.Left, titleLineY, boxRect.Right, titleLineY);
+            int titleLineY = titleY + titleSize.Y + TITLE_BAR_LINE;
+            UI_DrawStringBold(titleColor, title, titleX, titleY, null);
+            UI_DrawLine(boxBorderColor, boxRect.Left, titleLineY, boxRect.Right, titleLineY);
 
             //////////////
             // Draw lines
@@ -643,40 +640,43 @@ namespace djack.RogueSurvivor
 
             for (int i = 0; i < lines.Length; i++)
             {
-                m_GameCanvas.AddString(m_BoldFont, colors[i], lines[i], lineX, lineY);
-                lineY += linesSize[i].Height;
-            }*/
+                UI_DrawStringBold(colors[i], lines[i], lineX, lineY, null);
+                lineY += linesSize[i].Y;
+            }
         }
 
         public void UI_ClearMinimap(Color color)
         {
-            throw new NotImplementedException();
+            // FIXME
+            //throw new NotImplementedException();
             //m_GameCanvas.ClearMinimap(color);
         }
 
         public void UI_SetMinimapColor(int x, int y, Color color)
         {
-            throw new NotImplementedException();
+            // FIXME
+            //throw new NotImplementedException();
             //m_GameCanvas.SetMinimapColor(x, y, color);
         }
 
         public void UI_DrawMinimap(int gx, int gy)
         {
-            throw new NotImplementedException();
+            // FIXME
+            //throw new NotImplementedException();
             //m_GameCanvas.DrawMinimap(gx, gy);
         }
 
         public float UI_GetCanvasScaleX()
         {
-            //return 1;
-            throw new NotImplementedException();
+            // FIXME
+            return 1;
             //return m_GameCanvas.ScaleX;
         }
 
         public float UI_GetCanvasScaleY()
         {
-            //return 1;
-            throw new NotImplementedException();
+            // FIXME
+            return 1;
             //return m_GameCanvas.ScaleY;
         }
 

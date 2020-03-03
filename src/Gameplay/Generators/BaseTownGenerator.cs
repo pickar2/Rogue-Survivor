@@ -1883,7 +1883,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     for (int i = 0; i < nbChairs; i++)
                     {
                         Rectangle adjTableRect = new Rectangle(tablePos.X - 1, tablePos.Y - 1, 3, 3);
-                        adjTableRect.Intersect(insideRoom);
+                        adjTableRect = Rectangle.Intersect(adjTableRect, insideRoom);
                         MapObjectPlaceInGoodPosition(map, adjTableRect,
                             (pt) => pt != tablePos,
                             m_DiceRoller,
@@ -3057,7 +3057,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                 {
                                     // one night table around with item.
                                     Rectangle adjBedRect = new Rectangle(pt.X - 1, pt.Y - 1, 3, 3);
-                                    adjBedRect.Intersect(insideRoom);
+                                    adjBedRect = Rectangle.Intersect(adjBedRect, insideRoom);
                                     MapObjectPlaceInGoodPosition(map, adjBedRect,
                                         (pt2) => pt2 != pt && CountAdjDoors(map, pt2.X, pt2.Y) == 0 && CountAdjWalls(map, pt2.X, pt2.Y) > 0 && CountAdjMapObjects(map, pt.X, pt.Y) < 5,  // alpha10.1 not cramped,
                                         m_DiceRoller,
@@ -3131,7 +3131,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
                                     // one chair around.
                                     Rectangle adjTableRect = new Rectangle(pt.X - 1, pt.Y - 1, 3, 3);
-                                    adjTableRect.Intersect(insideRoom);
+                                    adjTableRect = Rectangle.Intersect(adjTableRect, insideRoom);
                                     MapObjectPlaceInGoodPosition(map, adjTableRect,
                                         (pt2) => pt2 != pt && CountAdjDoors(map, pt2.X, pt2.Y) == 0 && CountAdjMapObjects(map, pt.X, pt.Y) < 5,  // alpha10.1 not cramped,
                                         m_DiceRoller,
