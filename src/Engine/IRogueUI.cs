@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Drawing;
 using RogueSurvivor.UI;
 
 namespace djack.RogueSurvivor.Engine
@@ -8,7 +8,7 @@ namespace djack.RogueSurvivor.Engine
     /// </summary>
     interface IRogueUI
     {
-        GraphicsDeviceManager Graphics { get; }
+        Microsoft.Xna.Framework.GraphicsDeviceManager Graphics { get; }
 
         Key UI_WaitKey();
         Key UI_PeekKey();
@@ -35,6 +35,6 @@ namespace djack.RogueSurvivor.Engine
         void UI_DrawMinimap(int gx, int gy);
         float UI_GetCanvasScaleX();
         float UI_GetCanvasScaleY();
-        string UI_SaveScreenshot(string filePath);
+        bool UI_SaveScreenshot(string filePath);
     }
 }

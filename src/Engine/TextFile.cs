@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
+using System.Drawing;
 using System.IO;
 
 namespace djack.RogueSurvivor.Engine

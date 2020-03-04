@@ -1,5 +1,5 @@
 ﻿using djack.RogueSurvivor.Data;
-using Microsoft.Xna.Framework;
+using System.Drawing;
 using System;
 using System.Collections.Generic;
 
@@ -80,7 +80,7 @@ namespace djack.RogueSurvivor.Engine
 
                 int alpha = Math.Max(64, 255 - m_FadeoutFactor * (m_Messages.Count - 1 - i));
                 bool isLatest = (m_Messages[i].Turn >= freshMessagesTurn);
-                Color dimmedColor = new Color(msg.Color, alpha);
+                Color dimmedColor = Color.FromArgb(alpha, msg.Color);
 
                 if(isLatest)
                     ui.UI_DrawStringBold(dimmedColor, msg.Text, gx, gy);

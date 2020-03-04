@@ -1,6 +1,6 @@
 ﻿using djack.RogueSurvivor.Engine;
 using djack.RogueSurvivor.Gameplay;
-using Microsoft.Xna.Framework;
+using System.Drawing;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using RogueSurvivor.Extensions;
@@ -11,17 +11,18 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using Xna = Microsoft.Xna.Framework;
 
 namespace djack.RogueSurvivor
 {
-    public class RogueForm : Game, IRogueUI
+    public class RogueForm : Xna.Game, IRogueUI
     {
-        private GraphicsDeviceManager graphics;
+        private Xna.GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private List<IDrawItem> drawItems = new List<IDrawItem>();
         private int frame = 0;
         private Texture2D m_MinimapTexture;
-        private Color[] m_MinimapColors = new Color[RogueGame.MAP_MAX_WIDTH * RogueGame.MAP_MAX_HEIGHT];
+        private Xna.Color[] m_MinimapColors = new Xna.Color[RogueGame.MAP_MAX_WIDTH * RogueGame.MAP_MAX_HEIGHT];
 
         RogueGame m_Game;
         SpriteFont m_NormalFont;
@@ -32,13 +33,13 @@ namespace djack.RogueSurvivor
             get { return m_Game; }
         }
 
-        public GraphicsDeviceManager Graphics => graphics;
+        public Xna.GraphicsDeviceManager Graphics => graphics;
 
         public RogueForm()
         {
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "Creating main form...");
 
-            graphics = new GraphicsDeviceManager(this);
+            graphics = new Xna.GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = RogueGame.CANVAS_WIDTH;
             graphics.PreferredBackBufferHeight = RogueGame.CANVAS_HEIGHT;
             graphics.HardwareModeSwitch = false;
@@ -66,7 +67,7 @@ namespace djack.RogueSurvivor
             m_Game = new RogueGame(this);
         }
 
-        protected override void Update(GameTime gameTime)
+        protected override void Update(Xna.GameTime gameTime)
         {
             base.Update(gameTime);
 
@@ -285,7 +286,8 @@ namespace djack.RogueSurvivor
         public Point UI_GetMousePosition()
         {
             RefreshMouse();
-            return Mouse.GetState().Position;
+            Xna.Point point = Mouse.GetState().Position;
+            return new Point(point.X, point.Y);
         }
 
         public MouseButton UI_PeekMouseButtons()
@@ -305,6 +307,7 @@ namespace djack.RogueSurvivor
             Thread.Sleep(msecs);
         }
 
+        private bool takeScreenshot;
         public void UI_Repaint()
         {
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
@@ -315,7 +318,7 @@ namespace djack.RogueSurvivor
                 {
                     case DrawTextItem drawText:
                         if (drawText.shadowColor.HasValue)
-                            spriteBatch.DrawString(drawText.font, drawText.text, new Vector2(drawText.pos.X + 1, drawText.pos.Y + 1), drawText.shadowColor.Value);
+                            spriteBatch.DrawString(drawText.font, drawText.text, new Xna.Vector2(drawText.pos.X + 1, drawText.pos.Y + 1), drawText.shadowColor.Value);
                         spriteBatch.DrawString(drawText.font, drawText.text, drawText.pos, drawText.color);
                         break;
                     case DrawLineItem drawLine:
@@ -325,7 +328,7 @@ namespace djack.RogueSurvivor
                         if (drawImage.transform)
                         {
                             spriteBatch.Draw(drawImage.image, drawImage.pos, null, drawImage.tint, drawImage.rotation,
-                                Vector2.Zero, drawImage.scale, SpriteEffects.None, 0.0f);
+                                Xna.Vector2.Zero, drawImage.scale, SpriteEffects.None, 0.0f);
                         }
                         else
                             spriteBatch.Draw(drawImage.image, drawImage.pos, drawImage.tint);
@@ -335,11 +338,11 @@ namespace djack.RogueSurvivor
                             spriteBatch.DrawRectangle(drawRectangle.rectangle, drawRectangle.color);
                         else
                         {
-                            Rectangle rect = drawRectangle.rectangle;
-                            spriteBatch.DrawLine(new Vector2(rect.Left, rect.Bottom), new Vector2(rect.Right, rect.Bottom), drawRectangle.color);
-                            spriteBatch.DrawLine(new Vector2(rect.Left, rect.Top), new Vector2(rect.Right, rect.Top), drawRectangle.color);
-                            spriteBatch.DrawLine(new Vector2(rect.Left, rect.Bottom), new Vector2(rect.Left, rect.Top), drawRectangle.color);
-                            spriteBatch.DrawLine(new Vector2(rect.Right, rect.Bottom), new Vector2(rect.Right, rect.Top), drawRectangle.color);
+                            Xna.Rectangle rect = drawRectangle.rectangle;
+                            spriteBatch.DrawLine(new Xna.Vector2(rect.Left, rect.Bottom), new Xna.Vector2(rect.Right, rect.Bottom), drawRectangle.color);
+                            spriteBatch.DrawLine(new Xna.Vector2(rect.Left, rect.Top), new Xna.Vector2(rect.Right, rect.Top), drawRectangle.color);
+                            spriteBatch.DrawLine(new Xna.Vector2(rect.Left, rect.Bottom), new Xna.Vector2(rect.Left, rect.Top), drawRectangle.color);
+                            spriteBatch.DrawLine(new Xna.Vector2(rect.Right, rect.Bottom), new Xna.Vector2(rect.Right, rect.Top), drawRectangle.color);
                         }
                         break;
                 }
@@ -347,12 +350,13 @@ namespace djack.RogueSurvivor
 
             spriteBatch.End();
 
-            EndDraw();
+            if (!takeScreenshot)
+                EndDraw();
         }
 
         public void UI_Clear(Color clearColor)
         {
-            graphics.GraphicsDevice.Clear(clearColor);
+            graphics.GraphicsDevice.Clear(clearColor.ToXna());
             drawItems.Clear();
         }
 
@@ -361,8 +365,8 @@ namespace djack.RogueSurvivor
             drawItems.Add(new DrawImageItem
             {
                 image = GameImages.Get(imageID),
-                pos = new Vector2(gx, gy),
-                tint = Color.White
+                pos = new Xna.Vector2(gx, gy),
+                tint = Xna.Color.White
             });
         }
 
@@ -371,8 +375,8 @@ namespace djack.RogueSurvivor
             drawItems.Add(new DrawImageItem
             {
                 image = GameImages.Get(imageID),
-                pos = new Vector2(gx, gy),
-                tint = tint
+                pos = new Xna.Vector2(gx, gy),
+                tint = tint.ToXna()
             });
         }
 
@@ -381,8 +385,8 @@ namespace djack.RogueSurvivor
             drawItems.Add(new DrawImageItem
             {
                 image = GameImages.Get(imageID),
-                pos = new Vector2(gx, gy),
-                tint = Color.White,
+                pos = new Xna.Vector2(gx, gy),
+                tint = Xna.Color.White,
                 rotation = rotation,
                 scale = scale,
                 transform = true
@@ -394,8 +398,8 @@ namespace djack.RogueSurvivor
             drawItems.Add(new DrawImageItem
             {
                 image = GameImages.GetGrayLevel(imageID),
-                pos = new Vector2(gx, gy),
-                tint = Color.White
+                pos = new Xna.Vector2(gx, gy),
+                tint = Xna.Color.White
             });
         }
 
@@ -404,8 +408,8 @@ namespace djack.RogueSurvivor
             drawItems.Add(new DrawImageItem
             {
                 image = GameImages.Get(imageID),
-                pos = new Vector2(gx, gy),
-                tint = new Color(1.0f, 1.0f, 1.0f, alpha)
+                pos = new Xna.Vector2(gx, gy),
+                tint = new Xna.Color(1.0f, 1.0f, 1.0f, alpha)
             });
         }
 
@@ -413,9 +417,9 @@ namespace djack.RogueSurvivor
         {
             drawItems.Add(new DrawLineItem
             {
-                color = color,
-                from = new Vector2(gxFrom, gyFrom),
-                to = new Vector2(gxTo, gyTo)
+                color = color.ToXna(),
+                from = new Xna.Vector2(gxFrom, gyFrom),
+                to = new Xna.Vector2(gxTo, gyTo)
             });
         }
 
@@ -423,11 +427,11 @@ namespace djack.RogueSurvivor
         {
             drawItems.Add(new DrawTextItem
             {
-                color = color,
+                color = color.ToXna(),
                 text = text,
                 font = m_NormalFont,
-                pos = new Vector2(gx, gy),
-                shadowColor = shadowColor
+                pos = new Xna.Vector2(gx, gy),
+                shadowColor = shadowColor.ToXna()
             });
         }
 
@@ -435,11 +439,11 @@ namespace djack.RogueSurvivor
         {
             drawItems.Add(new DrawTextItem
             {
-                color = color,
+                color = color.ToXna(),
                 text = text,
                 font = m_BoldFont,
-                pos = new Vector2(gx, gy),
-                shadowColor = shadowColor
+                pos = new Xna.Vector2(gx, gy),
+                shadowColor = shadowColor.ToXna()
             });
         }
 
@@ -449,8 +453,8 @@ namespace djack.RogueSurvivor
                 throw new ArgumentOutOfRangeException("rectangle Width/Height <= 0");
             drawItems.Add(new DrawRectangleItem
             {
-                color = color,
-                rectangle = rect,
+                color = color.ToXna(),
+                rectangle = rect.ToXna(),
                 filled = false
             });
         }
@@ -461,8 +465,8 @@ namespace djack.RogueSurvivor
                 throw new ArgumentOutOfRangeException("rectangle Width/Height <= 0");
             drawItems.Add(new DrawRectangleItem
             {
-                color = color,
-                rectangle = rect,
+                color = color.ToXna(),
+                rectangle = rect.ToXna(),
                 filled = true
             });
         }
@@ -477,7 +481,7 @@ namespace djack.RogueSurvivor
             Point[] linesSize = new Point[lines.Length];
             for (int i = 0; i < lines.Length; i++)
             {
-                linesSize[i] = m_BoldFont.MeasureString(lines[i]).ToPoint();
+                linesSize[i] = m_BoldFont.MeasureString(lines[i]).ToPoint().FromXna();
                 if (linesSize[i].X > longestLineWidth)
                     longestLineWidth = linesSize[i].X;
                 totalLineHeight += linesSize[i].Y;
@@ -488,7 +492,7 @@ namespace djack.RogueSurvivor
             ///////////////////
             const int BOX_MARGIN = 2;
             Point boxPos = new Point(gx, gy);
-            Point boxSize = new Point(longestLineWidth + 2 * BOX_MARGIN, totalLineHeight + 2 * BOX_MARGIN);
+            Size boxSize = new Size(longestLineWidth + 2 * BOX_MARGIN, totalLineHeight + 2 * BOX_MARGIN);
             Rectangle boxRect = new Rectangle(boxPos, boxSize);
 
             //////////////////
@@ -519,13 +523,13 @@ namespace djack.RogueSurvivor
             Point[] linesSize = new Point[lines.Length];
             for (int i = 0; i < lines.Length; i++)
             {
-                linesSize[i] = m_BoldFont.MeasureString(lines[i]).ToPoint();
+                linesSize[i] = m_BoldFont.MeasureString(lines[i]).ToPoint().FromXna();
                 if (linesSize[i].X > longestLineWidth)
                     longestLineWidth = linesSize[i].X;
                 totalLineHeight += linesSize[i].Y;
             }
 
-            Point titleSize = m_BoldFont.MeasureString(title).ToPoint();
+            Point titleSize = m_BoldFont.MeasureString(title).ToPoint().FromXna();
             if (titleSize.X > longestLineWidth)
                 longestLineWidth = titleSize.X;
             totalLineHeight += titleSize.Y;
@@ -537,7 +541,7 @@ namespace djack.RogueSurvivor
             ///////////////////
             const int BOX_MARGIN = 2;
             Point boxPos = new Point(gx, gy);
-            Point boxSize = new Point(longestLineWidth + 2 * BOX_MARGIN, totalLineHeight + 2 * BOX_MARGIN);
+            Size boxSize = new Size(longestLineWidth + 2 * BOX_MARGIN, totalLineHeight + 2 * BOX_MARGIN);
             Rectangle boxRect = new Rectangle(boxPos, boxSize);
 
             //////////////////
@@ -578,13 +582,13 @@ namespace djack.RogueSurvivor
             Point[] linesSize = new Point[lines.Length];
             for (int i = 0; i < lines.Length; i++)
             {
-                linesSize[i] = m_BoldFont.MeasureString(lines[i]).ToPoint();
+                linesSize[i] = m_BoldFont.MeasureString(lines[i]).ToPoint().FromXna();
                 if (linesSize[i].X > longestLineWidth)
                     longestLineWidth = linesSize[i].X;
                 totalLineHeight += linesSize[i].Y;
             }
 
-            Point titleSize = m_BoldFont.MeasureString(title).ToPoint();
+            Point titleSize = m_BoldFont.MeasureString(title).ToPoint().FromXna();
             if (titleSize.X > longestLineWidth)
                 longestLineWidth = titleSize.X;
             totalLineHeight += titleSize.Y;
@@ -596,7 +600,7 @@ namespace djack.RogueSurvivor
             ///////////////////
             const int BOX_MARGIN = 2;
             Point boxPos = new Point(gx, gy);
-            Point boxSize = new Point(longestLineWidth + 2 * BOX_MARGIN, totalLineHeight + 2 * BOX_MARGIN);
+            Size boxSize = new Size(longestLineWidth + 2 * BOX_MARGIN, totalLineHeight + 2 * BOX_MARGIN);
             Rectangle boxRect = new Rectangle(boxPos, boxSize);
 
             //////////////////
@@ -629,13 +633,14 @@ namespace djack.RogueSurvivor
 
         public void UI_ClearMinimap(Color color)
         {
+            Xna.Color xcolor = color.ToXna();
             for (int i = 0; i < RogueGame.MAP_MAX_HEIGHT * RogueGame.MAP_MAX_WIDTH; ++i)
-                m_MinimapColors[i] = color;
+                m_MinimapColors[i] = xcolor;
         }
 
         public void UI_SetMinimapColor(int x, int y, Color color)
         {
-            m_MinimapColors[x + y * RogueGame.MAP_MAX_WIDTH] = color;
+            m_MinimapColors[x + y * RogueGame.MAP_MAX_WIDTH] = color.ToXna();
         }
 
         public void UI_DrawMinimap(int gx, int gy)
@@ -644,8 +649,8 @@ namespace djack.RogueSurvivor
             drawItems.Add(new DrawImageItem
             {
                 image = m_MinimapTexture,
-                pos = new Vector2(gx, gy),
-                tint = Color.White,
+                pos = new Xna.Vector2(gx, gy),
+                tint = Xna.Color.White,
                 rotation = 0,
                 scale = RogueGame.MINITILE_SIZE,
                 transform = true
@@ -666,31 +671,34 @@ namespace djack.RogueSurvivor
             //return m_GameCanvas.ScaleY;
         }
 
-        public string UI_SaveScreenshot(string filePath)
+        public bool UI_SaveScreenshot(string filePath)
         {
-            filePath += ".png";
+            takeScreenshot = true;
 
             try
             {
                 int w = GraphicsDevice.PresentationParameters.BackBufferWidth,
                     h = GraphicsDevice.PresentationParameters.BackBufferHeight;
-                RenderTarget2D screenshot = new RenderTarget2D(GraphicsDevice, w, h, false, SurfaceFormat.Bgra32, DepthFormat.None);
+                RenderTarget2D screenshot = new RenderTarget2D(GraphicsDevice, w, h, false, GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.None);
                 GraphicsDevice.SetRenderTarget(screenshot);
                 UI_Repaint();
-                GraphicsDevice.Present();
-                GraphicsDevice.SetRenderTarget(null);
 
                 using (FileStream file = new FileStream(filePath, FileMode.Create))
                 {
                     screenshot.SaveAsPng(file, w, h);
                 }
 
-                return filePath;
+                return true;
             }
             catch (Exception ex)
             {
                 Logger.WriteLine(Logger.Stage.RUN_GFX, String.Format("exception when taking screenshot : {0}", ex.ToString()));
-                return null;
+                return false;
+            }
+            finally
+            {
+                GraphicsDevice.SetRenderTarget(null);
+                takeScreenshot = false;
             }
         }
     }

@@ -1,6 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System.Drawing;
 using System.IO;
+using Xna = Microsoft.Xna.Framework;
 
 namespace RogueSurvivor.UI
 {
@@ -51,10 +52,10 @@ namespace RogueSurvivor.UI
         public Texture2D FromStream(Stream stream, bool preMultiplyAlpha = true)
         {
             Texture2D texture = Texture2D.FromStream(_graphicsDevice, stream);
-            Color[] data = new Color[texture.Width * texture.Height];
+            Xna.Color[] data = new Xna.Color[texture.Width * texture.Height];
             texture.GetData(data);
             for (int i = 0; i != data.Length; ++i)
-                data[i] = Color.FromNonPremultiplied(data[i].ToVector4());
+                data[i] = Xna.Color.FromNonPremultiplied(data[i].ToVector4());
             texture.SetData(data);
             return texture;
         }
@@ -76,16 +77,16 @@ namespace RogueSurvivor.UI
                 {
                     Viewport viewportBackup = _graphicsDevice.Viewport;
                     _graphicsDevice.SetRenderTarget(renderTarget);
-                    _graphicsDevice.Clear(Color.Black);
+                    _graphicsDevice.Clear(Xna.Color.Black);
 
                     // Multiply each color by the source alpha, and write in just the color values into the final texture
                     _spriteBatch.Begin(SpriteSortMode.Immediate, BlendColorBlendState);
-                    _spriteBatch.Draw(texture, texture.Bounds, Color.White);
+                    _spriteBatch.Draw(texture, texture.Bounds, Xna.Color.White);
                     _spriteBatch.End();
 
                     // Now copy over the alpha values from the source texture to the final one, without multiplying them
                     _spriteBatch.Begin(SpriteSortMode.Immediate, BlendAlphaBlendState);
-                    _spriteBatch.Draw(texture, texture.Bounds, Color.White);
+                    _spriteBatch.Draw(texture, texture.Bounds, Xna.Color.White);
                     _spriteBatch.End();
 
                     // Release the GPU back to drawing to the screen

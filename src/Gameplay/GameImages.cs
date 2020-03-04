@@ -1,11 +1,11 @@
 ﻿using djack.RogueSurvivor.Engine;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RogueSurvivor.Extensions;
 using RogueSurvivor.UI;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Drawing;
+using Xna = Microsoft.Xna.Framework;
 
 namespace djack.RogueSurvivor.Gameplay
 {
@@ -998,19 +998,19 @@ namespace djack.RogueSurvivor.Gameplay
 
         static Texture2D MakeGrayLevel(Texture2D img)
         {
-            Color[] inBufer = new Color[img.Width * img.Height];
+            Xna.Color[] inBufer = new Xna.Color[img.Width * img.Height];
             img.GetData(inBufer);
 
             Texture2D grayed = new Texture2D(graphicsDevice, img.Width, img.Height);
-            Color[] outBufer = new Color[img.Width * img.Height];
+            Xna.Color[] outBufer = new Xna.Color[img.Width * img.Height];
 
             for (int x = 0; x < img.Width; x++)
                 for (int y = 0; y < img.Height; y++)
                 {
-                    Color pixelColor = inBufer[x + y * img.Width];
+                    Xna.Color pixelColor = inBufer[x + y * img.Width];
                     float brightness = pixelColor.GetBrightness();
                     int rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR * brightness);
-                    outBufer[x + y * img.Width] = new Color(rgb, rgb, rgb, pixelColor.A);
+                    outBufer[x + y * img.Width] = new Xna.Color(rgb, rgb, rgb, pixelColor.A);
                 }
 
             grayed.SetData(outBufer);

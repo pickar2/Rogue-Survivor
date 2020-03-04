@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Drawing;
+using Xna = Microsoft.Xna.Framework;
 
 namespace RogueSurvivor.Extensions
 {
@@ -10,6 +11,11 @@ namespace RogueSurvivor.Extensions
                                  top,
                                  right - left,
                                  bottom - top);
+        }
+
+        public static Xna.Rectangle ToXna(this Rectangle rect)
+        {
+            return new Xna.Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
         }
     }
 }

@@ -3,7 +3,7 @@ using djack.RogueSurvivor.Engine;
 using djack.RogueSurvivor.Engine.Items;
 using djack.RogueSurvivor.Engine.MapObjects;
 using djack.RogueSurvivor.Gameplay.AI;
-using Microsoft.Xna.Framework;
+using System.Drawing;
 using RogueSurvivor.Extensions;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Drawing;
+using Xna = Microsoft.Xna.Framework;
 
 namespace RogueSurvivor.Extensions
 {
@@ -12,6 +13,11 @@ namespace RogueSurvivor.Extensions
         public static Point Add(this Point pt, Point other)
         {
             return new Point(pt.X + other.X, pt.Y + other.Y);
+        }
+
+        public static Point FromXna(this Xna.Point pt)
+        {
+            return new Point(pt.X, pt.Y);
         }
     }
 }

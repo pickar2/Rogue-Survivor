@@ -1,26 +1,30 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Drawing;
+using Xna = Microsoft.Xna.Framework;
 
 namespace RogueSurvivor.Extensions
 {
     public static class ColorExtensions
     {
-        public static float GetBrightness(this Color color)
+        public static float GetBrightness(this Xna.Color color)
         {
-            float r = (float)color.R / 255.0f;
-            float g = (float)color.G / 255.0f;
-            float b = (float)color.B / 255.0f;
+            return color.FromXna().GetBrightness();
+        }
 
-            float max, min;
+        public static Xna.Color ToXna(this Color color)
+        {
+            return new Xna.Color(color.R, color.G, color.B, color.A);
+        }
 
-            max = r; min = r;
+        public static Xna.Color? ToXna(this Color? color)
+        {
+            if (color.HasValue)
+                return ToXna(color.Value);
+            return null;
+        }
 
-            if (g > max) max = g;
-            if (b > max) max = b;
-
-            if (g < min) min = g;
-            if (b < min) min = b;
-
-            return (max + min) / 2;
+        public static Color FromXna(this Xna.Color color)
+        {
+            return Color.FromArgb(color.A, color.R, color.G, color.B);
         }
     }
 }

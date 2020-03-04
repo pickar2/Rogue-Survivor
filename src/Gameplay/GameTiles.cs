@@ -1,5 +1,5 @@
 ﻿using djack.RogueSurvivor.Data;
-using Microsoft.Xna.Framework;
+using System.Drawing;
 
 namespace djack.RogueSurvivor.Gameplay
 {
@@ -40,10 +40,10 @@ namespace djack.RogueSurvivor.Gameplay
         #region Colors
         static readonly Color DRK_GRAY1 = Color.DimGray;
         static readonly Color DRK_GRAY2 = Color.DarkGray;
-        static readonly Color DRK_RED = new Color(128, 0, 0);
+        static readonly Color DRK_RED = Color.FromArgb(128, 0, 0);
         static readonly Color LIT_GRAY1 = Color.Gray;
         static readonly Color LIT_GRAY2 = Color.LightGray;
-        static readonly Color LIT_GRAY3 = new Color(230, 230, 230);
+        static readonly Color LIT_GRAY3 = Color.FromArgb(230, 230, 230);
         static readonly Color LIT_BROWN = Color.BurlyWood;
         #endregion
 
