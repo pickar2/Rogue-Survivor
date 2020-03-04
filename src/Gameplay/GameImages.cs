@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RogueSurvivor.Extensions;
+using RogueSurvivor.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +12,7 @@ namespace djack.RogueSurvivor.Gameplay
     static class GameImages
     {
         private static GraphicsDevice graphicsDevice;
+        private static TextureLoader textureLoader;
 
         const float GRAYLEVEL_DIM_FACTOR = 0.55f;
         const string FOLDER = @"Resources\Images\";
@@ -495,6 +497,7 @@ namespace djack.RogueSurvivor.Gameplay
         public static void LoadResources(IRogueUI ui)
         {
             graphicsDevice = ui.Graphics.GraphicsDevice;
+            textureLoader = new TextureLoader(graphicsDevice);
 
             #region Icons
             Notify(ui, "icons...");
@@ -983,10 +986,7 @@ namespace djack.RogueSurvivor.Gameplay
             string file = FOLDER + id + ".png";
             try
             {
-                FileStream fileStream = new FileStream(file, FileMode.Open);
-                Texture2D img = Texture2D.FromStream(graphicsDevice, fileStream);
-                fileStream.Dispose();
-
+                Texture2D img = textureLoader.FromFile(file);
                 s_Images.Add(id, img);
                 s_GrayLevelImages.Add(id, MakeGrayLevel(img));
             }

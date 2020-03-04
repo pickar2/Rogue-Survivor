@@ -10,14 +10,10 @@ namespace djack.RogueSurvivor.Engine
     {
         GraphicsDeviceManager Graphics { get; }
 
-        // FIXME
         Key UI_WaitKey();
         Key UI_PeekKey();
-        //void UI_PostKey(KeyEventArgs e);
         Point UI_GetMousePosition();
-        // FIXME
         MouseButton UI_PeekMouseButtons();
-        //void UI_PostMouseButtons(MouseButtons buttons);
         void UI_Wait(int msecs);
         void UI_Repaint();
         void UI_Clear(Color clearColor);

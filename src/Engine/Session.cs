@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using djack.RogueSurvivor.Data;
+using System;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization.Formatters.Soap;
-using Microsoft.Xna.Framework;
-using System.Xml;
-using System.Xml.Serialization;
-
-using djack.RogueSurvivor.Data;
 
 namespace djack.RogueSurvivor.Engine
 {
@@ -378,13 +370,6 @@ namespace djack.RogueSurvivor.Engine
     [Serializable]
     class Session
     {
-        public enum SaveFormat
-        {
-            FORMAT_BIN,
-            FORMAT_SOAP,
-            FORMAT_XML
-        }
-
         #region Fields
 
         #region Game Mode
@@ -518,7 +503,7 @@ namespace djack.RogueSurvivor.Engine
 
         public void Reset()
         {
-            // FIXME
+            // !FIXME
             Seed = 1488618496;
             //this.Seed = (int)DateTime.UtcNow.TimeOfDay.Ticks;
             m_CurrentMap = null;
@@ -585,29 +570,18 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Saving & Loading
-        public static void Save(Session session, string filepath, SaveFormat format)
+        public static void Save(Session session, string filepath)
         {
             // optimize.
             session.World.OptimizeBeforeSaving();
 
             // save.
-            switch (format)
-            {
-                case SaveFormat.FORMAT_BIN: SaveBin(session, filepath); break;
-                case SaveFormat.FORMAT_SOAP: SaveSoap(session, filepath); break;
-                case SaveFormat.FORMAT_XML: SaveXml(session, filepath); break;
-            }
+            SaveBin(session, filepath);
         }
 
-        public static bool Load(string filepath, SaveFormat format)
+        public static bool Load(string filepath)
         {
-            switch (format)
-            {
-                case SaveFormat.FORMAT_BIN: return LoadBin(filepath);
-                case SaveFormat.FORMAT_SOAP: return LoadSoap(filepath); 
-                case SaveFormat.FORMAT_XML: return LoadXml(filepath);
-                default: return false;
-            }
+            return LoadBin(filepath);
         }
 
         static void SaveBin(Session session, string filepath)
@@ -667,121 +641,6 @@ namespace djack.RogueSurvivor.Engine
             return true;
         }
 
-        static void SaveSoap(Session session, string filepath)
-        {
-            if (session == null)
-                throw new ArgumentNullException("session");
-            if (filepath == null)
-                throw new ArgumentNullException("filepath");
-
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session...");
-
-            IFormatter formatter = CreateSoapFormatter();
-            using (Stream stream = CreateStream(filepath, true))
-            {
-                formatter.Serialize(stream, session);
-                stream.Flush();
-                stream.Close();
-            }
-
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session... done!");
-        }
-
-        /// <summary>
-        /// Try to load, null if failed.
-        /// </summary>
-        /// <returns></returns>
-        static bool LoadSoap(string filepath)
-        {
-            if (filepath == null)
-                throw new ArgumentNullException("filepath");
-
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session...");
-
-            try
-            {
-                // deserialize.
-                IFormatter formatter = CreateSoapFormatter();
-                using (Stream stream = CreateStream(filepath, false))
-                {
-                    s_TheSession = (Session)formatter.Deserialize(stream);
-                    stream.Close();
-                }
-
-                // reconstruct auxiliary fields.
-                s_TheSession.ReconstructAuxiliaryFields();
-            }
-            catch (Exception e)
-            {
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load session (no save game?).");
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("load exception : {0}.", e.ToString()));
-                s_TheSession = null;
-                return false;
-            }
-
-
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session... done!");
-            return true;
-        }
-
-        static void SaveXml(Session session, string filepath)
-        {
-            if (session == null)
-                throw new ArgumentNullException("session");
-            if (filepath == null)
-                throw new ArgumentNullException("filepath");
-
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session...");
-
-            XmlSerializer xs = new XmlSerializer(typeof(Session));
-            using (Stream stream = CreateStream(filepath, true))
-            {
-                xs.Serialize(stream, session);
-                stream.Flush();
-                stream.Close();
-            }
-
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session... done!");
-        }
-
-        /// <summary>
-        /// Try to load, null if failed.
-        /// </summary>
-        /// <returns></returns>
-        static bool LoadXml(string filepath)
-        {
-            if (filepath == null)
-                throw new ArgumentNullException("filepath");
-
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session...");
-
-            try
-            {
-                // deserialize.
-                XmlSerializer xs = new XmlSerializer(typeof(Session));
-                using (Stream stream = CreateStream(filepath, false))
-                {
-                    s_TheSession = (Session)xs.Deserialize(stream);
-                    stream.Flush();
-                    stream.Close();
-                }
-
-                // reconstruct auxiliary fields.
-                s_TheSession.ReconstructAuxiliaryFields();
-            }
-            catch (Exception e)
-            {
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load session (no save game?).");
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("load exception : {0}.", e.ToString()));
-                s_TheSession = null;
-                return false;
-            }
-
-
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session... done!");
-            return true;
-        }
-
         public static bool Delete(string filepath)
         {
             if (filepath == null)
@@ -811,11 +670,6 @@ namespace djack.RogueSurvivor.Engine
         static IFormatter CreateFormatter()
         {
             return new BinaryFormatter();
-        }
-
-        static IFormatter CreateSoapFormatter()
-        {
-            return new SoapFormatter();
         }
 
         static Stream CreateStream(string saveFileName, bool save)

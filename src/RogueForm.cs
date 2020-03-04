@@ -7,6 +7,7 @@ using RogueSurvivor.Extensions;
 using RogueSurvivor.UI;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -19,6 +20,8 @@ namespace djack.RogueSurvivor
         private SpriteBatch spriteBatch;
         private List<IDrawItem> drawItems = new List<IDrawItem>();
         private int frame = 0;
+        private Texture2D m_MinimapTexture;
+        private Color[] m_MinimapColors = new Color[RogueGame.MAP_MAX_WIDTH * RogueGame.MAP_MAX_HEIGHT];
 
         RogueGame m_Game;
         SpriteFont m_NormalFont;
@@ -40,7 +43,7 @@ namespace djack.RogueSurvivor
             graphics.PreferredBackBufferHeight = RogueGame.CANVAS_HEIGHT;
             graphics.HardwareModeSwitch = false;
             //graphics.IsFullScreen = true; 
-            // FIXME
+            // !FIXME
         }
 
         protected override void Initialize()
@@ -53,6 +56,8 @@ namespace djack.RogueSurvivor
             IsMouseVisible = true;
 
             spriteBatch = new SpriteBatch(graphics.GraphicsDevice);
+
+            m_MinimapTexture = new Texture2D(graphics.GraphicsDevice, RogueGame.MAP_MAX_WIDTH, RogueGame.MAP_MAX_HEIGHT);
 
             Content.RootDirectory = "Resources/Content";
             m_NormalFont = Content.Load<SpriteFont>("NormalFont");
@@ -159,30 +164,9 @@ namespace djack.RogueSurvivor
             return key;
         }
 
-        // FIXME
+        // !FIXME
         /*public void UI_PostKey(KeyEventArgs e)
         {
-            // ignore Shift/Ctrl/Alt alone.
-            switch (e.KeyCode)
-            {
-                case Key.ShiftKey:
-                case Key.Shift:
-                case Key.LShiftKey:
-                case Key.RShiftKey:
-                case Key.Control:
-                case Key.ControlKey:
-                case Key.RControlKey:
-                case Key.LControlKey:
-                case Key.Alt:
-                    return;
-                default:
-                    break;
-            }
-
-            m_HasKey = true;
-            m_InKey = e;
-            e.Handled = true;
-
             ///////////
             // Cheats
             ///////////
@@ -323,7 +307,7 @@ namespace djack.RogueSurvivor
 
         public void UI_Repaint()
         {
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
             foreach (IDrawItem drawItem in drawItems)
             {
@@ -341,7 +325,7 @@ namespace djack.RogueSurvivor
                         if (drawImage.transform)
                         {
                             spriteBatch.Draw(drawImage.image, drawImage.pos, null, drawImage.tint, drawImage.rotation,
-                                new Vector2(drawImage.image.Width / 2, drawImage.image.Height / 2), drawImage.scale, SpriteEffects.None, 0.0f);
+                                Vector2.Zero, drawImage.scale, SpriteEffects.None, 0.0f);
                         }
                         else
                             spriteBatch.Draw(drawImage.image, drawImage.pos, drawImage.tint);
@@ -421,7 +405,7 @@ namespace djack.RogueSurvivor
             {
                 image = GameImages.Get(imageID),
                 pos = new Vector2(gx, gy),
-                tint = new Color(0.0f, 0.0f, 0.0f, alpha)
+                tint = new Color(1.0f, 1.0f, 1.0f, alpha)
             });
         }
 
@@ -525,7 +509,6 @@ namespace djack.RogueSurvivor
             }
         }
 
-        // alpha10
         public void UI_DrawPopupTitle(string title, Color titleColor, string[] lines, Color textColor, Color boxBorderColor, Color boxFillColor, int gx, int gy)
         {
             /////////////////
@@ -585,7 +568,6 @@ namespace djack.RogueSurvivor
             }
         }
 
-        // alpha10
         public void UI_DrawPopupTitleColors(string title, Color titleColor, string[] lines, Color[] colors, Color boxBorderColor, Color boxFillColor, int gx, int gy)
         {
             /////////////////
@@ -647,44 +629,69 @@ namespace djack.RogueSurvivor
 
         public void UI_ClearMinimap(Color color)
         {
-            // FIXME
-            //throw new NotImplementedException();
-            //m_GameCanvas.ClearMinimap(color);
+            for (int i = 0; i < RogueGame.MAP_MAX_HEIGHT * RogueGame.MAP_MAX_WIDTH; ++i)
+                m_MinimapColors[i] = color;
         }
 
         public void UI_SetMinimapColor(int x, int y, Color color)
         {
-            // FIXME
-            //throw new NotImplementedException();
-            //m_GameCanvas.SetMinimapColor(x, y, color);
+            m_MinimapColors[x + y * RogueGame.MAP_MAX_WIDTH] = color;
         }
 
         public void UI_DrawMinimap(int gx, int gy)
         {
-            // FIXME
-            //throw new NotImplementedException();
-            //m_GameCanvas.DrawMinimap(gx, gy);
+            m_MinimapTexture.SetData(m_MinimapColors);
+            drawItems.Add(new DrawImageItem
+            {
+                image = m_MinimapTexture,
+                pos = new Vector2(gx, gy),
+                tint = Color.White,
+                rotation = 0,
+                scale = RogueGame.MINITILE_SIZE,
+                transform = true
+            });
         }
 
         public float UI_GetCanvasScaleX()
         {
-            // FIXME
+            // !FIXME
             return 1;
             //return m_GameCanvas.ScaleX;
         }
 
         public float UI_GetCanvasScaleY()
         {
-            // FIXME
+            // !FIXME
             return 1;
             //return m_GameCanvas.ScaleY;
         }
 
         public string UI_SaveScreenshot(string filePath)
         {
-            //return "";
-            throw new NotImplementedException();
-            //return m_GameCanvas.SaveScreenShot(filePath);
+            filePath += ".png";
+
+            try
+            {
+                int w = GraphicsDevice.PresentationParameters.BackBufferWidth,
+                    h = GraphicsDevice.PresentationParameters.BackBufferHeight;
+                RenderTarget2D screenshot = new RenderTarget2D(GraphicsDevice, w, h, false, SurfaceFormat.Bgra32, DepthFormat.None);
+                GraphicsDevice.SetRenderTarget(screenshot);
+                UI_Repaint();
+                GraphicsDevice.Present();
+                GraphicsDevice.SetRenderTarget(null);
+
+                using (FileStream file = new FileStream(filePath, FileMode.Create))
+                {
+                    screenshot.SaveAsPng(file, w, h);
+                }
+
+                return filePath;
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_GFX, String.Format("exception when taking screenshot : {0}", ex.ToString()));
+                return null;
+            }
         }
     }
 }

@@ -74,13 +74,6 @@ namespace djack.RogueSurvivor.Engine
             return true;
         }
 
-        private void OnVolumeChange()
-        {
-            // FIXME
-            //foreach (SFMLMusic a in m_Musics.Values)
-            //    a.Volume = m_Volume;
-        }
-
         /// <summary>
         /// Restart playing a music from the beginning if music is enabled.
         /// </summary>

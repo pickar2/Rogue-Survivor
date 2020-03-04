@@ -18240,9 +18240,6 @@ namespace djack.RogueSurvivor.Engine
                         if (map.GetExitAt(position) != null)
                             DrawExit(toScreen);
                     }
-#if DEBUG
-                    DrawTileDev(map, tile, x, y, toScreen);
-#endif
 
                     // 2. Corpses
                     if (isVisible)
@@ -18336,7 +18333,6 @@ namespace djack.RogueSurvivor.Engine
                         drawWater = true;
                     if (drawWater && tile.Model.IsWater)
                         DrawTileWaterCover(tile, toScreen, tint);
-
 
                     // 7. Weather (if visible and not inside).
                     if (isVisible && weatherImage != null && tile != null && !tile.IsInside)
@@ -19760,7 +19756,7 @@ namespace djack.RogueSurvivor.Engine
             m_UI.UI_Repaint();
 
             // save session object.
-            Session.Save(m_Session, saveName, Session.SaveFormat.FORMAT_BIN);
+            Session.Save(m_Session, saveName);
 
             AddMessage(new Message(String.Format("{0} DONE.", savingOrAutosaving), m_Session.WorldTime.TurnCounter, Color.Yellow));
             RedrawPlayScreen();
@@ -19800,7 +19796,7 @@ namespace djack.RogueSurvivor.Engine
         bool LoadGame(string saveName)
         {
             // load session object.
-            bool loaded = Session.Load(saveName, Session.SaveFormat.FORMAT_BIN);
+            bool loaded = Session.Load(saveName);
             if (!loaded)
                 return false;
             m_Session = Session.Get;
@@ -19918,7 +19914,7 @@ namespace djack.RogueSurvivor.Engine
                 throw new ArgumentException("values length!= choices length");
 
             // display.
-            Color entriesShadowColor = new Color(entriesColor.A, entriesColor.R / 2, entriesColor.G / 2, entriesColor.B / 2);
+            Color entriesShadowColor = new Color(entriesColor.R / 2, entriesColor.G / 2, entriesColor.B / 2, entriesColor.A);
             for (int i = 0; i < entries.Length; i++)
             {
                 string choiceStr;
@@ -19960,7 +19956,7 @@ namespace djack.RogueSurvivor.Engine
 
         void DrawFootnote(Color color, string text)
         {
-            Color shadowColor = new Color(color.A, color.R / 2, color.G / 2, color.B / 2);
+            Color shadowColor = new Color(color.R / 2, color.G / 2, color.B / 2, color.A);
             m_UI.UI_DrawStringBold(color, String.Format("<{0}>", text), 0, CANVAS_HEIGHT - BOLD_LINE_SPACING, shadowColor);
         }
         #endregion
@@ -20421,11 +20417,6 @@ namespace djack.RogueSurvivor.Engine
             SetCurrentMap(startMap);
             RefreshPlayer();
             UpdatePlayerFOV(m_Player);  // to make sure we get notified of actors acting before us in turn 0.
-#if DEBUG
-            AddDevCheatItems();
-            AddDevCheatSkills();
-            AddDevMiscStuff();
-#endif
 
             ////////////////////////
             // Reveal starting map?
@@ -23145,69 +23136,5 @@ namespace djack.RogueSurvivor.Engine
             m_MusicManager.Play(mapMusic, MusicPriority.PRIORITY_BGM);
         }
         #endregion
-
-#if DEBUG
-        #region Dev
-        void AddDevCheatItems()
-        {
-            /*        
-            Inventory inv = m_Player.Inventory;
-   
-            Item it = new ItemBarricadeMaterial(m_GameItems.WOODENPLANK) { Quantity = 4 };
-            inv.AddAll(it);
-            it = new ItemBarricadeMaterial(m_GameItems.WOODENPLANK) { Quantity = 3 };
-            inv.AddAll(it);
-            it = new ItemBarricadeMaterial(m_GameItems.WOODENPLANK) { Quantity = 2 };
-            inv.AddAll(it);
-
-            Map map = m_Player.Location.Map;
-            Point pos = m_Player.Location.Position;
-            it = new ItemBarricadeMaterial(m_GameItems.WOODENPLANK) { Quantity = 3 };
-            map.DropItemAt(it, pos);
-            it = new ItemBarricadeMaterial(m_GameItems.WOODENPLANK) { Quantity = 3 };
-            map.DropItemAt(it, pos);
-            Item it2 = new ItemBarricadeMaterial(m_GameItems.WOODENPLANK) { Quantity = 3 };
-            map.DropItemAt(it2, pos);
-            it.Quantity--;
-            */
-
-            /* traps
-            Item it = new ItemTrap(m_GameItems.BEAR_TRAP);
-            inv.AddAll(it);
-            it = new ItemTrap(m_GameItems.BEAR_TRAP);
-            inv.AddAll(it);
-            it = new ItemTrap(m_GameItems.BEAR_TRAP);
-            inv.AddAll(it);
-            it = new ItemTrap(m_GameItems.BEAR_TRAP);
-            inv.AddAll(it);
-            */
-        }
-
-        void AddDevCheatSkills()
-        {
-            // all the living skills.
-            /*
-            for (int id = (int)Skills.IDs._FIRST_LIVING; id < (int)Skills.IDs._FIRST_UNDEAD; id++)
-                for (int l = 0; l < 5; l++)
-                    m_Player.Sheet.SkillTable.AddOrIncreaseSkill(id);
-            */
-        }
-
-        void AddDevMiscStuff()
-        {
-            // insane right of the bat.
-            /*            
-            m_Player.Sanity = 0;
-            */
-
-            // join cops.
-            //m_Player.Faction = GameFactions.ThePolice;
-        }
-
-        void DrawTileDev(Map m, Tile t, int x, int y, Point toScreen)
-        {
-        }
-        #endregion
-#endif
     }
 }
