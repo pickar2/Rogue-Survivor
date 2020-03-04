@@ -260,7 +260,6 @@
     <Compile Include="Engine\MapObjects\Board.cs" />
     <Compile Include="Engine\MapObjects\Fortification.cs" />
     <Compile Include="Engine\MapObjects\PowerGenerator.cs" />
-    <Compile Include="Engine\NullSoundManager.cs" />
     <Compile Include="Engine\Scoring.cs" />
     <Compile Include="Engine\Session.cs" />
     <Compile Include="Data\Tile.cs" />
@@ -311,11 +310,10 @@
     <Compile Include="Engine\LOS.cs" />
     <Compile Include="Engine\MapGenerator.cs" />
     <Compile Include="Engine\MessageManager.cs" />
-    <Compile Include="Engine\MDXSoundManager.cs" />
     <Compile Include="Engine\RogueGame.cs" />
     <Compile Include="Engine\Rules.cs" />
     <Compile Include="Engine\PlayerCommand.cs" />
-    <Compile Include="Engine\SFMLSoundManager.cs" />
+    <Compile Include="Engine\MusicManager.cs" />
     <Compile Include="Engine\Tasks\TaskRemoveDecoration.cs" />
     <Compile Include="Engine\TextFile.cs" />
     <Compile Include="Gameplay\AI\FeralDogAI.cs" />
@@ -524,31 +522,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="csfml-audio.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="csfml-window.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="IconPNG.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libsndfile-1.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Microsoft.DirectX.AudioVideoPlayback.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Microsoft.DirectX.Direct3D.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Microsoft.DirectX.Direct3DX.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Microsoft.DirectX.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="openal32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Data\dummy.txt">

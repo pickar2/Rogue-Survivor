@@ -788,19 +788,7 @@ namespace djack.RogueSurvivor.Engine
             m_UI = UI;
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating MusicManager");
-            /*switch (SetupConfig.Sound)
-            {
-                case SetupConfig.eSound.SOUND_MANAGED_DIRECTX:
-                    m_MusicManager = new MDXSoundManager();
-                    break;
-                case SetupConfig.eSound.SOUND_SFML:
-                    m_MusicManager = new SFMLSoundManager();
-                    break;
-                default:*/
-                    m_MusicManager = new NullSoundManager();
-            //        break;
-            //}
-            // FIXME
+            m_MusicManager = new MusicManager();
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating MessageManager");
             m_MessageManager = new MessageManager(MESSAGES_SPACING, MESSAGES_FADEOUT, MESSAGES_HISTORY);
@@ -1205,7 +1193,6 @@ namespace djack.RogueSurvivor.Engine
 
             // stop & dispose music.
             m_MusicManager.Stop();
-            m_MusicManager.Dispose();
 
             return false;
         }
