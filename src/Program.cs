@@ -22,9 +22,7 @@ namespace djack.RogueSurvivor
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Logger.WriteLine(Logger.Stage.INIT_MAIN, "loading setup...");
-            SetupConfig.Load();
-            Logger.WriteLine(Logger.Stage.INIT_MAIN, "setup : " + SetupConfig.toString(SetupConfig.Video) + ", " + SetupConfig.toString(SetupConfig.Sound));
+            SetupConfig.CreateDir();
 
             using (RogueForm form = new RogueForm())
             {
