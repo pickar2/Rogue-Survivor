@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine
+namespace RogueSurvivor.Engine
 {
     [Serializable]
     class HiScore
@@ -50,16 +46,11 @@ namespace djack.RogueSurvivor.Engine
     [Serializable]
     class HiScoreTable
     {
-        #region Constants
         public const int DEFAULT_MAX_ENTRIES = 12;
-        #endregion
 
-        #region Fields
         List<HiScore> m_Table;
         int m_MaxEntries;
-        #endregion
 
-        #region Properties
         public int Count
         {
             get { return m_Table.Count; }
@@ -69,9 +60,7 @@ namespace djack.RogueSurvivor.Engine
         {
             get { return Get(index); }
         }
-        #endregion
 
-        #region Init
         public HiScoreTable(int maxEntries)
         {
             if (maxEntries < 1)
@@ -97,9 +86,7 @@ namespace djack.RogueSurvivor.Engine
                     SkillsDescription = "no skills"
                 });
         }
-        #endregion
 
-        #region Storing & Retrieving
         public bool Register(HiScore hi)
         {
             int i = 0;
@@ -125,9 +112,7 @@ namespace djack.RogueSurvivor.Engine
                 throw new ArgumentOutOfRangeException("index");
             return m_Table[index];
         }
-        #endregion
 
-        #region Saving & Loading
         public static void Save(HiScoreTable table, string filepath)
         {
             if (table == null)
@@ -174,7 +159,6 @@ namespace djack.RogueSurvivor.Engine
                 return null;
             }
 
-
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading hiscore table... done!");
             return table;
         }
@@ -191,6 +175,5 @@ namespace djack.RogueSurvivor.Engine
                 save ? FileAccess.Write : FileAccess.Read,
                 FileShare.None);
         }
-        #endregion
     }
 }

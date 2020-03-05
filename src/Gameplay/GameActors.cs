@@ -1,26 +1,22 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine;
+using RogueSurvivor.Gameplay.AI;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.IO;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Gameplay.AI;
-
-namespace djack.RogueSurvivor.Gameplay
+namespace RogueSurvivor.Gameplay
 {
     class GameActors : ActorModelDB
     {
-        #region IDs
         public enum IDs
         {
             _FIRST,
 
             UNDEAD_SKELETON = _FIRST,
             UNDEAD_RED_EYED_SKELETON,
-            UNDEAD_RED_SKELETON,                
+            UNDEAD_RED_SKELETON,
 
             UNDEAD_ZOMBIE,
             UNDEAD_DARK_EYED_ZOMBIE,
@@ -60,22 +56,16 @@ namespace djack.RogueSurvivor.Gameplay
 
             _COUNT
         }
-        #endregion
 
-        #region Constants
         const int NO_INVENTORY = 0;
         const int NO_FOOD = 0;
         const int NO_SLEEP = 0;
         const int NO_SANITY = 0;
         const int NO_SMELL = 0;
         const int NO_AUDIO = 0;
-        #endregion
 
-        #region Fields
         ActorModel[] m_Models = new ActorModel[(int)IDs._COUNT];
-        #endregion
 
-        #region Properties
         public override ActorModel this[int id]
         {
             get { return m_Models[id]; }
@@ -125,9 +115,7 @@ namespace djack.RogueSurvivor.Gameplay
         public ActorModel BlackOps { get { return this[IDs.BLACKOPS_MAN]; } }
 
         public ActorModel JasonMyers { get { return this[IDs.JASON_MYERS]; } }
-        #endregion
 
-        #region Data stats
         public struct ActorData
         {
             public const int COUNT_FIELDS = 16;
@@ -171,7 +159,6 @@ namespace djack.RogueSurvivor.Gameplay
             }
         }
 
-        #region Undeads
         public int UNDEAD_FOOD = Rules.ROT_BASE_POINTS;
 
         ActorData DATA_SKELETON;
@@ -194,13 +181,9 @@ namespace djack.RogueSurvivor.Gameplay
         ActorData DATA_ZL;
 
         ActorData DATA_RAT_ZOMBIE;
-        #endregion
 
-        #region Unique Undeads
         ActorData DATA_SEWERS_THING;
-        #endregion
 
-        #region Livings
         public int HUMAN_HUN = Rules.FOOD_BASE_POINTS;
         public int HUMAN_SLP = Rules.SLEEP_BASE_POINTS;
         public int HUMAN_SAN = Rules.SANITY_BASE_POINTS;
@@ -210,10 +193,10 @@ namespace djack.RogueSurvivor.Gameplay
         public int DOG_HUN = Rules.FOOD_BASE_POINTS;
         public int DOG_SLP = Rules.SLEEP_BASE_POINTS;
         public int DOG_INVENTORY = 1;
-        
+
         ActorData DATA_MALE_CIVILIAN;
         ActorData DATA_FEMALE_CIVILIAN;
-        ActorData DATA_FERAL_DOG;       
+        ActorData DATA_FERAL_DOG;
 
         ActorData DATA_POLICEMAN;
 
@@ -226,15 +209,9 @@ namespace djack.RogueSurvivor.Gameplay
         ActorData DATA_GANGSTA_MAN;
 
         ActorData DATA_BLACKOPS_MAN;
-        #endregion
 
-        #region Unique Livings
         ActorData DATA_JASON_MYERS;
-        #endregion
 
-        #endregion
-
-        #region Init
         public GameActors()
         {
             // bind
@@ -243,9 +220,6 @@ namespace djack.RogueSurvivor.Gameplay
 
         public void CreateModels()
         {
-            #region Undeads
-
-            #region Skeleton branch
             // alpha10 new disarm mechanic, Skeletons cannot disarm but can use exits.
             this[IDs.UNDEAD_SKELETON] = new ActorModel(GameImages.ACTOR_SKELETON,
                 DATA_SKELETON.NAME, DATA_SKELETON.PLURAL,
@@ -262,9 +236,9 @@ namespace djack.RogueSurvivor.Gameplay
                     new Defence(DATA_SKELETON.DEF, DATA_SKELETON.PRO_HIT, DATA_SKELETON.PRO_SHOT),
                     DATA_SKELETON.FOV, NO_AUDIO, NO_SMELL, NO_INVENTORY),
                 typeof(SkeletonAI))
-                {
-                    FlavorDescription = DATA_SKELETON.FLAVOR
-                };
+            {
+                FlavorDescription = DATA_SKELETON.FLAVOR
+            };
 
             this[IDs.UNDEAD_RED_EYED_SKELETON] = new ActorModel(GameImages.ACTOR_RED_EYED_SKELETON,
                 DATA_RED_EYED_SKELETON.NAME, DATA_RED_EYED_SKELETON.PLURAL,
@@ -281,9 +255,9 @@ namespace djack.RogueSurvivor.Gameplay
                     new Defence(DATA_RED_EYED_SKELETON.DEF, DATA_RED_EYED_SKELETON.PRO_HIT, DATA_RED_EYED_SKELETON.PRO_SHOT),
                     DATA_RED_EYED_SKELETON.FOV, NO_AUDIO, NO_SMELL, NO_INVENTORY),
                 typeof(SkeletonAI))
-                {
-                    FlavorDescription = DATA_RED_EYED_SKELETON.FLAVOR
-                };
+            {
+                FlavorDescription = DATA_RED_EYED_SKELETON.FLAVOR
+            };
 
             this[IDs.UNDEAD_RED_SKELETON] = new ActorModel(GameImages.ACTOR_RED_SKELETON,
                 DATA_RED_SKELETON.NAME, DATA_RED_SKELETON.PLURAL,
@@ -300,13 +274,10 @@ namespace djack.RogueSurvivor.Gameplay
                     new Defence(DATA_RED_SKELETON.DEF, DATA_RED_SKELETON.PRO_HIT, DATA_RED_SKELETON.PRO_SHOT),
                     DATA_RED_SKELETON.FOV, NO_AUDIO, NO_SMELL, NO_INVENTORY),
                 typeof(SkeletonAI))
-                {
-                    FlavorDescription = DATA_RED_SKELETON.FLAVOR
-                };
+            {
+                FlavorDescription = DATA_RED_SKELETON.FLAVOR
+            };
 
-            #endregion
-
-            #region Std zombie branch
             this[IDs.UNDEAD_ZOMBIE] = new ActorModel(GameImages.ACTOR_ZOMBIE,
                     DATA_ZOMBIE.NAME, DATA_ZOMBIE.PLURAL,
                     DATA_ZOMBIE.SCORE,
@@ -376,9 +347,6 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = DATA_DARK_ZOMBIE.FLAVOR
             };
 
-            #endregion
-
-            #region Zombified branch
             this[IDs.UNDEAD_MALE_ZOMBIFIED] = new ActorModel(null,
                     DATA_MALE_ZOMBIFIED.NAME, DATA_MALE_ZOMBIFIED.PLURAL,
                     DATA_MALE_ZOMBIFIED.SCORE,
@@ -398,9 +366,9 @@ namespace djack.RogueSurvivor.Gameplay
                         new Defence(DATA_MALE_ZOMBIFIED.DEF, DATA_MALE_ZOMBIFIED.PRO_HIT, DATA_MALE_ZOMBIFIED.PRO_SHOT),
                         DATA_MALE_ZOMBIFIED.FOV, NO_AUDIO, DATA_MALE_ZOMBIFIED.SMELL, NO_INVENTORY),
                         typeof(ZombieAI))
-                        {
-                            FlavorDescription = DATA_MALE_ZOMBIFIED.FLAVOR
-                        };
+            {
+                FlavorDescription = DATA_MALE_ZOMBIFIED.FLAVOR
+            };
 
             this[IDs.UNDEAD_FEMALE_ZOMBIFIED] = new ActorModel(null,
                     DATA_FEMALE_ZOMBIFIED.NAME, DATA_FEMALE_ZOMBIFIED.PLURAL,
@@ -524,9 +492,7 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 FlavorDescription = DATA_FEMALE_DISCIPLE.FLAVOR
             };
-            #endregion
 
-            #region ZM branch
             this[IDs.UNDEAD_ZOMBIE_MASTER] = new ActorModel(GameImages.ACTOR_ZOMBIE_MASTER,
                     DATA_ZM.NAME, DATA_ZM.PLURAL,
                     DATA_ZM.SCORE,
@@ -551,9 +517,9 @@ namespace djack.RogueSurvivor.Gameplay
                         new Defence(DATA_ZM.DEF, DATA_ZM.PRO_HIT, DATA_ZM.PRO_SHOT),
                         DATA_ZM.FOV, NO_AUDIO, DATA_ZM.SMELL, NO_INVENTORY),
                         typeof(ZombieAI))
-                        {
-                            FlavorDescription = DATA_ZM.FLAVOR
-                        };
+            {
+                FlavorDescription = DATA_ZM.FLAVOR
+            };
 
             this[IDs.UNDEAD_ZOMBIE_LORD] = new ActorModel(GameImages.ACTOR_ZOMBIE_LORD,
                     DATA_ZL.NAME, DATA_ZL.PLURAL,
@@ -580,9 +546,9 @@ namespace djack.RogueSurvivor.Gameplay
                         new Defence(DATA_ZL.DEF, DATA_ZL.PRO_HIT, DATA_ZL.PRO_SHOT),
                         DATA_ZL.FOV, NO_AUDIO, DATA_ZL.SMELL, NO_INVENTORY),
                     typeof(ZombieAI))
-                    {
-                        FlavorDescription = DATA_ZL.FLAVOR
-                    };
+            {
+                FlavorDescription = DATA_ZL.FLAVOR
+            };
 
             this[IDs.UNDEAD_ZOMBIE_PRINCE] = new ActorModel(GameImages.ACTOR_ZOMBIE_PRINCE,
                     DATA_ZP.NAME, DATA_ZP.PLURAL,
@@ -613,9 +579,6 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = DATA_ZP.FLAVOR
             };
 
-            #endregion
-
-            #region Rats
             // alpha10 new disarm mechanic, Rats cannot disarm
             this[IDs.UNDEAD_RAT_ZOMBIE] = new ActorModel(GameImages.ACTOR_RAT_ZOMBIE,
                DATA_RAT_ZOMBIE.NAME, DATA_RAT_ZOMBIE.PLURAL,
@@ -630,10 +593,7 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 FlavorDescription = DATA_RAT_ZOMBIE.FLAVOR,
             };
-            #endregion
-            #endregion
 
-            #region Unique Undeads
             this[IDs.SEWERS_THING] = new ActorModel(GameImages.ACTOR_SEWERS_THING,
                     DATA_SEWERS_THING.NAME, DATA_SEWERS_THING.PLURAL,
                     DATA_SEWERS_THING.SCORE,
@@ -652,10 +612,7 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 FlavorDescription = DATA_SEWERS_THING.FLAVOR
             };
-            #endregion
 
-            #region Livings
-            #region Civilians
             this[IDs.MALE_CIVILIAN] = new ActorModel(null,
                     DATA_MALE_CIVILIAN.NAME, DATA_MALE_CIVILIAN.PLURAL,
                     DATA_MALE_CIVILIAN.SCORE,
@@ -685,9 +642,9 @@ namespace djack.RogueSurvivor.Gameplay
                         new Defence(DATA_MALE_CIVILIAN.DEF, DATA_MALE_CIVILIAN.PRO_HIT, DATA_MALE_CIVILIAN.PRO_SHOT),
                         DATA_MALE_CIVILIAN.FOV, DATA_MALE_CIVILIAN.AUDIO, NO_SMELL, HUMAN_INVENTORY),
                     typeof(CivilianAI)) // alpha10.1
-                    {
-                        FlavorDescription = DATA_MALE_CIVILIAN.FLAVOR
-                    };
+            {
+                FlavorDescription = DATA_MALE_CIVILIAN.FLAVOR
+            };
 
             this[IDs.FEMALE_CIVILIAN] = new ActorModel(null,
                     DATA_FEMALE_CIVILIAN.NAME, DATA_FEMALE_CIVILIAN.PLURAL,
@@ -721,9 +678,7 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 FlavorDescription = DATA_FEMALE_CIVILIAN.FLAVOR
             };
-            #endregion
 
-            #region CHAR
             this[IDs.CHAR_GUARD] = new ActorModel(null, // skinned & dressed
                      DATA_CHAR_GUARD.NAME, DATA_CHAR_GUARD.PLURAL,
                      DATA_CHAR_GUARD.SCORE,
@@ -749,19 +704,17 @@ namespace djack.RogueSurvivor.Gameplay
                          new Defence(DATA_CHAR_GUARD.DEF, DATA_CHAR_GUARD.PRO_HIT, DATA_CHAR_GUARD.PRO_SHOT),
                          DATA_CHAR_GUARD.FOV, DATA_CHAR_GUARD.AUDIO, NO_SMELL, HUMAN_INVENTORY),
                      typeof(CHARGuardAI))
-                     {
-                         FlavorDescription = DATA_CHAR_GUARD.FLAVOR
-                     };
-            #endregion
+            {
+                FlavorDescription = DATA_CHAR_GUARD.FLAVOR
+            };
 
-            #region Army
             this[IDs.ARMY_NATIONAL_GUARD] = new ActorModel(null,  // skinned & dressed
                      DATA_NATGUARD.NAME, DATA_NATGUARD.PLURAL,
                      DATA_NATGUARD.SCORE,
                      new DollBody(true, DATA_NATGUARD.SPD),
                      new Abilities()
                      {
-                         HasInventory = true,                         
+                         HasInventory = true,
                          CanUseMapObjects = true,
                          CanBreakObjects = true,
                          CanJump = true,
@@ -780,12 +733,10 @@ namespace djack.RogueSurvivor.Gameplay
                          new Defence(DATA_NATGUARD.DEF, DATA_NATGUARD.PRO_HIT, DATA_NATGUARD.PRO_SHOT),
                          DATA_NATGUARD.FOV, DATA_NATGUARD.AUDIO, NO_SMELL, HUMAN_INVENTORY),
                      typeof(SoldierAI))
-                     {
-                         FlavorDescription = DATA_NATGUARD.FLAVOR
-                     };
-            #endregion
+            {
+                FlavorDescription = DATA_NATGUARD.FLAVOR
+            };
 
-            #region Bikers
             this[IDs.BIKER_MAN] = new ActorModel(null,  // skinned & dressed
                      DATA_BIKER_MAN.NAME, DATA_BIKER_MAN.PLURAL,
                      DATA_BIKER_MAN.SCORE,
@@ -817,9 +768,7 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 FlavorDescription = DATA_BIKER_MAN.FLAVOR
             };
-            #endregion
 
-            #region Gangstas
             this[IDs.GANGSTA_MAN] = new ActorModel(null,  // skinned & dressed
                      DATA_GANGSTA_MAN.NAME, DATA_GANGSTA_MAN.PLURAL,
                      DATA_GANGSTA_MAN.SCORE,
@@ -850,9 +799,7 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 FlavorDescription = DATA_GANGSTA_MAN.FLAVOR
             };
-            #endregion
 
-            #region Police
             this[IDs.POLICEMAN] = new ActorModel(null,  // skinned & dressed
                     DATA_POLICEMAN.NAME, DATA_POLICEMAN.PLURAL,
                     DATA_POLICEMAN.SCORE,
@@ -885,9 +832,7 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 FlavorDescription = DATA_POLICEMAN.FLAVOR
             };
-            #endregion
 
-            #region BlackOps
             this[IDs.BLACKOPS_MAN] = new ActorModel(null,  // skinned & dressed
                      DATA_BLACKOPS_MAN.NAME, DATA_BLACKOPS_MAN.PLURAL,
                      DATA_BLACKOPS_MAN.SCORE,
@@ -916,9 +861,7 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 FlavorDescription = DATA_BLACKOPS_MAN.FLAVOR
             };
-            #endregion
 
-            #region Animals
             ActorData data = DATA_FERAL_DOG;
             this[IDs.FERAL_DOG] = new ActorModel(null,
                      data.NAME, data.PLURAL,
@@ -943,10 +886,7 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 FlavorDescription = data.FLAVOR
             };
-            #endregion
-            #endregion
 
-            #region Jason Myers
             this[IDs.JASON_MYERS] = new ActorModel(null,  // skinned.
                       DATA_JASON_MYERS.NAME, DATA_JASON_MYERS.PLURAL,
                       DATA_JASON_MYERS.SCORE,
@@ -975,17 +915,14 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 FlavorDescription = DATA_JASON_MYERS.FLAVOR
             };
-            #endregion
         }
-        #endregion
 
-        #region Data loading
         public bool LoadFromCSV(IRogueUI ui, string path)
         {
             //////////////////////////
             // Read & parse csv file.
             //////////////////////////
-            Notify(ui, "loading file...");            
+            Notify(ui, "loading file...");
             // read the whole file.
             List<string> allLines = new List<string>();
             bool ignoreHeader = true;
@@ -1006,14 +943,13 @@ namespace djack.RogueSurvivor.Gameplay
             // parse all the lines read.
             Notify(ui, "parsing CSV...");
             CSVParser parser = new CSVParser();
-            CSVTable table =  parser.ParseToTable(allLines.ToArray(), ActorData.COUNT_FIELDS);
+            CSVTable table = parser.ParseToTable(allLines.ToArray(), ActorData.COUNT_FIELDS);
 
             /////////////
             // Set data.
             /////////////
             Notify(ui, "reading data...");
 
-            #region Undeads
             DATA_SKELETON = GetDataFromCSVTable(ui, table, IDs.UNDEAD_SKELETON);
             DATA_RED_EYED_SKELETON = GetDataFromCSVTable(ui, table, IDs.UNDEAD_RED_EYED_SKELETON);
             DATA_RED_SKELETON = GetDataFromCSVTable(ui, table, IDs.UNDEAD_RED_SKELETON);
@@ -1036,9 +972,7 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_RAT_ZOMBIE = GetDataFromCSVTable(ui, table, IDs.UNDEAD_RAT_ZOMBIE);
 
             DATA_SEWERS_THING = GetDataFromCSVTable(ui, table, IDs.SEWERS_THING);
-            #endregion
 
-            #region Livings
             DATA_MALE_CIVILIAN = GetDataFromCSVTable(ui, table, IDs.MALE_CIVILIAN);
             DATA_FEMALE_CIVILIAN = GetDataFromCSVTable(ui, table, IDs.FEMALE_CIVILIAN);
             DATA_FERAL_DOG = GetDataFromCSVTable(ui, table, IDs.FERAL_DOG);
@@ -1055,7 +989,6 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_BLACKOPS_MAN = GetDataFromCSVTable(ui, table, IDs.BLACKOPS_MAN);
 
             DATA_JASON_MYERS = GetDataFromCSVTable(ui, table, IDs.JASON_MYERS);
-            #endregion
 
             /////////////////
             // Create models
@@ -1111,9 +1044,7 @@ namespace djack.RogueSurvivor.Gameplay
             ui.UI_DrawStringBold(Color.White, "Loading actors data : " + stage, 0, 0);
             ui.UI_Repaint();
         }
-        #endregion
 
-        #region Branches
         /* FIXME: branch = property of model */
 
         public bool IsZombifiedBranch(ActorModel m)
@@ -1142,6 +1073,5 @@ namespace djack.RogueSurvivor.Gameplay
         {
             return m == RatZombie;
         }
-        #endregion
     }
 }

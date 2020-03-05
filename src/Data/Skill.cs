@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace djack.RogueSurvivor.Data
+namespace RogueSurvivor.Data
 {
     [Serializable]
     class Skill
     {
-        #region Fields
         int m_ID;
         int m_Level;
-        #endregion
 
-        #region Properties
         public int ID
         {
             get { return m_ID; }
@@ -24,24 +19,18 @@ namespace djack.RogueSurvivor.Data
             get { return m_Level; }
             set { m_Level = value; }
         }
-        #endregion
 
-        #region Init
         public Skill(int id)
         {
             m_ID = id;
         }
-        #endregion
     }
 
     [Serializable]
     class SkillTable
     {
-        #region Fields
         Dictionary<int, Skill> m_Table;   // allocated only if needed (some actors have 0 skills)
-        #endregion
 
-        #region Properties
         /// <summary>
         /// Get all skills null if no skills.
         /// </summary>
@@ -68,7 +57,7 @@ namespace djack.RogueSurvivor.Data
 
                 int[] array = new int[CountSkills];
                 int i = 0;
-                foreach(Skill s in m_Table.Values)
+                foreach (Skill s in m_Table.Values)
                 {
                     array[i++] = s.ID;
                 }
@@ -102,25 +91,19 @@ namespace djack.RogueSurvivor.Data
             }
         }
 
-        #endregion
-
-        #region Init
         public SkillTable()
         {
         }
 
         public SkillTable(IEnumerable<Skill> startingSkills)
         {
-            if(startingSkills==null)
+            if (startingSkills == null)
                 throw new ArgumentNullException("startingSkills");
 
             foreach (Skill sk in startingSkills)
                 AddSkill(sk);
-
         }
-        #endregion
 
-        #region Skills
         public Skill GetSkill(int id)
         {
             if (m_Table == null)
@@ -186,6 +169,5 @@ namespace djack.RogueSurvivor.Data
                     m_Table = null;
             }
         }
-        #endregion
     }
 }

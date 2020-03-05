@@ -1,15 +1,12 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine;
+using RogueSurvivor.Engine.AI;
+using RogueSurvivor.Gameplay.AI.Sensors;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Engine.Actions;
-using djack.RogueSurvivor.Engine.AI;
-using djack.RogueSurvivor.Gameplay.AI.Sensors;
-
-namespace djack.RogueSurvivor.Gameplay.AI
+namespace RogueSurvivor.Gameplay.AI
 {
     [Serializable]
     /// <summary>
@@ -18,17 +15,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
     /// </summary>
     class SewersThingAI : BaseAI
     {
-        #region Constants
         const int LOS_MEMORY = 20;
-        #endregion
 
-        #region Fields
         MemorizedSensor m_LOSSensor;
         SmellSensor m_LivingSmellSensor;
         SmellSensor m_MasterSmellSensor;
-        #endregion
 
-        #region BaseAI
         protected override void CreateSensors()
         {
             m_LOSSensor = new MemorizedSensor(new LOSSensor(LOSSensor.SensingFilter.ACTORS), LOS_MEMORY);
@@ -56,7 +48,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             //////////////////////////////////////////////////////////////
 
             // 1 move closer to an enemy, nearest & visible enemies first
-            #region
             List<Percept> enemies = FilterEnemies(game, mapPercepts);
             if (enemies != null)
             {
@@ -122,22 +113,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
             }
-            #endregion
 
             // 2 move to highest living scent
-            #region
             ActorAction trackLivingAction = BehaviorTrackScent(game, m_LivingSmellSensor.Scents);
             if (trackLivingAction != null)
             {
                 m_Actor.Activity = Activity.TRACKING;
                 return trackLivingAction;
             }
-            #endregion
 
             // 3 wander
             m_Actor.Activity = Activity.IDLE;
             return BehaviorWander(game, null);
         }
-        #endregion
     }
 }

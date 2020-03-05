@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
+using System;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Actions
+namespace RogueSurvivor.Engine.Actions
 {
     class ActionTakeLead : ActorAction
     {
-        #region Fields
         readonly Actor m_Target;
-        #endregion
 
-        #region Init
         public ActionTakeLead(Actor actor, RogueGame game, Actor target)
             : base(actor, game)
         {
@@ -22,12 +15,10 @@ namespace djack.RogueSurvivor.Engine.Actions
 
             m_Target = target;
         }
-        #endregion
 
-        #region ActorAction
         public override bool IsLegal()
         {
-            return m_Game.Rules.CanActorTakeLead(m_Actor,m_Target);
+            return m_Game.Rules.CanActorTakeLead(m_Actor, m_Target);
         }
 
         public override void Perform()
@@ -38,6 +29,5 @@ namespace djack.RogueSurvivor.Engine.Actions
             else
                 m_Game.DoTakeLead(m_Actor, m_Target);
         }
-        #endregion
     }
 }

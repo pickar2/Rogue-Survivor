@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
+using System;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Actions
+namespace RogueSurvivor.Engine.Actions
 {
     class ActionSwitchPlace : ActorAction
     {
-        #region Fields
         readonly Actor m_Target;
-        #endregion
 
-        #region Init
         public ActionSwitchPlace(Actor actor, RogueGame game, Actor target)
             : base(actor, game)
         {
@@ -22,9 +15,7 @@ namespace djack.RogueSurvivor.Engine.Actions
 
             m_Target = target;
         }
-        #endregion
 
-        #region ActorAction
         public override bool IsLegal()
         {
             return m_Game.Rules.CanActorSwitchPlaceWith(m_Actor, m_Target);
@@ -34,6 +25,5 @@ namespace djack.RogueSurvivor.Engine.Actions
         {
             m_Game.DoSwitchPlace(m_Actor, m_Target);
         }
-        #endregion
     }
 }

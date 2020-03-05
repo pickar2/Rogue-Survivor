@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Engine;
+using System;
 
-using djack.RogueSurvivor.Engine;
-
-namespace djack.RogueSurvivor.Data
+namespace RogueSurvivor.Data
 {
     [Serializable]
     /// <summary>
@@ -13,7 +9,6 @@ namespace djack.RogueSurvivor.Data
     /// </summary>
     class PlayerController : ActorController
     {
-
         public override ActorAction GetAction(RogueGame game)
         {
             // shouldn't get here

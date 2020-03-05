@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace djack.RogueSurvivor.Data
+namespace RogueSurvivor.Data
 {
     [Serializable]
     enum AttackKind
@@ -24,12 +21,9 @@ namespace djack.RogueSurvivor.Data
     [Serializable]
     struct Attack
     {
-        #region Blank attack
         [NonSerialized]
         public static readonly Attack BLANK = new Attack(AttackKind.PHYSICAL, new Verb("<blank>"), 0, 0, 0, 0, 0, 0, 0);
-        #endregion
 
-        #region Properties
         public AttackKind Kind { get; private set; }
 
         public Verb Verb { get; private set; }
@@ -56,8 +50,6 @@ namespace djack.RogueSurvivor.Data
             get { return this.Range / 2; }
         }
 
-        // alpha10
-
         public int DisarmChance { get; private set; }
 
         /// <summary>
@@ -71,9 +63,7 @@ namespace djack.RogueSurvivor.Data
         /// Eg: rapid fire 2nd shot
         /// </summary>
         public int Hit3Value { get; private set; }
-        #endregion
 
-        #region Init
         public Attack(AttackKind kind, Verb verb, int hitValue, int hit2Value, int hit3Value, int damageValue, int staminaPenalty, int disarmChance, int range)
             : this()
         {
@@ -114,6 +104,5 @@ namespace djack.RogueSurvivor.Data
         {
             return new Attack(kind, verb, normalHitValue, rapidFire1HitValue, rapidFire2HitValue, damageValue, 0, 0, range);
         }
-        #endregion
     }
 }

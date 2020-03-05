@@ -1,9 +1,8 @@
-﻿using RogueSurvivor;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Forms;
 
-namespace djack.RogueSurvivor
+namespace RogueSurvivor
 {
     static class Program
     {

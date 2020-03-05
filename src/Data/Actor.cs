@@ -1,12 +1,9 @@
-﻿using System;
+﻿using RogueSurvivor.Engine.Items;
+using RogueSurvivor.Gameplay;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-using djack.RogueSurvivor.Gameplay;
-using djack.RogueSurvivor.Engine.Items;
-
-namespace djack.RogueSurvivor.Data
+namespace RogueSurvivor.Data
 {
     [Serializable]
     class TrustRecord
@@ -18,7 +15,6 @@ namespace djack.RogueSurvivor.Data
     [Serializable]
     class Actor
     {
-        #region Flags
         [Flags]
         enum Flags
         {
@@ -30,26 +26,16 @@ namespace djack.RogueSurvivor.Data
             IS_RUNNING = (1 << 4),
             IS_SLEEPING = (1 << 5)
         }
-        #endregion
 
-        #region Fields
         Flags m_Flags;
-
-        #region Definition
         int m_ModelID;
-        /*bool m_IsUnique;*/
         int m_FactionID;
         int m_GangID;
         string m_Name;
-        /*bool m_IsProperName;
-        bool m_IsPluralName;*/
         ActorController m_Controller;
         bool m_isBotPlayer;  // alpha10.1
         ActorSheet m_Sheet;
         int m_SpawnTime;
-        #endregion
-
-        #region State
         Inventory m_Inventory = null;
         Doll m_Doll;
         int m_HitPoints;
@@ -81,16 +67,8 @@ namespace djack.RogueSurvivor.Data
         int m_MurdersCounter;
         int m_Infection;
         Corpse m_DraggedCorpse;
-        // alpha10 moved out of Actor
-        //List<Item> m_BoringItems = null;
-        // alpha10
         bool m_IsInvincible;
         int m_OdorSuppressorCounter;
-        #endregion
-        #endregion
-
-        #region Properties
-        #region Definition
 
         /// <summary>
         /// Gets or sets model. Setting model reset inventory and all stats to the model default values.
@@ -187,7 +165,7 @@ namespace djack.RogueSurvivor.Data
         public bool IsBotPlayer
         {
             get { return m_isBotPlayer; }
-            set { m_isBotPlayer = value;  }
+            set { m_isBotPlayer = value; }
         }
 
         public int SpawnTime
@@ -205,9 +183,7 @@ namespace djack.RogueSurvivor.Data
         {
             get { return m_GangID != (int)GameGangs.IDs.NONE; }
         }
-        #endregion
 
-        #region State
         public Doll Doll
         {
             get { return m_Doll; }
@@ -485,16 +461,13 @@ namespace djack.RogueSurvivor.Data
             get { return m_IsInvincible; }
             set { m_IsInvincible = value; }
         }
-        
+
         public int OdorSuppressorCounter
         {
             get { return m_OdorSuppressorCounter; }
             set { m_OdorSuppressorCounter = value; }
         }
-        #endregion
-        #endregion
 
-        #region Init
         public Actor(ActorModel model, Faction faction, string name, bool isProperName, bool isPluralName, int spawnTime)
         {
             if (model == null)
@@ -547,9 +520,7 @@ namespace djack.RogueSurvivor.Data
             m_CurrentDefence = model.StartingSheet.BaseDefence;
             m_CurrentRangedAttack = Attack.BLANK;
         }
-        #endregion
 
-        #region Group, Followers & Trust
         public void AddFollower(Actor other)
         {
             if (other == null)
@@ -626,7 +597,7 @@ namespace djack.RogueSurvivor.Data
             }
             return 0;
         }
-        
+
         // alpha10
         /// <summary>
         /// Is this other actor our leader, a follower or a mate.
@@ -651,9 +622,7 @@ namespace djack.RogueSurvivor.Data
             // nope
             return false;
         }
-        #endregion
 
-        #region Aggressor & Self Defence
         public void MarkAsAgressorOf(Actor other)
         {
             if (other == null || other.IsDead)
@@ -726,249 +695,6 @@ namespace djack.RogueSurvivor.Data
             }
         }
 
-        // alpha10 obsolete, moved to Rules
-#if false
-
-        /// <summary>
-        /// Check for agressor/self defence relation.
-        /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public bool AreDirectEnemies(Actor other)
-        {
-            if (other == null || other.IsDead)
-                return false;
-
-            if (m_AggressorOf != null)
-            {
-                if (m_AggressorOf.Contains(other))
-                    return true;
-            }
-            if (m_SelfDefenceFrom != null)
-            {
-                if (m_SelfDefenceFrom.Contains(other))
-                    return true;
-            }
-
-            if (other.IsAggressorOf(this))
-                return true;
-            if (other.IsSelfDefenceFrom(this))
-                return true;
-
-            // nope.
-            return false;
-        }
-
-        /// <summary>
-        /// Check for direct enemies through leader/followers.
-        /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public bool AreIndirectEnemies(Actor other)
-        {
-            if (other == null || other.IsDead)
-                return false;
-
-            // check my leader and my mates, if any.
-            if (this.HasLeader)
-            {
-                // my leader.
-                if (m_Leader.AreDirectEnemies(other))
-                    return true;
-                // my mates = my leader followers.
-                foreach (Actor mate in m_Leader.Followers)
-                    if (mate != this && mate.AreDirectEnemies(other))
-                        return true;
-            }
-
-            // check my followers, if any.
-            if (this.CountFollowers > 0)
-            {
-                foreach (Actor fo in m_Followers)
-                    if (fo.AreDirectEnemies(other))
-                        return true;
-            }
-
-            // check their leader and mates.
-            if (other.HasLeader)
-            {
-                // his leader.
-                if (other.Leader.AreDirectEnemies(this))
-                    return true;
-                // his mates = his leader followers.
-                foreach (Actor mate in other.Leader.Followers)
-                    if (mate != other && mate.AreDirectEnemies(this))
-                        return true;
-            }
-
-            // nope.
-            return false;
-        }
-#endif
-
-#if false
-        /// <summary>
-        /// Make sure another actor is added to the list of personal enemies.
-        /// </summary>
-        /// <param name="e"></param>
-        public void MarkAsPersonalEnemy(Actor e)
-        {
-            if (e == null || e.IsDead)
-                return;
-
-            if (m_PersonalEnemies == null)
-                m_PersonalEnemies = new List<Actor>(1);
-            else if (m_PersonalEnemies.Contains(e))
-                return;
-
-            m_PersonalEnemies.Add(e);
-        }
-
-        public void RemoveAsPersonalEnemy(Actor e)
-        {
-            if (m_PersonalEnemies == null)
-                return;
-
-            m_PersonalEnemies.Remove(e);
-
-            // minimize data size.
-            if (m_PersonalEnemies.Count == 0)
-                m_PersonalEnemies = null; 
-        }
-
-        public void RemoveAllPersonalEnemies()
-        {
-            if (m_PersonalEnemies == null)
-                return;
-
-            while (m_PersonalEnemies.Count > 0)
-            {
-                Actor e = m_PersonalEnemies[0];
-                e.RemoveAsPersonalEnemy(this);
-                m_PersonalEnemies.Remove(e);
-            }
-        }
-
-        /// <summary>
-        /// Checks for own personal enemy as well as our band (leader & followers).
-        /// So in a band we share all personal enemies.
-        /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        public bool HasActorAsPersonalEnemy(Actor other)
-        {
-            if (other == null || other.IsDead)
-                return false;
-
-            // first check personal list.
-            if (m_PersonalEnemies != null)
-            {
-                if (m_PersonalEnemies.Contains(other))
-                    return true;
-            }
-
-            // check my leader and my mates, if any.
-            if (this.HasLeader)
-            {
-                // my leader.
-                if (m_Leader.HasDirectPersonalEnemy(other))
-                    return true;
-                // my mates = my leader followers.
-                foreach (Actor mate in m_Leader.Followers)
-                    if (mate != this && mate.HasDirectPersonalEnemy(other))
-                        return true;
-            }
-
-            // check my followers, if any.
-            if (this.CountFollowers > 0)
-            {
-                foreach (Actor fo in m_Followers)
-                    if (fo.HasDirectPersonalEnemy(other))
-                        return true;
-            }
-
-            // nope.
-            return false;
-        }
-
-        /// <summary>
-        /// Checks only personal enemy list, do not check our band.
-        /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        bool HasDirectPersonalEnemy(Actor other)
-        {
-            if (m_PersonalEnemies == null)
-                return false;
-            return m_PersonalEnemies.Contains(other);
-        }
-
-        public void MarkAsSelfDefence(Actor e)
-        {
-            if (e == null || e.IsDead)
-                return;
-
-            if (m_SelfDefence == null)
-                m_SelfDefence = new List<Actor>(1);
-            else if (m_SelfDefence.Contains(e))
-                return;
-
-            m_SelfDefence.Add(e);
-        }
-
-        public void RemoveAsSelfDefence(Actor e)
-        {
-            if (m_SelfDefence == null)
-                return;
-
-            m_SelfDefence.Remove(e);
-
-            // minimize data size.
-            if (m_SelfDefence.Count == 0)
-                m_SelfDefence = null;
-        }
-
-        public void RemoveAllSelfDefence()
-        {
-            if (m_SelfDefence == null)
-                return;
-
-            while (m_SelfDefence.Count > 0)
-            {
-                Actor e = m_SelfDefence[0];
-                e.RemoveAsSelfDefence(this);
-                m_SelfDefence.Remove(e);
-            }
-        }
-
-        public bool HasDirectSelfDefence(Actor other)
-        {
-            if (m_SelfDefence == null)
-                return false;
-            return m_SelfDefence.Contains(other);
-        }
-#endif
-        #endregion
-
-        // alpha10 made item centric: moved out of Actor to ItemEntertainment
-#if false
-        #region Boring items
-        public void AddBoringItem(Item it)
-        {
-            if (m_BoringItems == null) m_BoringItems = new List<Item>(1);
-            if (m_BoringItems.Contains(it)) return;
-            m_BoringItems.Add(it);
-        }
-
-        public bool IsBoredOf(Item it)
-        {
-            if (m_BoringItems == null) return false;
-            return m_BoringItems.Contains(it);
-        }
-        #endregion
-#endif
-
-        #region Equipment helpers
         public Item GetEquippedItem(DollPart part)
         {
             if (m_Inventory == null || part == DollPart.NONE)
@@ -1009,24 +735,16 @@ namespace djack.RogueSurvivor.Data
         {
             return GetEquippedItem(DollPart.RIGHT_HAND) as ItemRangedWeapon;
         }
-        #endregion
 
-        #region Flags helpers
         private bool GetFlag(Flags f) { return (m_Flags & f) != 0; }
         private void SetFlag(Flags f, bool value) { if (value) m_Flags |= f; else m_Flags &= ~f; }
         private void OneFlag(Flags f) { m_Flags |= f; }
         private void ZeroFlag(Flags f) { m_Flags &= ~f; }
-        #endregion
 
-        #region Pre-save
         public void OptimizeBeforeSaving()
         {
             // remove dead target.
             if (m_TargetActor != null && m_TargetActor.IsDead) m_TargetActor = null;
-
-            // alpha10 moved out of Actor
-            //// trim.
-            //if (m_BoringItems != null) m_BoringItems.TrimExcess();
 
             // alpha10
             // remove trust entries with dead actors.
@@ -1047,7 +765,7 @@ namespace djack.RogueSurvivor.Data
             // side effect: this means revived actor will forget their agressor/self-defence after a save game!
             if (m_AggressorOf != null)
             {
-                for (int i = 0; i < m_AggressorOf.Count; )
+                for (int i = 0; i < m_AggressorOf.Count;)
                 {
                     if (m_AggressorOf[i].IsDead)
                         m_AggressorOf.RemoveAt(i);
@@ -1078,6 +796,5 @@ namespace djack.RogueSurvivor.Data
             if (m_Inventory != null)
                 m_Inventory.OptimizeBeforeSaving();
         }
-        #endregion
     }
 }

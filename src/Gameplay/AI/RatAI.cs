@@ -1,16 +1,12 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine;
+using RogueSurvivor.Engine.AI;
+using RogueSurvivor.Gameplay.AI.Sensors;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Engine.Actions;
-using djack.RogueSurvivor.Engine.AI;
-using djack.RogueSurvivor.Gameplay.AI.Sensors;
-
-
-namespace djack.RogueSurvivor.Gameplay.AI
+namespace RogueSurvivor.Gameplay.AI
 {
     [Serializable]
     /// <summary>
@@ -18,12 +14,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
     /// </summary>
     class RatAI : BaseAI
     {
-        #region Fields
         LOSSensor m_LOSSensor;
         SmellSensor m_LivingSmellSensor;
-        #endregion
 
-        #region BaseAI
         protected override void CreateSensors()
         {
             m_LOSSensor = new LOSSensor(LOSSensor.SensingFilter.ACTORS | LOSSensor.SensingFilter.CORPSES);
@@ -50,7 +43,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             //////////////////////////////////////////////////////////////
 
             // 1 move closer to an enemy, nearest & visible enemies first
-            #region
             List<Percept> enemies = FilterEnemies(game, mapPercepts);
             if (enemies != null)
             {
@@ -116,7 +108,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
             }
-            #endregion
 
             // 2 eat corpses.
             List<Percept> corpses = FilterCorpses(game, mapPercepts);
@@ -131,7 +122,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 
             // 3 move to highest living scent
-            #region
             ActorAction trackLivingAction = BehaviorTrackScent(game, m_LivingSmellSensor.Scents);
             if (trackLivingAction != null)
             {
@@ -139,12 +129,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return trackLivingAction;
             }
 
-            #endregion
-
             // 4 wander
             m_Actor.Activity = Activity.IDLE;
             return BehaviorWander(game, null);
         }
-        #endregion
     }
 }

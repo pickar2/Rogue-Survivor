@@ -1,27 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
+using System;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Items
+namespace RogueSurvivor.Engine.Items
 {
     [Serializable]
     class ItemLight : Item
     {
-        #region Fields
         int m_Batteries;
-        #endregion
 
-        #region Properties
         public int Batteries
         {
             get { return m_Batteries; }
             set
             {
                 if (value < 0) value = 0;
-                m_Batteries = Math.Min( value, (this.Model as ItemLightModel).MaxBatteries);
+                m_Batteries = Math.Min(value, (this.Model as ItemLightModel).MaxBatteries);
             }
         }
 
@@ -45,9 +38,7 @@ namespace djack.RogueSurvivor.Engine.Items
                     return (this.Model as ItemLightModel).OutOfBatteriesImageID;
             }
         }
-        #endregion
 
-        #region Init
         public ItemLight(ItemModel model)
             : base(model)
         {
@@ -56,6 +47,5 @@ namespace djack.RogueSurvivor.Engine.Items
 
             this.Batteries = (model as ItemLightModel).MaxBatteries;
         }
-        #endregion
     }
 }

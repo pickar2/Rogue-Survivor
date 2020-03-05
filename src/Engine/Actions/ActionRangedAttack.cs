@@ -1,23 +1,16 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-
-
-namespace djack.RogueSurvivor.Engine.Actions
+namespace RogueSurvivor.Engine.Actions
 {
     class ActionRangedAttack : ActorAction
     {
-        #region Fields
         Actor m_Target;
         List<Point> m_LoF = new List<Point>();
         FireMode m_Mode;
-        #endregion
 
-        #region Init
         public ActionRangedAttack(Actor actor, RogueGame game, Actor target, FireMode mode)
             : base(actor, game)
         {
@@ -32,9 +25,7 @@ namespace djack.RogueSurvivor.Engine.Actions
             : this(actor, game, target, FireMode.DEFAULT)
         {
         }
-        #endregion
 
-        #region ActorAction
         public override bool IsLegal()
         {
             m_LoF.Clear();
@@ -45,6 +36,5 @@ namespace djack.RogueSurvivor.Engine.Actions
         {
             m_Game.DoRangedAttack(m_Actor, m_Target, m_LoF, m_Mode);
         }
-        #endregion
     }
 }

@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine.MapObjects;
+using System;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine.MapObjects;
-
-namespace djack.RogueSurvivor.Engine.Actions
+namespace RogueSurvivor.Engine.Actions
 {
     class ActionSwitchPowerGenerator : ActorAction
     {
-        #region Fields
         PowerGenerator m_PowGen;
-        #endregion
 
-        #region Init
         public ActionSwitchPowerGenerator(Actor actor, RogueGame game, PowerGenerator powGen)
             : base(actor, game)
         {
@@ -22,9 +16,7 @@ namespace djack.RogueSurvivor.Engine.Actions
 
             m_PowGen = powGen;
         }
-        #endregion
 
-        #region ActorAction
         public override bool IsLegal()
         {
             return m_Game.Rules.IsSwitchableFor(m_Actor, m_PowGen, out m_FailReason);
@@ -34,6 +26,5 @@ namespace djack.RogueSurvivor.Engine.Actions
         {
             m_Game.DoSwitchPowerGenerator(m_Actor, m_PowGen);
         }
-        #endregion
     }
 }

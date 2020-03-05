@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
+﻿using RogueSurvivor.Data;
+using System;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Actions
+namespace RogueSurvivor.Engine.Actions
 {
     class ActionUseItem : ActorAction
     {
-        #region Fields
         Item m_Item;
-        #endregion
 
-        #region Init
         public ActionUseItem(Actor actor, RogueGame game, Item it)
             : base(actor, game)
         {
@@ -23,18 +15,15 @@ namespace djack.RogueSurvivor.Engine.Actions
 
             m_Item = it;
         }
-        #endregion
 
-        #region ActorAction
         public override bool IsLegal()
         {
-            return m_Game.Rules.CanActorUseItem(m_Actor, m_Item, out m_FailReason); 
+            return m_Game.Rules.CanActorUseItem(m_Actor, m_Item, out m_FailReason);
         }
 
         public override void Perform()
         {
             m_Game.DoUseItem(m_Actor, m_Item);
         }
-        #endregion
     }
 }

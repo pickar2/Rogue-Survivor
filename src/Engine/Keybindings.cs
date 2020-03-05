@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace djack.RogueSurvivor.Engine
+namespace RogueSurvivor.Engine
 {
     [Serializable]
     class Keybindings

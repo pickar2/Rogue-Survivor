@@ -3,14 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace djack.RogueSurvivor.Engine
+namespace RogueSurvivor.Engine
 {
-    // alpha10 updated to IMusicManager
     class MusicManager : IMusicManager
     {
         private int m_Volume;
         Dictionary<string, Song> m_Musics;
-        // alpha10
         Song m_CurrentMusic;
 
         public bool IsMusicEnabled { get; set; }

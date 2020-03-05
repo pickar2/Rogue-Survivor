@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Gameplay;
+using System;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Gameplay;
-
-namespace djack.RogueSurvivor.Engine.Items
+namespace RogueSurvivor.Engine.Items
 {
     [Serializable]
     class ItemBodyArmor : Item
     {
-        #region Properties
         public int Protection_Hit { get; private set; }
         public int Protection_Shot { get; private set; }
         public int Encumbrance { get; private set; }
         public int Weight { get; private set; }
-        #endregion
 
-        #region Init
         public ItemBodyArmor(ItemModel model)
             : base(model)
         {
@@ -31,9 +24,7 @@ namespace djack.RogueSurvivor.Engine.Items
             this.Encumbrance = m.Encumbrance;
             this.Weight = m.Weight;
         }
-        #endregion
 
-        #region Unsuspicious
         public bool IsHostileForCops()
         {
             return Array.IndexOf(GameFactions.BAD_POLICE_OUTFITS, (GameItems.IDs)Model.ID) >= 0;
@@ -53,6 +44,5 @@ namespace djack.RogueSurvivor.Engine.Items
         {
             return Array.IndexOf(GameGangs.GOOD_GANG_OUTFITS[(int)gangID], (GameItems.IDs)Model.ID) >= 0;
         }
-        #endregion
     }
 }

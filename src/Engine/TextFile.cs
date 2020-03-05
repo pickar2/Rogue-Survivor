@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
 using System.IO;
 
-namespace djack.RogueSurvivor.Engine
+namespace RogueSurvivor.Engine
 {
     class TextFile
     {
-        #region Fields
         List<string> m_RawLines;
         List<string> m_FormatedLines;
-        #endregion
 
-        #region Properties
         public IEnumerable<string> RawLines
         {
             get { return m_RawLines; }
@@ -24,16 +18,12 @@ namespace djack.RogueSurvivor.Engine
         {
             get { return m_FormatedLines; }
         }
-        #endregion
 
-        #region Init
         public TextFile()
         {
             m_RawLines = new List<string>();
         }
-        #endregion
 
-        #region Loading & Saving
         public bool Load(string fileName)
         {
             try
@@ -45,7 +35,7 @@ namespace djack.RogueSurvivor.Engine
                 {
                     string line = inStream.ReadLine();
                     m_RawLines.Add(line);
-                }               
+                }
                 inStream.Close();
 
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("done!", fileName));
@@ -56,7 +46,6 @@ namespace djack.RogueSurvivor.Engine
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("Loading exception: {0}", e.ToString()));
                 return false;
             }
-
         }
 
         public bool Save(string fileName)
@@ -74,16 +63,12 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
         }
-        #endregion
 
-        #region Raw Editing
         public void Append(string line)
         {
             m_RawLines.Add(line);
         }
-        #endregion
 
-        #region Parsing and Formatting
         public void FormatLines(int charsPerLine)
         {
             if (m_RawLines == null || m_RawLines.Count == 0)
@@ -100,9 +85,8 @@ namespace djack.RogueSurvivor.Engine
                     m_FormatedLines.Add(head);
                     rawLine = rest;
                 }
-                m_FormatedLines.Add(rawLine);               
+                m_FormatedLines.Add(rawLine);
             }
         }
-        #endregion
     }
 }

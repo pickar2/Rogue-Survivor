@@ -1,17 +1,14 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine;
+using RogueSurvivor.Engine.Actions;
+using RogueSurvivor.Engine.AI;
+using RogueSurvivor.Gameplay.AI.Sensors;
+using RogueSurvivor.Gameplay.AI.Tools;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;   // Point
+using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Engine.Actions;
-using djack.RogueSurvivor.Engine.AI;
-using djack.RogueSurvivor.Gameplay.AI.Sensors;
-using djack.RogueSurvivor.Gameplay.AI.Tools;
-
-namespace djack.RogueSurvivor.Gameplay.AI
+namespace RogueSurvivor.Gameplay.AI
 {
     [Serializable]
     /// <summary>
@@ -19,23 +16,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
     /// </summary>
     class CHARGuardAI : OrderableAI
     {
-        #region Constants
         const int LOS_MEMORY = 10;
 
-        static string[] FIGHT_EMOTES = 
+        static string[] FIGHT_EMOTES =
         {
             "Go away",
             "Damn it I'm trapped!",
             "Hey"
-        };                              
-        #endregion
+        };
 
-        #region Fields
         LOSSensor m_LOSSensor;
         MemorizedSensor m_MemorizedSensor;
-        #endregion
 
-        #region BaseAI
         protected override void CreateSensors()
         {
             m_LOSSensor = new LOSSensor(LOSSensor.SensingFilter.ACTORS | LOSSensor.SensingFilter.ITEMS);
@@ -69,7 +61,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // end alpha10
 
             // 1. Follow order
-            #region
             if (this.Order != null)
             {
                 ActorAction orderAction = ExecuteOrder(game, this.Order, mapPercepts, null);
@@ -81,7 +72,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return orderAction;
                 }
             }
-            #endregion
 
             ///////////////////////////////////////
             // alpha10 OBSOLETE 1 equip weapon
@@ -249,7 +239,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 
             // 10 follow leader
-            #region
             if (checkOurLeader)
             {
                 Point lastKnownLeaderPosition = m_Actor.Leader.Location.Position;
@@ -262,7 +251,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return followAction;
                 }
             }
-            #endregion
 
             // 11 wander in CHAR office.
             ActorAction wanderInOfficeAction = BehaviorWander(game, (loc) => RogueGame.IsInCHAROffice(loc), null);
@@ -276,6 +264,5 @@ namespace djack.RogueSurvivor.Gameplay.AI
             m_Actor.Activity = Activity.IDLE;
             return BehaviorWander(game, null);
         }
-        #endregion
     }
 }

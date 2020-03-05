@@ -1,24 +1,19 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine.Actions;
+using RogueSurvivor.Engine.Items;
+using RogueSurvivor.Engine.MapObjects;
+using RogueSurvivor.Gameplay;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Gameplay;
-using djack.RogueSurvivor.Gameplay.AI;
-using djack.RogueSurvivor.Engine.Actions;
-using djack.RogueSurvivor.Engine.Items;
-using djack.RogueSurvivor.Engine.MapObjects;
-
-namespace djack.RogueSurvivor.Engine
+namespace RogueSurvivor.Engine
 {
     class Rules
     {
-        #region Constants
         public const int BASE_ACTION_COST = 100;
         public const int BASE_SPEED = BASE_ACTION_COST;
 
-        #region Stamina
         /// <summary>
         /// Marker for infinite stamina, value doesnt matter since !Abilities.CanTire is checked instead.
         /// </summary>
@@ -58,14 +53,10 @@ namespace djack.RogueSurvivor.Engine
         /// Stamina cost for moving with a dragged corpse.
         /// </summary>
         public const int STAMINA_COST_MOVE_DRAGGED_CORPSE = 8;
-        #endregion
 
-        #region Stumbling 
         public const int JUMP_STUMBLE_CHANCE = 25;
         public const int JUMP_STUMBLE_ACTION_COST = BASE_ACTION_COST;
-        #endregion
 
-        #region Scents
         /// <summary>
         /// How much scent living actors drop on their tile.
         /// </summary>
@@ -75,17 +66,11 @@ namespace djack.RogueSurvivor.Engine
         /// How much scent undead masters drop on their tile.
         /// </summary>
         public const int UNDEAD_MASTER_SCENT_DROP = OdorScent.MAX_STRENGTH;
-        #endregion
 
-        #region Barricading
         public const int BARRICADING_MAX = 2 * DoorWindow.BASE_HITPOINTS;
-        #endregion
 
-        #region FOV
         const int MINIMAL_FOV = 2;
-        #endregion
 
-        #region Day/Night and Weather effects
         public const int FOV_PENALTY_SUNSET = 1;
         public const int FOV_PENALTY_EVENING = 2;
         public const int FOV_PENALTY_MIDNIGHT = 3;
@@ -95,9 +80,7 @@ namespace djack.RogueSurvivor.Engine
 
         public const int FOV_PENALTY_RAIN = 1;
         public const int FOV_PENALTY_HEAVY_RAIN = 2;
-        #endregion
 
-        #region Weapons & Firing
         public const int MELEE_WEAPON_BREAK_CHANCE = 1;
         public const int MELEE_WEAPON_FRAGILE_BREAK_CHANCE = 3;
         public const int MELEE_DISARM_BASE_CHANCE = 5;  // alpha10
@@ -108,13 +91,9 @@ namespace djack.RogueSurvivor.Engine
         // alpha10 made into constants
         const float FIRING_WHEN_SLP_EXHAUSTED = 0.50f; // -50%
         const float FIRING_WHEN_SLP_SLEEPY = 0.75f; // -25%
-        #endregion
 
-        #region Body armors
         public const int BODY_ARMOR_BREAK_CHANCE = 2;
-        #endregion
 
-        #region Hunger/Rot & Sleep & Sanity
         public const int FOOD_BASE_POINTS = WorldTime.TURNS_PER_HOUR * 48;
         public const int FOOD_HUNGRY_LEVEL = FOOD_BASE_POINTS / 2;
 
@@ -194,40 +173,20 @@ namespace djack.RogueSurvivor.Engine
         /// When sleeping and healing, how many HPs regained.
         /// </summary>
         public const int SLEEP_HEAL_HITPOINTS = 2;
-        #endregion
 
-        #region Loud noises
         public const int LOUD_NOISE_RADIUS = 5;
         const int LOUD_NOISE_BASE_WAKEUP_CHANCE = 10;
         const int LOUD_NOISE_DISTANCE_BONUS = 10;
-        #endregion
 
-        #region Victims dropping items.
         public const int VICTIM_DROP_GENERIC_ITEM_CHANCE = 50;
         public const int VICTIM_DROP_AMMOFOOD_ITEM_CHANCE = 100;
-        #endregion
 
-        #region Improvised weapons
         public const int IMPROVED_WEAPONS_FROM_BROKEN_WOOD_CHANCE = 25;
-        #endregion
 
-        // alpha10 replaced with rapid fire attacks property of ranged weapons
-        /*
-        #region Rapid fire
-        public const float RAPID_FIRE_FIRST_SHOT_ACCURACY = 0.70f;  // alpha9 was 0.50f;
-        public const float RAPID_FIRE_SECOND_SHOT_ACCURACY = 0.50f;  // alpha9 was 0.30f;
-        #endregion
-        */
-
-        #region Trackers
         public const int ZTRACKINGRADIUS = 6;
-        #endregion
 
-        #region Actor weight
         public const int DEFAULT_ACTOR_WEIGHT = 10;
-        #endregion
 
-        #region Things on fire
         /// <summary>
         /// When raining, chance per turn to test effects on fire on the map.
         /// 100 = will check every rain turn. Not recommended as it eats CPU.
@@ -238,9 +197,7 @@ namespace djack.RogueSurvivor.Engine
         /// Chance for rain to put out a fire.
         /// </summary>
         public const int FIRE_RAIN_PUT_OUT_CHANCE = 10;
-        #endregion
 
-        #region Trust & Bond
         public const int TRUST_NEUTRAL = 0;
         public const int TRUST_TRUSTING_THRESHOLD = 12 * WorldTime.TURNS_PER_HOUR; // 12h of sticking together.
         public const int TRUST_MIN = -TRUST_TRUSTING_THRESHOLD;
@@ -251,18 +208,14 @@ namespace djack.RogueSurvivor.Engine
         public const int TRUST_MISC_GIFT_INCREASE = TRUST_BASE_INCREASE + TRUST_GOOD_GIFT_INCREASE / 10;
         public const int TRUST_GIVE_ITEM_ORDER_PENALTY = -WorldTime.TURNS_PER_HOUR;     // 1 trust-hours lost.
         public const int TRUST_LEADER_KILL_ENEMY = 3 * WorldTime.TURNS_PER_HOUR;        // 3 trust-hours gain.
-        #endregion
 
-        #region Murder
         public const int MURDERER_SPOTTING_BASE_CHANCE = 5;
         public const int MURDERER_SPOTTING_DISTANCE_PENALTY = 1;
         public const int MURDER_SPOTTING_MURDERCOUNTER_BONUS = 5;
-        #endregion
 
-        #region Infection & Corpses
         const float INFECTION_BASE_FACTOR = 1.0f;
 
-        public static int INFECTION_LEVEL_1_WEAK  = 10;
+        public static int INFECTION_LEVEL_1_WEAK = 10;
         public static int INFECTION_LEVEL_2_TIRED = 30;
         public static int INFECTION_LEVEL_3_VOMIT = 50;
         public static int INFECTION_LEVEL_4_BLEED = 75;
@@ -285,21 +238,14 @@ namespace djack.RogueSurvivor.Engine
         const float CORPSE_EATING_INFECTION_FACTOR = 0.1f;
 
         const float CORPSE_DECAY_PER_TURN = 4f / WorldTime.TURNS_PER_DAY; // -1 HP per day ~ 1 week to rot at 30 HP.
-        #endregion
 
-        #region Refugees
         public const int GIVE_RARE_ITEM_DAY = 7;
         public const int GIVE_RARE_ITEM_CHANCE = 5;
-        #endregion
 
-        // alpha10
-        #region Traps
         public const int TRAP_UNDEAD_ACTOR_TRIGGER_PENALTY = 30;
         public const int TRAP_SMALL_ACTOR_AVOID_BONUS = 90;
         public const int CRUSHING_GATES_DAMAGE = 60;  // alpha10.1
-        #endregion
 
-        #region Skills limits & bonuses per level
         public const int UPGRADE_SKILLS_TO_CHOOSE_FROM = 5;
         public const int UNDEAD_UPGRADE_SKILLS_TO_CHOOSE_FROM = 2;
 
@@ -307,7 +253,6 @@ namespace djack.RogueSurvivor.Engine
          * Actual skill values will be read from Skills.csv so they are not const.
          */
         // alpha10 updated default values to their currnt values in Skills.csv, was confusing.
-        #region Livings
 
         public static int SKILL_AGILE_ATK_BONUS = 2;
         public static int SKILL_AGILE_DEF_BONUS = 4;
@@ -368,9 +313,6 @@ namespace djack.RogueSurvivor.Engine
         public static int UNSUSPICIOUS_BAD_OUTFIT_PENALTY = 75;  // alpha10 ; prev was 50
         public static int UNSUSPICIOUS_GOOD_OUTFIT_BONUS = 75; // alpha10 ; prev was 50
 
-        #endregion
-
-        #region Undeads
         public static int SKILL_ZAGILE_ATK_BONUS = 1;
         public static int SKILL_ZAGILE_DEF_BONUS = 2;
 
@@ -390,20 +332,11 @@ namespace djack.RogueSurvivor.Engine
 
         public static float SKILL_ZLIGHT_EATER_MAXFOOD_BONUS = 0.15f;
         public static float SKILL_ZLIGHT_EATER_FOOD_BONUS = 0.10f;
-        #endregion
 
-        #endregion
-        #endregion
-
-        #region Fields
         readonly DiceRoller m_DiceRoller;
-        #endregion
 
-        #region Properties
         public DiceRoller DiceRoller { get { return m_DiceRoller; } }
-        #endregion
 
-        #region Init
         public Rules(DiceRoller diceRoller)
         {
             if (diceRoller == null)
@@ -411,9 +344,7 @@ namespace djack.RogueSurvivor.Engine
 
             m_DiceRoller = diceRoller;
         }
-        #endregion
 
-        #region Rolling & Random choices
         /// <summary>
         /// Roll in range [min, max[.
         /// </summary>
@@ -443,7 +374,7 @@ namespace djack.RogueSurvivor.Engine
         /// <returns></returns>
         public float Randomize(float value, float deviation)
         {
-            float halfDeviation = deviation/2f;
+            float halfDeviation = deviation / 2f;
             return value - halfDeviation * m_DiceRoller.RollFloat() + halfDeviation * m_DiceRoller.RollFloat();
         }
 
@@ -560,11 +491,7 @@ namespace djack.RogueSurvivor.Engine
             direction = null;
             return false;
         }
-        #endregion
 
-        #region Rules checking
-
-        #region Items
         public bool CanActorGetItemFromContainer(Actor actor, Point position)
         {
             string reason;
@@ -766,7 +693,7 @@ namespace djack.RogueSurvivor.Engine
             ////////////////////////
 
             // 1. Equipped.
-            if(it.IsEquipped)
+            if (it.IsEquipped)
             {
                 reason = "unequip first";
                 return false;
@@ -850,7 +777,7 @@ namespace djack.RogueSurvivor.Engine
                     return false;
                 }
                 // 2. Weapon fully loaded.
-                if(eqRanged.Ammo >= (eqRanged.Model as ItemRangedWeaponModel).MaxAmmo)
+                if (eqRanged.Ammo >= (eqRanged.Model as ItemRangedWeaponModel).MaxAmmo)
                 {
                     reason = "weapon already fully loaded";
                     return false;
@@ -1106,14 +1033,12 @@ namespace djack.RogueSurvivor.Engine
                     return false;
                 }
             }
-            
+
             // all clear.
             reason = "";
             return true;
         }
-        #endregion
 
-        #region Movement/Melee
         public bool CanActorRun(Actor actor)
         {
             string reason;
@@ -1203,11 +1128,11 @@ namespace djack.RogueSurvivor.Engine
                     return false;
                 }
                 // check the target stands on the exit.
-                if (fromExit.ToMap != target.Location.Map ||fromExit.ToPosition != target.Location.Position)
+                if (fromExit.ToMap != target.Location.Map || fromExit.ToPosition != target.Location.Position)
                 {
                     reason = "not reachable";
                     return false;
-                }                                
+                }
             }
 
             // 2. Stamina below min level.
@@ -1233,7 +1158,7 @@ namespace djack.RogueSurvivor.Engine
 
         public bool HasActorJumpAbility(Actor actor)
         {
-            return actor.Model.Abilities.CanJump || 
+            return actor.Model.Abilities.CanJump ||
                 actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.AGILE) > 0 ||
                 actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.Z_AGILE) > 0;
         }
@@ -1381,11 +1306,10 @@ namespace djack.RogueSurvivor.Engine
                 reason = "";
                 return moveAction;
             }
-            else 
+            else
                 reason = moveAction.FailReason;
 
             // 2. Actor interact: fight/chat/(AI:switch place)
-            #region
             Actor targetActor = map.GetActorAt(to);
             if (targetActor != null)
             {
@@ -1399,8 +1323,8 @@ namespace djack.RogueSurvivor.Engine
                 }
 
                 // AI: switching place  // alpha10.1 handle bot like it was an AI
-                if((!actor.IsPlayer || actor.IsBotPlayer) && 
-                    !targetActor.IsPlayer 
+                if ((!actor.IsPlayer || actor.IsBotPlayer) &&
+                    !targetActor.IsPlayer
                     && CanActorSwitchPlaceWith(actor, targetActor, out reason))
                     return new ActionSwitchPlace(actor, game, targetActor);
 
@@ -1411,15 +1335,12 @@ namespace djack.RogueSurvivor.Engine
                 // nope, blocked.
                 return null;
             }
-            #endregion
 
             // 3. Object interact?
-            #region
             MapObject mapObj = map.GetMapObjectAt(to);
             if (mapObj != null)
             {
                 // 3.1 Door?
-                #region
                 DoorWindow door = mapObj as DoorWindow;
                 if (door != null)
                 {
@@ -1443,7 +1364,6 @@ namespace djack.RogueSurvivor.Engine
                         }
                     }
                 }
-                #endregion
 
                 // 3.2 Container?
                 if (CanActorGetItemFromContainer(actor, to, out reason))
@@ -1473,21 +1393,19 @@ namespace djack.RogueSurvivor.Engine
                     }
 
                     // Switch?
-                    if(IsSwitchableFor(actor, powGen, out reason))
+                    if (IsSwitchableFor(actor, powGen, out reason))
                         // switch it.
                         return new ActionSwitchPowerGenerator(actor, game, powGen);
-            
+
                     // Can do nothing by bumping.
                     return null;
                 }
 
             }
-            #endregion
 
             // 4. No action possible?
             //reason = "blocked";
             return null;
-
         }
 
         public ActorAction IsBumpableFor(Actor actor, RogueGame game, Location location)
@@ -1500,16 +1418,13 @@ namespace djack.RogueSurvivor.Engine
         {
             return IsBumpableFor(actor, game, location.Map, location.Position.X, location.Position.Y, out reason);
         }
-        #endregion
 
-        #region Switching Map Objects
         public bool IsSwitchableFor(Actor actor, PowerGenerator powGen, out string reason)
         {
             if (actor == null)
                 throw new ArgumentNullException("actor");
             if (powGen == null)
                 throw new ArgumentNullException("powGen");
-
 
             ////////////////////////
             // Switchable only if:
@@ -1536,9 +1451,7 @@ namespace djack.RogueSurvivor.Engine
             reason = "";
             return true;
         }
-        #endregion
 
-        #region Leaving maps
         public bool CanActorLeaveMap(Actor actor, out string reason)
         {
             if (actor == null)
@@ -1548,7 +1461,7 @@ namespace djack.RogueSurvivor.Engine
             // Only if :
             // 1. Player and not bot // alpha10.1
             /////////////////////////////////
-            if(!actor.IsPlayer || actor.IsBotPlayer)
+            if (!actor.IsPlayer || actor.IsBotPlayer)
             {
                 reason = "can't leave maps";
                 return false;
@@ -1557,9 +1470,7 @@ namespace djack.RogueSurvivor.Engine
             reason = "";
             return true;
         }
-        #endregion
 
-        #region Using exits
         public bool CanActorUseExit(Actor actor, Point exitPoint)
         {
             string reason;
@@ -1605,9 +1516,6 @@ namespace djack.RogueSurvivor.Engine
             return true;
         }
 
-        #endregion
-
-        #region Chatting & Trading
         public bool CanActorChatWith(Actor speaker, Actor target, out string reason)
         {
             if (speaker == null)
@@ -1755,9 +1663,7 @@ namespace djack.RogueSurvivor.Engine
             reason = "";
             return true;
         }
-        #endregion
 
-        #region Doors
         public bool IsOpenableFor(Actor actor, DoorWindow door)
         {
             string reason;
@@ -1902,15 +1808,13 @@ namespace djack.RogueSurvivor.Engine
             {
                 reason = "no barricading material";
                 return false;
-            }          
+            }
 
             // all clear.
             reason = "";
             return true;
         }
-        #endregion
 
-        #region Bashing doors & Breaking stuff
         public bool IsBashableFor(Actor actor, DoorWindow door)
         {
             string reason;
@@ -2012,12 +1916,10 @@ namespace djack.RogueSurvivor.Engine
             reason = "";
             return true;
         }
-        #endregion
 
-        #region Pushing/Pulling objects & Shoving actors
         public bool HasActorPushAbility(Actor actor)
         {
-            return actor.Model.Abilities.CanPush || 
+            return actor.Model.Abilities.CanPush ||
                 actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.STRONG) > 0 ||
                 actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.Z_STRONG) > 0;
         }
@@ -2303,9 +2205,7 @@ namespace djack.RogueSurvivor.Engine
             reason = "";
             return true;
         }
-        #endregion
 
-        #region Targeting, Firing and Throwing
         /// <summary>
         /// List enemies in fov, sorted by distance (closest first).
         /// </summary>
@@ -2375,7 +2275,7 @@ namespace djack.RogueSurvivor.Engine
                 throw new ArgumentNullException("actor");
             if (target == null)
                 throw new ArgumentNullException("target");
-            
+
             ///////////////////////////////////////
             // Cannot fire if:
             // 1. No ranged weapon or out of range.
@@ -2476,11 +2376,8 @@ namespace djack.RogueSurvivor.Engine
             // all clear.
             reason = "";
             return true;
-
         }
-        #endregion
 
-        #region Hunger/Rot & Sleep & Sanity
         public bool IsActorHungry(Actor a)
         {
             return a.Model.Abilities.HasToEat && a.FoodPoints <= FOOD_HUNGRY_LEVEL;
@@ -2520,7 +2417,7 @@ namespace djack.RogueSurvivor.Engine
 
         public int FoodItemNutrition(ItemFood food, int turnCounter)
         {
-            return (IsFoodStillFresh(food, turnCounter) ? food.Nutrition : 
+            return (IsFoodStillFresh(food, turnCounter) ? food.Nutrition :
                 IsFoodExpired(food, turnCounter) ? 2 * food.Nutrition / 3 :
                 food.Nutrition / 3);
         }
@@ -2534,7 +2431,7 @@ namespace djack.RogueSurvivor.Engine
         {
             return a.Model.Abilities.HasToSleep && a.SleepPoints <= 0;
         }
-        
+
         public int SleepToHoursUntilSleepy(int sleep, bool isNight)
         {
             int left = sleep - Rules.SLEEP_SLEEPY_LEVEL;
@@ -2632,9 +2529,7 @@ namespace djack.RogueSurvivor.Engine
             if (left <= 0) return 0;
             return left / WorldTime.TURNS_PER_HOUR;
         }
-        #endregion
 
-        #region Leading
         public bool CanActorTakeLead(Actor actor, Actor target)
         {
             string reason;
@@ -2769,7 +2664,7 @@ namespace djack.RogueSurvivor.Engine
             return CanActorSwitchPlaceWith(actor, target, out reason);
         }
 
-        public bool CanActorSwitchPlaceWith(Actor actor, Actor target, out string reason)       
+        public bool CanActorSwitchPlaceWith(Actor actor, Actor target, out string reason)
         {
             if (actor == null)
                 throw new ArgumentNullException("actor");
@@ -2801,9 +2696,6 @@ namespace djack.RogueSurvivor.Engine
             return true;
         }
 
-        #endregion
-
-        #region Trust
         public bool IsActorTrustingLeader(Actor actor)
         {
             if (actor == null)
@@ -2824,9 +2716,7 @@ namespace djack.RogueSurvivor.Engine
             else
                 return false;
         }
-        #endregion
 
-        #region Building & Repairing
         public int CountBarricadingMaterial(Actor actor)
         {
             if (actor.Inventory == null || actor.Inventory.IsEmpty)
@@ -2887,7 +2777,7 @@ namespace djack.RogueSurvivor.Engine
                 reason = "blocked";
                 return false;
             }
-                        
+
             // all clear.
             reason = "";
             return true;
@@ -2923,9 +2813,7 @@ namespace djack.RogueSurvivor.Engine
             reason = "";
             return true;
         }
-        #endregion
 
-        #region Corpses
         public int ActorDamageVsCorpses(Actor a)
         {
             // base = melee HALVED.
@@ -2942,7 +2830,7 @@ namespace djack.RogueSurvivor.Engine
             string reason;
             return CanActorEatCorpse(actor, corpse, out reason);
         }
-        
+
         public bool CanActorEatCorpse(Actor actor, Corpse corpse, out string reason)
         {
             if (actor == null)
@@ -3117,7 +3005,7 @@ namespace djack.RogueSurvivor.Engine
                 reason = "lack medic skill";
                 return false;
             }
-            
+
             // 2. Not on same tile.
             if (corpse.Position != actor.Location.Position)
             {
@@ -3143,11 +3031,6 @@ namespace djack.RogueSurvivor.Engine
             reason = "";
             return true;
         }
-        #endregion
-
-        #endregion
-
-        #region Distances
 
         public bool IsAdjacent(Location a, Location b)
         {
@@ -3202,9 +3085,7 @@ namespace djack.RogueSurvivor.Engine
             int square = dX * dX + dY * dY;
             return (float)Math.Sqrt(0.75f * square); // nice factor to have a smooth circle (0.90: too rough)
         }
-        #endregion
 
-        #region Actor turn ordering
         public Actor GetNextActorToAct(Map map, int turnCounter)
         {
             if (map == null)
@@ -3222,17 +3103,6 @@ namespace djack.RogueSurvivor.Engine
             }
 
             return null;
-
-#if false
-            // old unoptimized algo : scan all actors.
-            foreach (Actor actor in map.Actors)
-            {                
-                if (actor.ActionPoints > 0 && !actor.IsSleeping)
-                    return actor;
-            }
-
-            return null;
-#endif
         }
 
         public bool IsActorBeforeInMapList(Map map, Actor actor, Actor other)
@@ -3302,10 +3172,7 @@ namespace djack.RogueSurvivor.Engine
                     return false;
             }
         }
-        #endregion
 
-        #region Actors relations
-        // alpha10 refactored and rewrote
         /// <summary>
         /// Check if both actors are enemies.
         /// - enemy factions
@@ -3318,7 +3185,7 @@ namespace djack.RogueSurvivor.Engine
         /// <param name="actorB"></param>
         /// <param name="checkGroups"></param>
         /// <returns></returns>
-        public bool AreEnemies(Actor actorA, Actor actorB, bool checkGroups=true)
+        public bool AreEnemies(Actor actorA, Actor actorB, bool checkGroups = true)
         {
             if (actorA == null || actorB == null)
                 return false;
@@ -3331,7 +3198,7 @@ namespace djack.RogueSurvivor.Engine
 
             // Enemy gangs? (symetrical)
             if (actorA.Faction == actorB.Faction && actorA.IsInAGang && actorB.IsInAGang && actorA.GangID != actorB.GangID)
-                    return true;
+                return true;
 
             // alpha10 
             // Personal enemies? (symetrical)
@@ -3455,9 +3322,7 @@ namespace djack.RogueSurvivor.Engine
             // all other cases are murders!
             return true;
         }
-        #endregion
 
-        #region Stats affected by Skills & Status effects
         public int ActorSpeed(Actor actor)
         {
             float speed = actor.Doll.Body.Speed;
@@ -3560,7 +3425,7 @@ namespace djack.RogueSurvivor.Engine
         }
 
         // alpha10 added mapobject param
-        public Attack ActorMeleeAttack(Actor actor, Attack baseAttack, Actor target, MapObject objToBreak=null)
+        public Attack ActorMeleeAttack(Actor actor, Attack baseAttack, Actor target, MapObject objToBreak = null)
         {
             float hit = baseAttack.HitValue;
             float dmg = baseAttack.DamageValue;
@@ -3670,7 +3535,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 hit *= FIRING_WHEN_SLP_EXHAUSTED;
                 rapidHit1 *= FIRING_WHEN_SLP_EXHAUSTED;
-                rapidHit2 *= FIRING_WHEN_SLP_EXHAUSTED; 
+                rapidHit2 *= FIRING_WHEN_SLP_EXHAUSTED;
             }
             else if (IsActorSleepy(actor))
             {
@@ -3771,7 +3636,7 @@ namespace djack.RogueSurvivor.Engine
         public int ActorBarricadingPoints(Actor actor, int baseBarricadingPoints)
         {
             int barBonus = 0;
-            
+
             // carpentry skill
             barBonus += (int)(baseBarricadingPoints * SKILL_CARPENTRY_BARRICADING_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.CARPENTRY));
 
@@ -3954,32 +3819,6 @@ namespace djack.RogueSurvivor.Engine
 
             return MURDERER_SPOTTING_BASE_CHANCE + spotterBonus - distancePenalty;
         }
-
-#if false
-        // alpha10  previous attempt
-        // FIXME -- needing to pass game as arg is uggly. shouldnt be any reference to game in rules but we need to
-        // call an ai method...
-        public int ScoreNpcItemTradeValue(RogueGame game, Actor npc, Item it, bool fromNpcInventory, Actor otherTrader)
-        {
-            // base score
-            int score = (npc.Controller as BaseAI).ScoreItemValue(game, it, fromNpcInventory);
-
-            // modify by respective charismatic skills
-            // a charismatic actor will make the opposing trader over-estimate the actor items.
-            int addScore = 0;
-            if (fromNpcInventory)
-                addScore = (score * npc.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.CHARISMATIC) * SKILL_CHARISMATIC_TRADE_BONUS) / 100;
-            else
-                addScore = (score * otherTrader.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.CHARISMATIC) * SKILL_CHARISMATIC_TRADE_BONUS) / 100;
-    
-            score += addScore;
-
-            return score;
-        }
-#endif 
-        #endregion
-
-        #region Day/Night, Weather & Lighting effects
         /// <summary>
         /// 
         /// </summary>
@@ -4053,8 +3892,8 @@ namespace djack.RogueSurvivor.Engine
                 return actor.Sheet.BaseViewRange;
             else
                 return MINIMAL_FOV;
-        }       
-        
+        }
+
         // alpha10
         public int OdorsDecay(Map map, Point pos, Weather weather)
         {
@@ -4090,7 +3929,7 @@ namespace djack.RogueSurvivor.Engine
 
             return decay;
         }
-        
+
         // alpha10
         public bool CanActorSeeSky(Actor actor)
         {
@@ -4116,9 +3955,7 @@ namespace djack.RogueSurvivor.Engine
 
             return false;
         }
-        #endregion
 
-        #region Map Power rating
         /// <summary>
         /// Compute normalized % of power level on the map. Each activated PowerGenerator map object count for one power unit.
         /// </summary>
@@ -4149,9 +3986,7 @@ namespace djack.RogueSurvivor.Engine
             float ratio = (float)totalOn / (float)(totalCount);
             return ratio;
         }
-        #endregion
 
-        #region Explosions
         public int BlastDamage(int distance, BlastAttack attack)
         {
             if (distance < 0 || distance > attack.Radius)
@@ -4159,9 +3994,7 @@ namespace djack.RogueSurvivor.Engine
 
             return attack.Damage[distance];
         }
-        #endregion
 
-        #region Undead Regen/Food, Infection and Corpses
         public int ActorBiteHpRegen(Actor a, int dmg)
         {
             int bonus = (int)(Rules.SKILL_ZEATER_REGEN_BONUS * a.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.Z_EATER) * dmg);
@@ -4288,10 +4121,7 @@ namespace djack.RogueSurvivor.Engine
             int skillBonus = actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.MEDIC);
             return baseHps + skillBonus;
         }
-        #endregion
 
-        #region Traps
-        // alpha10
         public int GetTrapTriggerChance(ItemTrap trap, Actor a)
         {
             // alpha10.1 bugfix - correctly has 0 chance to trigger safe traps (eg: followers traps etc...)
@@ -4389,17 +4219,13 @@ namespace djack.RogueSurvivor.Engine
             // mobj is NOT walkable and a door and NOT jumpable (eg:shelves,large fort)
             return !mobj.IsWalkable && !mobj.IsJumpable && !(mobj is DoorWindow);
         }
-        #endregion
 
-        #region Grabbing
         public int ZGrabChance(Actor grabber, Actor victim)
         {
             int zGrabLevel = grabber.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.Z_GRAB);
             return zGrabLevel * SKILL_ZGRAB_CHANCE;
         }
-        #endregion
 
-        #region Game modes
         public static bool HasImmediateZombification(GameMode mode)
         {
             return mode == GameMode.GM_STANDARD;
@@ -4434,6 +4260,5 @@ namespace djack.RogueSurvivor.Engine
         {
             return mode != GameMode.GM_VINTAGE;
         }
-        #endregion
     }
 }

@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace djack.RogueSurvivor.Data
+namespace RogueSurvivor.Data
 {
     [Serializable]
     class Abilities
     {
-        #region Blank abilities
         [NonSerialized]
         public static readonly Abilities NONE = new Abilities();
-        #endregion
 
-        #region Properties
         /// <summary>
         /// Is an undead.
         /// </summary>
@@ -133,7 +127,6 @@ namespace djack.RogueSurvivor.Data
         // alpha10
         public bool CanDisarm { get; set; }
 
-        #region AI flags
         /// <summary>
         /// AI flag : tell some AIs t can use Exits with flag Exit.IsAnAIExit.
         /// </summary>
@@ -144,25 +137,16 @@ namespace djack.RogueSurvivor.Data
         /// </summary>
         public bool AI_NotInterestedInRangedWeapons { get; set; }
 
-        // alpha10 obsolete, was unused in alpha9
-        ///// <summary>
-        ///// AI flag : tell some AIs to use the assault barricades behavior.
-        ///// </summary>
-        //public bool ZombieAI_AssaultBreakables { get; set; }
-
         /// <summary>
         /// AI flag : tell some AIs to use the explore behavior.
         /// </summary>
         public bool ZombieAI_Explore { get; set; }
-        #endregion
-
-        #endregion
 
         // alpha10
         // CanDisarm by default.
         public Abilities()
         {
-            this.CanDisarm = true;
+            CanDisarm = true;
         }
     }
 }

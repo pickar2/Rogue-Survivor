@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
-
-namespace djack.RogueSurvivor.Gameplay
+namespace RogueSurvivor.Gameplay
 {
     class GameFactions : FactionDB
     {
-        #region IDs
         public enum IDs
         {
             _FIRST,
@@ -29,13 +22,9 @@ namespace djack.RogueSurvivor.Gameplay
 
             _COUNT
         }
-        #endregion
 
-        #region Fields
         Faction[] m_Factions = new Faction[(int)IDs._COUNT];
-        #endregion
 
-        #region Properties
         public override Faction this[int id]
         {
             get { return m_Factions[id]; }
@@ -61,15 +50,14 @@ namespace djack.RogueSurvivor.Gameplay
         public Faction ThePsychopaths { get { return this[IDs.ThePsychopaths]; } }
         public Faction TheSurvivors { get { return this[IDs.TheSurvivors]; } }
         public Faction TheFerals { get { return this[IDs.TheFerals]; } }
-        #endregion
 
-        public static readonly GameItems.IDs[] BAD_POLICE_OUTFITS = new GameItems.IDs[] 
-        { 
-            GameItems.IDs.ARMOR_FREE_ANGELS_JACKET, GameItems.IDs.ARMOR_HELLS_SOULS_JACKET 
+        public static readonly GameItems.IDs[] BAD_POLICE_OUTFITS = new GameItems.IDs[]
+        {
+            GameItems.IDs.ARMOR_FREE_ANGELS_JACKET, GameItems.IDs.ARMOR_HELLS_SOULS_JACKET
         };
-        public static readonly GameItems.IDs[] GOOD_POLICE_OUTFITS = new GameItems.IDs[] 
-        { 
-            GameItems.IDs.ARMOR_POLICE_JACKET, GameItems.IDs.ARMOR_POLICE_RIOT 
+        public static readonly GameItems.IDs[] GOOD_POLICE_OUTFITS = new GameItems.IDs[]
+        {
+            GameItems.IDs.ARMOR_POLICE_JACKET, GameItems.IDs.ARMOR_POLICE_RIOT
         };
 
         public GameFactions()
@@ -96,7 +84,7 @@ namespace djack.RogueSurvivor.Gameplay
             this[IDs.TheArmy].AddEnemy(this[IDs.TheGangstas]);
             this[IDs.TheArmy].AddEnemy(this[IDs.TheUndeads]);
             this[IDs.TheArmy].AddEnemy(this[IDs.ThePsychopaths]);
-            
+
             this[IDs.TheBikers].AddEnemy(this[IDs.TheArmy]);
             this[IDs.TheBikers].AddEnemy(this[IDs.TheBlackOps]);
             this[IDs.TheBikers].AddEnemy(this[IDs.TheCHARCorporation]);

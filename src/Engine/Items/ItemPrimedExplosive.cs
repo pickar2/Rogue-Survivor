@@ -1,23 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using RogueSurvivor.Data;
+using System;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Items
+namespace RogueSurvivor.Engine.Items
 {
     [Serializable]
     class ItemPrimedExplosive : ItemExplosive
     {
-        #region Fields
-
-        #endregion
-
-        #region Properties
         public int FuseTimeLeft { get; set; }
-        #endregion
 
-        #region Init
         public ItemPrimedExplosive(ItemModel model)
             : base(model, model)
         {
@@ -26,6 +16,5 @@ namespace djack.RogueSurvivor.Engine.Items
 
             this.FuseTimeLeft = (model as ItemExplosiveModel).FuseDelay;
         }
-        #endregion
     }
 }

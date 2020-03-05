@@ -1,16 +1,12 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine;
+using RogueSurvivor.Engine.Actions;
+using RogueSurvivor.Engine.AI;
+using RogueSurvivor.Engine.MapObjects;
+using System;
 using System.Collections.Generic;
-using System.Text;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Engine.Actions;
-using djack.RogueSurvivor.Engine.AI;
-using djack.RogueSurvivor.Engine.Items;
-using djack.RogueSurvivor.Engine.MapObjects;
-using djack.RogueSurvivor.Gameplay.AI.Sensors;
-
-namespace djack.RogueSurvivor.Gameplay.AI
+namespace RogueSurvivor.Gameplay.AI
 {
     /// <summary>
     /// Base class for AIs that can follow orders and is notified of raid events.
@@ -18,7 +14,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
     [Serializable]
     abstract class OrderableAI : BaseAI
     {
-        #region Fields
         protected Percept m_LastEnemySaw;
         protected Percept m_LastItemsSaw;
         protected Percept m_LastSoldierSaw;
@@ -26,13 +21,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected bool m_ReachedPatrolPoint;
         protected int m_ReportStage;
-        #endregion
 
-        #region Properties
         public bool DontFollowLeader { get; set; }
-        #endregion
 
-        #region Orders
         public override void SetOrder(ActorOrder newOrder)
         {
             base.SetOrder(newOrder);
@@ -79,7 +70,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
         }
 
-        #region Barricading
         ActorAction ExecuteBarricading(RogueGame game, Location location, bool toTheMax)
         {
             /////////////////////
@@ -126,9 +116,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             else
                 return null;
         }
-        #endregion
 
-        #region Building fortification
         ActorAction ExecuteBuildFortification(RogueGame game, Location location, bool isLarge)
         {
             /////////////////////
@@ -169,9 +157,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             else
                 return null;
         }
-        #endregion
 
-        #region Guarding
         ActorAction ExecuteGuard(RogueGame game, Location location, List<Percept> percepts)
         {
             ////////////////////////////////
@@ -248,9 +234,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             m_Actor.Activity = Activity.IDLE;
             return new ActionWait(m_Actor, game);
         }
-        #endregion
 
-        #region Patrolling
         ActorAction ExecutePatrol(RogueGame game, Location location, List<Percept> percepts, ExplorationData exploration)
         {
             ////////////////////////////////
@@ -345,9 +329,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }, exploration
             );
         }
-        #endregion
 
-        #region Dropping all items
         ActorAction ExecuteDropAllItems(RogueGame game)
         {
             // if no more items, done.
@@ -366,19 +348,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // we still have at least one item but cannot drop it for some reason,
             // consider the order done.
             return null;
-
-            /* bugged code, did mark item to be dropped as taboo (causing loop bug) and could illegaly drop an item
-            // drop next item.
-            Item dropIt = m_Actor.Inventory[0];
-            if (dropIt.IsEquipped)
-                return new ActionUnequipItem(m_Actor, game, dropIt);
-            else
-                return new ActionDropItem(m_Actor, game, dropIt);
-            */
         }
-        #endregion
 
-        #region Reporting
         ActorAction ExecuteReport(RogueGame game, List<Percept> percepts)
         {
             ////////////////////////////////
@@ -456,9 +427,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             else
                 return new ActionSay(m_Actor, game, m_Actor.Leader, "Let me think...", RogueGame.Sayflags.NONE);
         }
-        #endregion
 
-        #region Sleeping now
         ActorAction ExecuteSleepNow(RogueGame game, List<Percept> percepts)
         {
             // interrupt if seeing an enemy.
@@ -490,9 +459,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return new ActionWait(m_Actor, game);
             }
         }
-        #endregion
 
-        #region Toggle following
         ActorAction ExecuteToggleFollow(RogueGame game)
         {
             // consider it done.
@@ -505,9 +472,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             game.DoEmote(m_Actor, DontFollowLeader ? "OK I'll do my stuff, see you soon!" : "I'm ready!");
             return new ActionWait(m_Actor, game);
         }
-        #endregion
 
-        #region Where are you?
         ActorAction ExecuteReportPosition(RogueGame game)
         {
             // consider it done. 
@@ -517,11 +482,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             string reportTxt = String.Format("I'm in {0} at {1},{2}.", m_Actor.Location.Map.Name, m_Actor.Location.Position.X, m_Actor.Location.Position.Y);
             return new ActionSay(m_Actor, game, m_Actor.Leader, reportTxt, RogueGame.Sayflags.NONE);
         }
-        #endregion
 
-        #endregion
-
-        #region Raid notification.
         public void OnRaid(RaidType raid, Location location, int turn)
         {
             if (m_Actor.IsSleeping)
@@ -542,6 +503,5 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             m_LastRaidHeard = new Percept(raidDesc, turn, location);
         }
-        #endregion
     }
 }

@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Items
+namespace RogueSurvivor.Engine.Items
 {
     class ItemFoodModel : ItemModel
     {
-        #region Fields
         int m_Nutrition;
         bool m_IsPerishable;
         int m_BestBeforeDays;
-        #endregion
 
-        #region Properties
         public int Nutrition
         {
             get { return m_Nutrition; }
@@ -30,9 +22,7 @@ namespace djack.RogueSurvivor.Engine.Items
         {
             get { return m_BestBeforeDays; }
         }
-        #endregion
 
-        #region Init
         /// <summary>
         /// 
         /// </summary>
@@ -53,6 +43,5 @@ namespace djack.RogueSurvivor.Engine.Items
                 m_BestBeforeDays = bestBeforeDays;
             }
         }
-        #endregion
     }
 }

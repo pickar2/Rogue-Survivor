@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace djack.RogueSurvivor.Gameplay
+﻿namespace RogueSurvivor.Gameplay
 {
     static class GameTips
     {
-        public static string[] TIPS = 
+        public static string[] TIPS =
         {
             // livings
             "...livings tire faster at night?",
@@ -20,14 +15,14 @@ namespace djack.RogueSurvivor.Gameplay
 	        "...you can recharge battery powered items at powered generators?",
             "...you can use some sprays to cover your scents?",
             "...you can expore the sewers, the subway and basements?",
-	        "...you can shove people around or push cars?",
+            "...you can shove people around or push cars?",
             "...you can try to wake up other people by shouting near them?",
             "...you may find police radios and various trackers helpful?",
             "...eating or butchering corpses is OK?",
             "...you can try to revive people with the medic skill?",
             // misc rules
         	"...odors decay faster under the rain?",
-        	"...firearms are more likely to jam under the rain?",
+            "...firearms are more likely to jam under the rain?",
             "...rain will put out fires?", // semi-trolling there
             "...wearing some outfits change the chances to get noticed by cops and gangs?",
             // followers

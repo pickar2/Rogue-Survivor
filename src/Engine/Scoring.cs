@@ -1,17 +1,13 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Gameplay;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Gameplay;
-
-namespace djack.RogueSurvivor.Engine
+namespace RogueSurvivor.Engine
 {
     [Serializable]
     class Achievement
     {
-        #region IDs
         [Serializable]
         public enum IDs
         {
@@ -30,9 +26,7 @@ namespace djack.RogueSurvivor.Engine
 
             _COUNT,
         }
-        #endregion
 
-        #region Properties
         public IDs ID { get; private set; }
         public string Name { get; private set; }
         public string TeaseName { get; private set; }
@@ -40,9 +34,7 @@ namespace djack.RogueSurvivor.Engine
         public string MusicID { get; private set; }
         public int ScoreValue { get; private set; }
         public bool IsDone { get; set; }
-        #endregion
 
-        #region Init
         public Achievement(IDs id, string name, string teaseName, string[] text, string musicID, int scoreValue)
         {
             this.ID = id;
@@ -53,8 +45,6 @@ namespace djack.RogueSurvivor.Engine
             this.ScoreValue = scoreValue;
             this.IsDone = false;
         }
-        #endregion
-
     }
 
     [Serializable]
@@ -67,7 +57,6 @@ namespace djack.RogueSurvivor.Engine
     [Serializable]
     class Scoring
     {
-        #region Types
         [Serializable]
         public class KillData
         {
@@ -95,15 +84,11 @@ namespace djack.RogueSurvivor.Engine
                 this.Text = text;
             }
         }
-        #endregion
 
-        #region Constants
-        public const int MAX_ACHIEVEMENTS = (int) Achievement.IDs._COUNT;
+        public const int MAX_ACHIEVEMENTS = (int)Achievement.IDs._COUNT;
 
-        public const int SCORE_BONUS_FOR_KILLING_LIVING_AS_UNDEAD = 12 * WorldTime.TURNS_PER_HOUR; 
-        #endregion
+        public const int SCORE_BONUS_FOR_KILLING_LIVING_AS_UNDEAD = 12 * WorldTime.TURNS_PER_HOUR;
 
-        #region Fields
         int m_StartScoringTurn;
         int m_ReincarnationNumber;
         Dictionary<int, KillData> m_Kills = new Dictionary<int, KillData>();
@@ -116,9 +101,7 @@ namespace djack.RogueSurvivor.Engine
         int m_KillPoints;
         float m_DifficultyRating = 1;
         DifficultySide m_Side;
-        #endregion
 
-        #region Properties
         public DifficultySide Side
         {
             get { return m_Side; }
@@ -265,17 +248,12 @@ namespace djack.RogueSurvivor.Engine
             set;
         }
 
-        #region Achievements
         public int CompletedAchievementsCount
         {
             get;
             set;
         }
-        #endregion
 
-        #endregion
-
-        #region Init
         public Scoring()
         {
             this.RealLifePlayingTime = new TimeSpan(0);
@@ -283,11 +261,9 @@ namespace djack.RogueSurvivor.Engine
             ////////////////
             // Achievements
             ////////////////
-            #region
             this.Achievements = new Achievement[(int)Achievement.IDs._COUNT];
 
-            #region CHAR related
-            InitAchievement(Achievement.IDs.CHAR_BROKE_INTO_OFFICE, 
+            InitAchievement(Achievement.IDs.CHAR_BROKE_INTO_OFFICE,
                 new Achievement(Achievement.IDs.CHAR_BROKE_INTO_OFFICE,
                     "Broke into a CHAR Office",
                     "Did not broke into XXX",
@@ -314,9 +290,7 @@ namespace djack.RogueSurvivor.Engine
                                    "See you in a next game version :)"},
                    GameMusics.CHAR_UNDERGROUND_FACILITY,
                    3000));
-            #endregion
 
-            #region Killing uniques
             InitAchievement(Achievement.IDs.KILLED_THE_SEWERS_THING,
                 new Achievement(Achievement.IDs.KILLED_THE_SEWERS_THING,
                     "Killed The Sewers Thing",
@@ -324,9 +298,7 @@ namespace djack.RogueSurvivor.Engine
                     new string[] { "One less Thing to worry about!" },
                     GameMusics.HEYTHERE,
                     1000));
-            #endregion
 
-            #region Reaching Day X
             InitAchievement(Achievement.IDs.REACHED_DAY_07,
                 new Achievement(Achievement.IDs.REACHED_DAY_07,
                     "Reached Day 7",
@@ -358,8 +330,6 @@ namespace djack.RogueSurvivor.Engine
                     new string[] { "Is this the end?" },
                     GameMusics.HEYTHERE,
                     1000));
-            #endregion
-            #endregion
         }
 
         /// <summary>
@@ -399,9 +369,7 @@ namespace djack.RogueSurvivor.Engine
             // start scoring at this turn.
             m_StartScoringTurn = gameTurn;
         }
-        #endregion
 
-        #region Achievements
         public bool HasCompletedAchievement(Achievement.IDs id)
         {
             return this.Achievements[(int)id].IsDone;
@@ -421,9 +389,7 @@ namespace djack.RogueSurvivor.Engine
         {
             this.Achievements[(int)id] = a;
         }
-        #endregion
 
-        #region Computing difficulty rating
         /// <summary>
         /// 
         /// </summary>
@@ -446,7 +412,6 @@ namespace djack.RogueSurvivor.Engine
             // - Supplies                  : -50% -> +50%
             // - Zombifieds UpDay 
             //////////////////
-            #region
             // - Don't reveal starting map: +10%
             if (!options.RevealStartingDistrict)
                 rating += 0.10f;
@@ -501,7 +466,6 @@ namespace djack.RogueSurvivor.Engine
                 else
                     rating -= k;
             }
-            #endregion
 
             //////////////////
             // Dynamic factors:
@@ -510,7 +474,6 @@ namespace djack.RogueSurvivor.Engine
             // - Undeads            : f(undeads/civs, day0, invasion%), +/- 50%
             // - Civilians          : f(zombification%, canstarve&starvedzomb%), +/- 50%
             ////////////////////
-            #region
             // - Density            : f(mapsize, civs+undeads), +/- 99%   // alpha10.1 removed citysize from difficulty formula
             float kDefaultDensity = (float)(Math.Sqrt(GameOptions.DEFAULT_MAX_CIVILIANS + GameOptions.DEFAULT_MAX_UNDEADS)) / (float)(GameOptions.DEFAULT_DISTRICT_SIZE * GameOptions.DEFAULT_DISTRICT_SIZE);
             float kDensity = (float)(Math.Sqrt(options.MaxCivilians + options.MaxUndeads)) / (float)(options.DistrictSize * options.DistrictSize);
@@ -543,7 +506,6 @@ namespace djack.RogueSurvivor.Engine
                 rating += 0.30f * kCivZombification + 0.20f * kCivStarvation;
             else
                 rating -= 0.30f * kCivZombification + 0.20f * kCivStarvation;
-            #endregion
 
 
             /////////////
@@ -556,7 +518,6 @@ namespace djack.RogueSurvivor.Engine
             // - Skeletons Upgrade          : x1.20 / x0.80
             // - Shamblers Upgrade          : x1.25 / x0.75
             ////////////
-            #region
             // - Disable undeads evolution: x0.5 / x2
             if (!options.AllowUndeadsEvolution)
             {
@@ -606,7 +567,6 @@ namespace djack.RogueSurvivor.Engine
                 else
                     rating *= 0.75f;
             }
-            #endregion
 
             /////////////////////////////
             // Divide by reincarnation.
@@ -616,9 +576,7 @@ namespace djack.RogueSurvivor.Engine
             // done.
             return Math.Max(rating, 0);
         }
-        #endregion
 
-        #region Kills & Sightings
         /// <summary>
         /// Add kill to record and increase kill points.
         /// Distinguish killing as living vs killing as undead.
@@ -663,9 +621,7 @@ namespace djack.RogueSurvivor.Engine
         {
             return m_Sightings.Contains(actorModelID);
         }
-        #endregion
 
-        #region Map & zones visits
         public bool HasVisited(Map map)
         {
             return m_VisitedMaps.Contains(map);
@@ -678,9 +634,7 @@ namespace djack.RogueSurvivor.Engine
                 m_VisitedMaps.Add(map);
             }
         }
-        #endregion
 
-        #region Dying : stuff to remember at death.
         /// <summary>
         /// 
         /// </summary>
@@ -709,9 +663,7 @@ namespace djack.RogueSurvivor.Engine
                 m_FollowersWhenDied = new List<Actor>();
             m_FollowersWhenDied.Add(fo);
         }
-        #endregion
 
-        #region Misc events
         public void AddEvent(int turn, string text)
         {
             lock (m_Events) // thread safe.
@@ -719,6 +671,5 @@ namespace djack.RogueSurvivor.Engine
                 m_Events.Add(new GameEventData(turn, text));
             }
         }
-        #endregion
     }
 }

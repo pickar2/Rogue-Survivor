@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace djack.RogueSurvivor
+namespace RogueSurvivor
 {
     public static class SetupConfig
     {

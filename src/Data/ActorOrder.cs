@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
 
-namespace djack.RogueSurvivor.Data
+namespace RogueSurvivor.Data
 {
     [Serializable]
     enum ActorTasks
@@ -25,15 +21,11 @@ namespace djack.RogueSurvivor.Data
     [Serializable]
     class ActorOrder
     {
-        #region Fields
         ActorTasks m_Task;
         Location m_Location;
-        #endregion
 
-        #region Properties
         public ActorTasks Task { get { return m_Task; } }
         public Location Location { get { return m_Location; } }
-        #endregion
 
         public ActorOrder(ActorTasks task, Location location)
         {

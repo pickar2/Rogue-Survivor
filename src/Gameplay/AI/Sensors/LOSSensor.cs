@@ -1,43 +1,37 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine;
+using RogueSurvivor.Engine.AI;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Engine.AI;
-
-namespace djack.RogueSurvivor.Gameplay.AI.Sensors
+namespace RogueSurvivor.Gameplay.AI.Sensors
 {
     [Serializable]
     class LOSSensor : Sensor
     {
-        #region Types
         [Flags]
         public enum SensingFilter
         {
             /// <summary>
             /// Actors.
             /// </summary>
-            ACTORS = (1<<0),
+            ACTORS = (1 << 0),
 
             /// <summary>
             /// Stacks of items (Inventory).
             /// </summary>
-            ITEMS = (1<<1),
+            ITEMS = (1 << 1),
 
             /// <summary>
             /// Stacks of corpses (List of Corpse>
             /// </summary>
-            CORPSES = (1<<2)
+            CORPSES = (1 << 2)
         }
-        #endregion
 
-        #region Fields
         HashSet<Point> m_FOV;
         SensingFilter m_Filters;
-        #endregion
 
-        #region Properties
         public HashSet<Point> FOV
         {
             get { return m_FOV; }
@@ -48,16 +42,12 @@ namespace djack.RogueSurvivor.Gameplay.AI.Sensors
             get { return m_Filters; }
             set { m_Filters = value; }
         }
-        #endregion
 
-        #region Init
         public LOSSensor(SensingFilter filters)
         {
             m_Filters = filters;
         }
-        #endregion
 
-        #region Sensor
         public override List<Percept> Sense(RogueGame game, Actor actor)
         {
             // compute FOV
@@ -67,7 +57,6 @@ namespace djack.RogueSurvivor.Gameplay.AI.Sensors
             // compute percepts.
             List<Percept> list = new List<Percept>();
 
-            #region Actors
             if ((m_Filters & SensingFilter.ACTORS) != 0)
             {
                 // roughly estimate time for two sensing methods.
@@ -101,9 +90,7 @@ namespace djack.RogueSurvivor.Gameplay.AI.Sensors
                     }
                 }
             }
-            #endregion
 
-            #region Items
             if ((m_Filters & SensingFilter.ITEMS) != 0)
             {
                 foreach (Point p in m_FOV)
@@ -114,9 +101,7 @@ namespace djack.RogueSurvivor.Gameplay.AI.Sensors
                     list.Add(new Percept(inv, actor.Location.Map.LocalTime.TurnCounter, new Location(actor.Location.Map, p)));
                 }
             }
-            #endregion
 
-            #region Corpses
             if ((m_Filters & SensingFilter.CORPSES) != 0)
             {
                 foreach (Point p in m_FOV)
@@ -126,11 +111,9 @@ namespace djack.RogueSurvivor.Gameplay.AI.Sensors
                         list.Add(new Percept(corpses, actor.Location.Map.LocalTime.TurnCounter, new Location(actor.Location.Map, p)));
                 }
             }
-            #endregion
 
             // done.
             return list;
         }
-        #endregion
     }
 }

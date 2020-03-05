@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace djack.RogueSurvivor.Engine
+namespace RogueSurvivor.Engine
 {
     [Serializable]
     struct GameOptions
     {
-        #region IDs
         public enum IDs
         {
             UI_MUSIC,
@@ -57,9 +53,7 @@ namespace djack.RogueSurvivor.Engine
             GAME_SHAMBLERS_UPGRADE,
             GAME_AUTOSAVE_PERIOD  // alpha10.1
         };
-        #endregion
 
-        #region ZUP Days
         public enum ZupDays
         {
             _FIRST = 0,
@@ -73,9 +67,7 @@ namespace djack.RogueSurvivor.Engine
             OFF,
             _COUNT
         }
-        #endregion
 
-        #region Simulating districts
         public enum SimRatio
         {
             _FIRST = 0,
@@ -88,9 +80,7 @@ namespace djack.RogueSurvivor.Engine
             FULL,
             _COUNT
         }
-        #endregion
 
-        #region Reincarnation mode
         public enum ReincMode
         {
             _FIRST = 0,
@@ -103,9 +93,7 @@ namespace djack.RogueSurvivor.Engine
             _LAST = RANDOM_ACTOR,
             _COUNT
         }
-        #endregion
 
-        #region Default values
         public const int DEFAULT_DISTRICT_SIZE = 50;
         public const int DEFAULT_MAX_CIVILIANS = 25;
         public const int DEFAULT_MAX_DOGS = 0; // 5
@@ -123,10 +111,8 @@ namespace djack.RogueSurvivor.Engine
         public const int DEFAULT_NATGUARD_FACTOR = 100;
         public const int DEFAULT_SUPPLIESDROP_FACTOR = 100;
         public const ZupDays DEFAULT_ZOMBIFIEDS_UPGRADE_DAYS = ZupDays.THREE;
-        public const int DEFAULT_AUTOSAVE_PERIOD = 24; // alpha10.1
-        #endregion
+        public const int DEFAULT_AUTOSAVE_PERIOD = 24;
 
-        #region Fields
         int m_DistrictSize;
         int m_MaxCivilians;
         int m_MaxDogs;
@@ -168,10 +154,8 @@ namespace djack.RogueSurvivor.Engine
         bool m_RatsUpgrade;
         bool m_SkeletonsUpgrade;
         bool m_ShamblersUpgrade;
-        int m_AutoSavePeriodInHours;  // alpha10.1
-        #endregion
+        int m_AutoSavePeriodInHours;
 
-        #region Properties
         public bool PlayMusic
         {
             get { return m_PlayMusic; }
@@ -506,7 +490,6 @@ namespace djack.RogueSurvivor.Engine
             set { m_ShamblersUpgrade = value; }
         }
 
-        // alpha10.1
         public int AutoSavePeriodInHours
         {
             get { return m_AutoSavePeriodInHours; }
@@ -517,13 +500,9 @@ namespace djack.RogueSurvivor.Engine
                 m_AutoSavePeriodInHours = value;
             }
         }
-        #endregion
 
-        #region Dev only options (hidden)
         public bool DEV_ShowActorsStats { get; set; }
-        #endregion
 
-        #region Init
         public void ResetToDefaultValues()
         {
             m_DistrictSize = DEFAULT_DISTRICT_SIZE;
@@ -566,11 +545,9 @@ namespace djack.RogueSurvivor.Engine
             m_RatsUpgrade = false;
             m_SkeletonsUpgrade = false;
             m_ShamblersUpgrade = false;
-            m_AutoSavePeriodInHours = DEFAULT_AUTOSAVE_PERIOD; // alpha10.1
+            m_AutoSavePeriodInHours = DEFAULT_AUTOSAVE_PERIOD;
         }
-        #endregion
 
-        #region Helpers
         public static string Name(IDs option)
         {
             switch (option)
@@ -615,14 +592,12 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.UI_COMBAT_ASSISTANT: return "  (Help) Combat Assistant";
                 case IDs.UI_SHOW_TARGETS: return "  (Help) Show Other Actors Targets";
                 case IDs.UI_SHOW_PLAYER_TARGETS: return "  (Help) Show Player Targets";
-                case IDs.GAME_AUTOSAVE_PERIOD: return "  (Save) AutoSave Period";  // alpha10.1
-
+                case IDs.GAME_AUTOSAVE_PERIOD: return "  (Save) AutoSave Period";
                 default:
                     throw new ArgumentOutOfRangeException("unhandled option");
             }
         }
 
-        // alpha10
         public static string Describe(IDs option)
         {
             switch (option)
@@ -707,11 +682,10 @@ namespace djack.RogueSurvivor.Engine
                     return "When mouse over an actor, will draw icons on actors that are targeting, are targeted or are in group with this actor.";
                 case IDs.UI_SHOW_PLAYER_TARGETS:
                     return "Will draw icons on actors that are targeting you.";
-                case IDs.GAME_AUTOSAVE_PERIOD:  // alpha10.1
+                case IDs.GAME_AUTOSAVE_PERIOD:
                     return "Will autosave at regular intervals when you start sleeping, start a long wait or change map.\nManually saving the game will reschedule the next autosave.";
                 default:
                     throw new ArgumentOutOfRangeException("unhandled option");
-
             }
         }
 
@@ -744,7 +718,6 @@ namespace djack.RogueSurvivor.Engine
                 default:
                     throw new ArgumentOutOfRangeException("unhandled simRatio");
             }
-
         }
 
         public static float SimRatioToFloat(SimRatio ratio)
@@ -828,7 +801,7 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_PERMADEATH:
                     return IsPermadeathOn ? "YES   (default NO)" : "NO    (default NO)";
                 case IDs.GAME_RATS_UPGRADE:
-                        return RatsUpgrade ? "YES   (default NO)" : "NO    (default NO)";
+                    return RatsUpgrade ? "YES   (default NO)" : "NO    (default NO)";
                 case IDs.GAME_REINC_LIVING_RESTRICTED:
                     return IsLivingReincRestricted ? "YES   (default NO)" : "NO    (default NO)";
                 case IDs.GAME_REINCARNATE_AS_RAT:
@@ -838,9 +811,9 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_REVEAL_STARTING_DISTRICT:
                     return RevealStartingDistrict ? "YES   (default YES)" : "NO    (default YES)";
                 case IDs.GAME_SHAMBLERS_UPGRADE:
-                        return ShamblersUpgrade ? "YES   (default NO)" : "NO    (default NO)";
+                    return ShamblersUpgrade ? "YES   (default NO)" : "NO    (default NO)";
                 case IDs.GAME_SKELETONS_UPGRADE:
-                        return SkeletonsUpgrade ? "YES   (default NO)" : "NO    (default NO)";
+                    return SkeletonsUpgrade ? "YES   (default NO)" : "NO    (default NO)";
                 case IDs.GAME_SIM_THREAD:
                     return SimThread ? "YES*  (default YES)" : "NO*   (default YES)";
                 case IDs.GAME_SIMULATE_DISTRICTS:
@@ -875,17 +848,15 @@ namespace djack.RogueSurvivor.Engine
                     return ShowPlayerTargets ? "ON    (default ON)" : "OFF   (default ON)";
                 case IDs.UI_SHOW_TARGETS:
                     return ShowTargets ? "ON    (default ON)" : "OFF   (default ON)";
-                case IDs.GAME_AUTOSAVE_PERIOD:  // alpha10.1
+                case IDs.GAME_AUTOSAVE_PERIOD:
                     return String.Format("{0,-4}  (default {1}h)",
-                        m_AutoSavePeriodInHours == 0 ? "OFF" : m_AutoSavePeriodInHours.ToString()+"h",
+                        m_AutoSavePeriodInHours == 0 ? "OFF" : m_AutoSavePeriodInHours.ToString() + "h",
                         GameOptions.DEFAULT_AUTOSAVE_PERIOD);
                 default:
                     return "???";
             }
         }
-        #endregion
 
-        #region Saving & Loading
         public static void Save(GameOptions options, string filepath)
         {
             if (filepath == null)
@@ -948,6 +919,5 @@ namespace djack.RogueSurvivor.Engine
                 save ? FileAccess.Write : FileAccess.Read,
                 FileShare.None);
         }
-        #endregion
     }
 }

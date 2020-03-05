@@ -1,27 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using RogueSurvivor.Data;
 using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Actions
+namespace RogueSurvivor.Engine.Actions
 {
     class ActionUseExit : ActorAction
     {
-        #region Fields
         Point m_ExitPoint;
-        #endregion
 
-        #region Init
         public ActionUseExit(Actor actor, Point exitPoint, RogueGame game)
             : base(actor, game)
         {
             m_ExitPoint = exitPoint;
         }
-        #endregion
 
-        #region ActorAction implementation
         public override bool IsLegal()
         {
             return m_Game.Rules.CanActorUseExit(m_Actor, m_ExitPoint, out m_FailReason);
@@ -31,6 +22,5 @@ namespace djack.RogueSurvivor.Engine.Actions
         {
             m_Game.DoUseExit(m_Actor, m_ExitPoint);
         }
-        #endregion
     }
 }

@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Items
+namespace RogueSurvivor.Engine.Items
 {
     class ItemMedicineModel : ItemModel
     {
-        #region Fields
         int m_Healing;
         int m_StaminaBoost;
         int m_SleepBoost;
         int m_InfectionCure;
         int m_SanityCure;
-        #endregion
 
-        #region Properties
         public int Healing
         {
             get { return m_Healing; }
@@ -42,9 +34,7 @@ namespace djack.RogueSurvivor.Engine.Items
         {
             get { return m_SanityCure; }
         }
-        #endregion
 
-        #region Init
         public ItemMedicineModel(string aName, string theNames, string imageID, int healing, int staminaBoost, int sleepBoost, int infectionCure, int sanityCure)
             : base(aName, theNames, imageID)
         {
@@ -54,6 +44,5 @@ namespace djack.RogueSurvivor.Engine.Items
             m_InfectionCure = infectionCure;
             m_SanityCure = sanityCure;
         }
-        #endregion
     }
 }

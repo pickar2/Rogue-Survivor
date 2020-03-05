@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace djack.RogueSurvivor.Data
+namespace RogueSurvivor.Data
 {
     [Serializable]
     class Inventory
     {
-        #region Fields
         List<Item> m_Items;
         int m_MaxCapacity;
-        #endregion
 
-        #region Properties
         public IEnumerable<Item> Items
         {
             get { return m_Items; }
@@ -24,7 +21,7 @@ namespace djack.RogueSurvivor.Data
 
         public Item this[int index]
         {
-            get 
+            get
             {
                 if (index < 0 || index >= m_Items.Count)
                     return null;
@@ -68,21 +65,16 @@ namespace djack.RogueSurvivor.Data
                 return m_Items[0];
             }
         }
-        #endregion
 
-        #region Init
         public Inventory(int maxCapacity)
         {
             if (maxCapacity < 0)
                 throw new ArgumentOutOfRangeException("maxCapacity < 0");
 
             m_MaxCapacity = maxCapacity;
-            //m_Items = new List<Item>(maxCapacity);
             m_Items = new List<Item>(1);
         }
-        #endregion
 
-        #region Managing
         /// <summary>
         /// Try to add all the item quantity.
         /// </summary>
@@ -332,8 +324,8 @@ namespace djack.RogueSurvivor.Data
             {
                 if (other != it &&
                     other.Model == it.Model &&
-                    other.CanStackMore &&     
-                    !other.IsEquipped)        
+                    other.CanStackMore &&
+                    !other.IsEquipped)
                     return true;
             }
 
@@ -351,7 +343,7 @@ namespace djack.RogueSurvivor.Data
                 return null;
 
             Item smallestStack = null;
-            foreach(Item other in m_Items)
+            foreach (Item other in m_Items)
                 if (other.Model == it.Model)
                 {
                     if (smallestStack == null || other.Quantity < smallestStack.Quantity)
@@ -420,9 +412,7 @@ namespace djack.RogueSurvivor.Data
                 while (i < m_Items.Count && countEmptyStacksToRemove > 0);
             }
         }
-        #endregion
 
-        #region Helpers
         public Item GetFirstByModel(ItemModel model)
         {
             foreach (Item it in m_Items)
@@ -444,17 +434,17 @@ namespace djack.RogueSurvivor.Data
             return null;
         }
 
-        public List<_T_> GetItemsByType<_T_>() where _T_ : Item
+        public List<T> GetItemsByType<T>() where T : Item
         {
-            List<_T_> list = null;
-            Type tt = typeof(_T_);
+            List<T> list = null;
+            Type tt = typeof(T);
 
             foreach (Item it in m_Items)
                 if (it.GetType() == tt)
                 {
                     if (list == null)
-                        list = new List<_T_>(m_Items.Count);
-                    list.Add(it as _T_);
+                        list = new List<T>(m_Items.Count);
+                    list.Add(it as T);
                 }
 
             return list;
@@ -483,9 +473,7 @@ namespace djack.RogueSurvivor.Data
             return false;
         }
 
-        // alpha10
-
-        public Item GetSmallestStackByType(Type tt, bool allowZeroQuantity=false)
+        public Item GetSmallestStackByType(Type tt, bool allowZeroQuantity = false)
         {
             Item smallest = null;
             int smallestQuantity = 0;
@@ -523,11 +511,6 @@ namespace djack.RogueSurvivor.Data
             return smallest;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fn"></param>
-        /// <returns>never null</returns>
         public List<Item> Filter(Predicate<Item> fn)
         {
             List<Item> list = new List<Item>(m_Items.Count);
@@ -535,21 +518,17 @@ namespace djack.RogueSurvivor.Data
                 if (fn(it)) list.Add(it);
             return list;
         }
-        
+
         public void ForEach(Action<Item> fn)
         {
             foreach (Item it in m_Items)
                 fn(it);
         }
-        #endregion
 
-        // alpha10
-        #region Pre-saving
         public void OptimizeBeforeSaving()
         {
             foreach (Item it in m_Items)
                 it.OptimizeBeforeSaving();
         }
-        #endregion
     }
 }

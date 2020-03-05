@@ -1,28 +1,22 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine;
+using RogueSurvivor.Engine.Items;
+using RogueSurvivor.Engine.MapObjects;
+using System;
 using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Engine.Items;
-using djack.RogueSurvivor.Engine.MapObjects;
-
-namespace djack.RogueSurvivor.Gameplay.Generators
+namespace RogueSurvivor.Gameplay.Generators
 {
     abstract class BaseMapGenerator : MapGenerator
     {
-        #region Fields
         protected readonly RogueGame m_Game;
-        #endregion
 
-        #region Init
         protected BaseMapGenerator(RogueGame game)
             : base(game.Rules)
         {
             m_Game = game;
         }
-        #endregion
 
-        #region Actor dressing helpers
         static readonly string[] MALE_SKINS = new string[] { GameImages.MALE_SKIN1, GameImages.MALE_SKIN2, GameImages.MALE_SKIN3, GameImages.MALE_SKIN4, GameImages.MALE_SKIN5 };
         static readonly string[] MALE_HEADS = new string[] { GameImages.MALE_HAIR1, GameImages.MALE_HAIR2, GameImages.MALE_HAIR3, GameImages.MALE_HAIR4, GameImages.MALE_HAIR5, GameImages.MALE_HAIR6, GameImages.MALE_HAIR7, GameImages.MALE_HAIR8 };
         static readonly string[] MALE_TORSOS = new string[] { GameImages.MALE_SHIRT1, GameImages.MALE_SHIRT2, GameImages.MALE_SHIRT3, GameImages.MALE_SHIRT4, GameImages.MALE_SHIRT5 };
@@ -153,9 +147,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             string[] skins = isMale ? MALE_SKINS : FEMALE_SKINS;
             return skins[roller.Roll(0, skins.Length)];
         }
-        #endregion
 
-        #region Actor naming helpers
         // alpha10.1 added new male first names
         static readonly string[] MALE_FIRST_NAMES =
         {
@@ -263,9 +255,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             string randomName = firstNames[roller.Roll(0, firstNames.Length)] + " " + lastNames[roller.Roll(0, lastNames.Length)];
             actor.Name = randomName;
         }
-        #endregion
 
-        #region Actor skills helpers
         public void GiveRandomSkillsToActor(DiceRoller roller, Actor actor, int count)
         {
             for (int i = 0; i < count; i++)
@@ -303,9 +293,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             if (actor.Inventory != null)
                 actor.Inventory.MaxCapacity = m_Rules.ActorMaxInv(actor);
         }
-        #endregion
 
-        #region Common map objects
         protected DoorWindow MakeObjWoodenDoor()
         {
             return new DoorWindow("wooden door", GameImages.OBJ_WOODEN_DOOR_CLOSED, GameImages.OBJ_WOODEN_DOOR_OPEN, GameImages.OBJ_WOODEN_DOOR_BROKEN, DoorWindow.BASE_HITPOINTS)
@@ -389,9 +377,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected MapObject MakeObjIronGate(string gateImageID, bool isBreakable = true)  // alpha10.1 added param isBreakable
         {
-            return new MapObject("iron gate", gateImageID, 
-                isBreakable ? MapObject.Break.BREAKABLE : MapObject.Break.UNBREAKABLE, 
-                MapObject.Fire.UNINFLAMMABLE, 
+            return new MapObject("iron gate", gateImageID,
+                isBreakable ? MapObject.Break.BREAKABLE : MapObject.Break.UNBREAKABLE,
+                MapObject.Fire.UNINFLAMMABLE,
                 isBreakable ? DoorWindow.BASE_HITPOINTS * 20 : 0)
             {
                 IsMaterialTransparent = true,
@@ -607,9 +595,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             return new Board("board", imageID, text);
         }
-        #endregion
 
-        #region Common tile decorations
         public void DecorateOutsideWalls(Map map, Rectangle rect, Func<int, int, string> decoFn)
         {
             for (int x = rect.Left; x < rect.Right; x++)
@@ -626,9 +612,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         tile.AddDecoration(deco);
                 }
         }
-        #endregion
 
-        #region Common items
         public Item MakeItemBandages()
         {
             return new ItemMedicine(m_Game.GameItems.BANDAGE)
@@ -978,10 +962,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 Quantity = m_Rules.Roll(1, m_Game.GameItems.MAGAZINE.StackingLimit)
             };
         }
-        #endregion
 
-
-        #region Common tasks
         protected void BarricadeDoors(Map map, Rectangle rect, int barricadeLevel)
         {
             barricadeLevel = Math.Min(Rules.BARRICADING_MAX, barricadeLevel);
@@ -995,14 +976,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     door.BarricadePoints = barricadeLevel;
                 }
         }
-        #endregion
 
-        #region Zones
         protected Zone MakeUniqueZone(string basename, Rectangle rect)
         {
             string name = String.Format("{0}@{1}-{2}", basename, rect.Left + rect.Width / 2, rect.Top + rect.Height / 2);
             return new Zone(name, rect);
         }
-        #endregion
     }
 }

@@ -1,27 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
+using System;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Items
+namespace RogueSurvivor.Engine.Items
 {
     [Serializable]
     class ItemTrap : Item
     {
-        #region Fields
         bool m_IsActivated;
         bool m_IsTriggered;
-        // alpha10
         Actor m_Owner;
-        #endregion
 
-        #region Properties
         public bool IsActivated
         {
-            get { return m_IsActivated;}
-            //alpha10 set { m_IsActivated=value;}
+            get { return m_IsActivated; }
         }
 
         public bool IsTriggered
@@ -32,7 +23,6 @@ namespace djack.RogueSurvivor.Engine.Items
 
         public ItemTrapModel TrapModel { get { return Model as ItemTrapModel; } }
 
-        // alpha10
         public Actor Owner
         {
             get
@@ -44,18 +34,14 @@ namespace djack.RogueSurvivor.Engine.Items
                 return m_Owner;
             }
         }
-        #endregion
 
-        #region Init
         public ItemTrap(ItemModel model)
             : base(model)
         {
             if (!(model is ItemTrapModel))
                 throw new ArgumentException("model is not a TrapModel");
         }
-        #endregion
 
-        #region Cloning
         /// <summary>
         /// A new trap of the same model, un-activated, no owner, un-triggered.
         /// </summary>
@@ -65,10 +51,7 @@ namespace djack.RogueSurvivor.Engine.Items
             ItemTrap c = new ItemTrap(TrapModel);
             return c;
         }
-        #endregion
 
-        // alpha10
-        #region Activating/Desactivating
         public void Activate(Actor owner)
         {
             m_Owner = owner;
@@ -80,10 +63,7 @@ namespace djack.RogueSurvivor.Engine.Items
             m_Owner = null;
             m_IsActivated = false;
         }
-        #endregion
 
-        // alpha10
-        #region Pre-saving
         public override void OptimizeBeforeSaving()
         {
             base.OptimizeBeforeSaving();
@@ -92,6 +72,5 @@ namespace djack.RogueSurvivor.Engine.Items
             if (m_Owner != null && m_Owner.IsDead)
                 m_Owner = null;
         }
-        #endregion
     }
 }

@@ -1,21 +1,18 @@
-﻿using djack.RogueSurvivor.Data;
-using System.Drawing;
+﻿using RogueSurvivor.Data;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
-namespace djack.RogueSurvivor.Engine
+namespace RogueSurvivor.Engine
 {
     class MessageManager
     {
-        #region Fields
         readonly List<Message> m_Messages = new List<Message>();
         int m_LinesSpacing;
         int m_FadeoutFactor;
         readonly List<Message> m_History;
         int m_HistorySize;
-        #endregion
 
-        #region Properties
         public int Count
         {
             get { return m_Messages.Count; }
@@ -25,9 +22,7 @@ namespace djack.RogueSurvivor.Engine
         {
             get { return m_History; }
         }
-        #endregion
 
-        #region Init
         public MessageManager(int linesSpacing, int fadeoutFactor, int historySize)
         {
             if (linesSpacing < 0)
@@ -40,9 +35,7 @@ namespace djack.RogueSurvivor.Engine
             m_HistorySize = historySize;
             m_History = new List<Message>(historySize);
         }
-        #endregion
 
-        #region Managing messages
         public void Clear()
         {
             m_Messages.Clear();
@@ -69,12 +62,10 @@ namespace djack.RogueSurvivor.Engine
                 return;
             m_Messages.RemoveAt(m_Messages.Count - 1);
         }
-        #endregion
 
-        #region Drawing
         public void Draw(IRogueUI ui, int freshMessagesTurn, int gx, int gy)
         {
-            for(int i = 0; i < m_Messages.Count; i++)
+            for (int i = 0; i < m_Messages.Count; i++)
             {
                 Message msg = m_Messages[i];
 
@@ -82,7 +73,7 @@ namespace djack.RogueSurvivor.Engine
                 bool isLatest = (m_Messages[i].Turn >= freshMessagesTurn);
                 Color dimmedColor = Color.FromArgb(alpha, msg.Color);
 
-                if(isLatest)
+                if (isLatest)
                     ui.UI_DrawStringBold(dimmedColor, msg.Text, gx, gy);
                 else
                     ui.UI_DrawString(dimmedColor, msg.Text, gx, gy);
@@ -90,6 +81,5 @@ namespace djack.RogueSurvivor.Engine
                 gy += m_LinesSpacing;
             }
         }
-        #endregion
     }
 }

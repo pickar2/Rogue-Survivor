@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Actions
+namespace RogueSurvivor.Engine.Actions
 {
     class ActionSleep : ActorAction
     {
-        #region Init
         public ActionSleep(Actor actor, RogueGame game)
             : base(actor, game)
         {
         }
-        #endregion
 
-        #region Implementation
         public override bool IsLegal()
         {
             return m_Game.Rules.CanActorSleep(m_Actor, out m_FailReason);
@@ -26,6 +18,5 @@ namespace djack.RogueSurvivor.Engine.Actions
         {
             m_Game.DoStartSleeping(m_Actor);
         }
-        #endregion
     }
 }

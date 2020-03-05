@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 
-namespace djack.RogueSurvivor.Engine
+namespace RogueSurvivor.Engine
 {
     [Serializable]
     class GameHintsStatus
     {
-        #region Fields
         bool[] m_AdvisorHints = new bool[(int)AdvisorHint._COUNT];
-        #endregion
 
-        #region Status
         public void ResetAllHints()
         {
             for (int i = (int)AdvisorHint._FIRST; i < (int)AdvisorHint._COUNT; i++)
@@ -45,9 +40,7 @@ namespace djack.RogueSurvivor.Engine
         {
             return CountAdvisorHintsGiven() >= (int)AdvisorHint._COUNT;
         }
-        #endregion
 
-        #region Saving & Loading
         public static void Save(GameHintsStatus hints, string filepath)
         {
             if (filepath == null)
@@ -110,6 +103,5 @@ namespace djack.RogueSurvivor.Engine
                 save ? FileAccess.Write : FileAccess.Read,
                 FileShare.None);
         }
-        #endregion
     }
 }

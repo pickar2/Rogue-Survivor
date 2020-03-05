@@ -1,42 +1,35 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine;
+using RogueSurvivor.Engine.Actions;
+using RogueSurvivor.Engine.AI;
+using RogueSurvivor.Gameplay.AI.Sensors;
+using RogueSurvivor.Gameplay.AI.Tools;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Engine.Actions;
-using djack.RogueSurvivor.Engine.AI;
-using djack.RogueSurvivor.Gameplay.AI.Sensors;
-using djack.RogueSurvivor.Gameplay.AI.Tools;
-
-namespace djack.RogueSurvivor.Gameplay.AI
+namespace RogueSurvivor.Gameplay.AI
 {
     /// <summary>
-    /// alpa10 this unused for now
+    /// alpha10 this unused for now
     /// </summary>
     [Serializable]
     class FeralDogAI : BaseAI
     {
-        #region Constants
         const int FOLLOW_NPCLEADER_MAXDIST = 1;
         const int FOLLOW_PLAYERLEADER_MAXDIST = 1;
         const int RUN_TO_TARGET_DISTANCE = 3;  // dogs run to their target when close enough
 
-        static string[] FIGHT_EMOTES = 
+        static string[] FIGHT_EMOTES =
         {
             "waf",            // flee
             "waf!?",         // trapped
             "GRRRRR WAF WAF"  // fight
-        };   
-        #endregion
+        };
 
-        #region Fields
         LOSSensor m_LOSSensor;
         SmellSensor m_LivingSmellSensor;
-        #endregion
 
-        #region BaseAI
         protected override void CreateSensors()
         {
             m_LOSSensor = new LOSSensor(LOSSensor.SensingFilter.ACTORS | LOSSensor.SensingFilter.CORPSES);
@@ -69,7 +62,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (m_Actor.HasLeader)
             {
                 Actor target = m_Actor.Leader.TargetActor;
-                if(target != null && target.Location.Map == m_Actor.Location.Map)
+                if (target != null && target.Location.Map == m_Actor.Location.Map)
                 {
                     // emote: bark
                     game.DoSay(m_Actor, target, "GRRRRRR WAF WAF", RogueGame.Sayflags.IS_FREE_ACTION | RogueGame.Sayflags.IS_DANGER);
@@ -90,7 +83,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             bool isLeaderFighting = m_Actor.HasLeader && IsAdjacentToEnemy(game, m_Actor.Leader);
 
             // 2 attack or flee enemies.
-            #region
             if (enemies != null)
             {
                 RouteFinder.SpecialActions allowedChargeActions = RouteFinder.SpecialActions.JUMP; // alpha10
@@ -103,10 +95,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return ff;
                 }
             }
-            #endregion
 
             // 3 go eat food on floor if almost hungry
-            #region
             if (game.IsAlmostHungry(m_Actor))
             {
                 List<Percept> itemsStack = FilterStacks(game, mapPercepts);
@@ -121,10 +111,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
             }
-            #endregion
 
             // 4 go eat corpses if hungry
-            #region
             if (game.Rules.IsActorHungry(m_Actor))
             {
                 List<Percept> corpses = FilterCorpses(game, mapPercepts);
@@ -139,10 +127,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
             }
-            #endregion
 
             // 5 rest or sleep
-            #region
             if (game.Rules.IsActorTired(m_Actor))
             {
                 m_Actor.Activity = Activity.IDLE;
@@ -153,10 +139,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 m_Actor.Activity = Activity.SLEEPING;
                 return new ActionSleep(m_Actor, game);
             }
-            #endregion
 
             // 6 follow leader
-            #region
             if (m_Actor.HasLeader)
             {
                 Point lastKnownLeaderPosition = m_Actor.Leader.Location.Position;
@@ -170,7 +154,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return followAction;
                 }
             }
-            #endregion
 
             // 7 wander
             m_Actor.Activity = Activity.IDLE;
@@ -181,9 +164,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         {
             throw new NotImplementedException();
         }
-        #endregion
 
-        #region Dogs specifics
         protected void RunToIfCloseTo(RogueGame game, Point pos, int closeDistance)
         {
             if (game.Rules.GridDistance(m_Actor.Location.Position, pos) <= closeDistance)
@@ -195,6 +176,5 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 m_Actor.IsRunning = false;
             }
         }
-        #endregion
     }
 }

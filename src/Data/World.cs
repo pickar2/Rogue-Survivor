@@ -1,21 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace djack.RogueSurvivor.Data
+namespace RogueSurvivor.Data
 {
     [Serializable]
     class World
     {
-        #region Fields
         District[,] m_DistrictsGrid;
         int m_Size;
         Weather m_Weather;
         int m_NextWeatherCheckTurn;  // alpha10
-        #endregion
 
-        #region Properties
         public int Size
         {
             get { return m_Size; }
@@ -23,13 +17,13 @@ namespace djack.RogueSurvivor.Data
 
         public District this[int x, int y]
         {
-            get 
+            get
             {
                 if (x < 0 || x >= m_Size)
                     throw new ArgumentOutOfRangeException("x");
                 if (y < 0 || y >= m_Size)
                     throw new ArgumentOutOfRangeException("y");
-                return m_DistrictsGrid[x, y]; 
+                return m_DistrictsGrid[x, y];
             }
             set
             {
@@ -52,9 +46,7 @@ namespace djack.RogueSurvivor.Data
             get { return m_NextWeatherCheckTurn; }
             set { m_NextWeatherCheckTurn = value; }
         }
-        #endregion
 
-        #region Init
         public World(int size)
         {
             if (size <= 0)
@@ -65,9 +57,7 @@ namespace djack.RogueSurvivor.Data
             m_Weather = Weather.CLEAR;
             m_NextWeatherCheckTurn = 0;
         }
-        #endregion
 
-        #region Coordinates
         /// <summary>
         /// Trim district coordinates to world bounds.
         /// </summary>
@@ -89,17 +79,14 @@ namespace djack.RogueSurvivor.Data
         /// <returns>[A-Z][0-9]</returns>
         public static string CoordToString(int x, int y)
         {
-            return String.Format("{0}{1}", (char)('A'+x), y);
+            return String.Format("{0}{1}", (char)('A' + x), y);
         }
-        #endregion
 
-        #region Pre-saving
         public void OptimizeBeforeSaving()
         {
             for (int x = 0; x < m_Size; x++)
                 for (int y = 0; y < m_Size; y++)
                     m_DistrictsGrid[x, y].OptimizeBeforeSaving();
         }
-        #endregion
     }
 }

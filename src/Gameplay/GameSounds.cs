@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace djack.RogueSurvivor.Gameplay
+﻿namespace RogueSurvivor.Gameplay
 {
     static class GameSounds
     {
@@ -17,6 +12,5 @@ namespace djack.RogueSurvivor.Gameplay
 
         public static readonly string NIGHTMARE = "nightmare";
         public static readonly string NIGHTMARE_FILE = PATH + "sfx - nightmare";
-
     }
 }

@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Actions
+namespace RogueSurvivor.Engine.Actions
 {
     class ActionShout : ActorAction
     {
-        #region Fields
         string m_Text;
-        #endregion
 
-        #region Init
         public ActionShout(Actor actor, RogueGame game)
             : this(actor, game, null)
         {
@@ -24,9 +16,7 @@ namespace djack.RogueSurvivor.Engine.Actions
         {
             m_Text = text;
         }
-        #endregion
 
-        #region Implementation
         public override bool IsLegal()
         {
             return m_Game.Rules.CanActorShout(m_Actor, out m_FailReason);
@@ -36,6 +26,5 @@ namespace djack.RogueSurvivor.Engine.Actions
         {
             m_Game.DoShout(m_Actor, m_Text);
         }
-        #endregion
     }
 }

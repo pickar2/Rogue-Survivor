@@ -1,10 +1,10 @@
-﻿using djack.RogueSurvivor.Data;
+﻿using RogueSurvivor.Data;
 using System;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace djack.RogueSurvivor.Engine
+namespace RogueSurvivor.Engine
 {
     [Serializable]
     enum GameMode
@@ -370,53 +370,35 @@ namespace djack.RogueSurvivor.Engine
     [Serializable]
     class Session
     {
-        #region Fields
-
-        #region Game Mode
         GameMode m_GameMode;
-        #endregion
 
-        #region World map
         WorldTime m_WorldTime;
         World m_World;
         Map m_CurrentMap;
-        #endregion
 
-        #region Scoring
         Scoring m_Scoring;
-        #endregion
 
-        #region Events
         /// <summary>
         /// [RaidType, District.WorldPosition.X, District.WorldPosition.Y] -> turnCounter
         /// </summary>
-        int[, ,] m_Event_Raids;
-        #endregion
-
-        #region Advisor
-
-        #endregion
+        int[,,] m_Event_Raids;
 
         // alpha10.1
-        #region AutoSave
         int m_NextAutoSaveTime;
-        #endregion
 
         [NonSerialized]
         static Session s_TheSession;
-        #endregion
 
-        #region Properties
         /// <summary>
         /// Gets the curent Session (singleton).
         /// </summary>
         public static Session Get
         {
-            get 
+            get
             {
                 if (s_TheSession == null)
                     s_TheSession = new Session();
-                return s_TheSession; 
+                return s_TheSession;
             }
         }
 
@@ -454,15 +436,10 @@ namespace djack.RogueSurvivor.Engine
             set { m_NextAutoSaveTime = value; }
         }
 
-        #region Uniques
-
         public UniqueActors UniqueActors { get; set; }
         public UniqueItems UniqueItems { get; set; }
-        public UniqueMaps UniqueMaps {get; set; }
-  
-        #endregion
+        public UniqueMaps UniqueMaps { get; set; }
 
-        #region Special flags
         public bool PlayerKnows_CHARUndergroundFacilityLocation
         {
             get;
@@ -491,11 +468,7 @@ namespace djack.RogueSurvivor.Engine
         public FireMode Player_CurrentFireMode { get; set; }
 
         public int Player_TurnCharismaRoll { get; set; }
-        #endregion
 
-        #endregion
-
-        #region Init
         Session()
         {
             Reset();
@@ -538,9 +511,7 @@ namespace djack.RogueSurvivor.Engine
             // alpha10.1
             m_NextAutoSaveTime = 0;
         }
-        #endregion
 
-        #region Events
         public bool HasRaidHappened(RaidType raid, District district)
         {
             if (district == null)
@@ -567,9 +538,7 @@ namespace djack.RogueSurvivor.Engine
                 m_Event_Raids[(int)raid, district.WorldPosition.X, district.WorldPosition.Y] = turnCounter;
             }
         }
-        #endregion
 
-        #region Saving & Loading
         public static void Save(Session session, string filepath)
         {
             // optimize.
@@ -654,7 +623,7 @@ namespace djack.RogueSurvivor.Engine
                 File.Delete(filepath);
                 hasDeleted = true;
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to delete saved game (no save?)");
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, "exception :");
@@ -683,16 +652,14 @@ namespace djack.RogueSurvivor.Engine
         void ReconstructAuxiliaryFields()
         {
             // reconstruct all maps auxiliary fields.
-            for(int x = 0; x < m_World.Size;x++)
+            for (int x = 0; x < m_World.Size; x++)
                 for (int y = 0; y < m_World.Size; y++)
                 {
                     foreach (Map map in m_World[x, y].Maps)
                         map.ReconstructAuxiliaryFields();
                 }
         }
-        #endregion
 
-        #region Helpers
         public static string DescGameMode(GameMode mode)
         {
             switch (mode)
@@ -714,20 +681,19 @@ namespace djack.RogueSurvivor.Engine
                 default: throw new Exception("unhandled game mode");
             }
         }
-        
+
         // alpha10
         public UniqueActor ActorToUniqueActor(Actor a)
         {
             if (!a.IsUnique)
                 throw new ArgumentException("actor is not unique");
-            foreach(UniqueActor unique in UniqueActors.ToArray())
+            foreach (UniqueActor unique in UniqueActors.ToArray())
             {
                 if (unique.TheActor == a)
                     return unique;
             }
             throw new ArgumentException("actor is flaged as unique but did not find it!");
         }
-        #endregion
 
 #if DEBUG_STATS
         [Serializable]
@@ -745,7 +711,6 @@ namespace djack.RogueSurvivor.Engine
 
         DistrictStat[,] m_Stats;
 
-        #region Dev
         public void UpdateStats(District d)
         {
             if (m_Stats == null)
@@ -787,7 +752,6 @@ namespace djack.RogueSurvivor.Engine
                 return null;
             return record;
         }
-        #endregion
 #endif
     }
 }

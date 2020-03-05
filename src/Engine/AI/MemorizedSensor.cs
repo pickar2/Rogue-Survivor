@@ -1,11 +1,8 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.AI
+namespace RogueSurvivor.Engine.AI
 {
     [Serializable]
     /// <summary>
@@ -14,20 +11,15 @@ namespace djack.RogueSurvivor.Engine.AI
     /// </summary>
     class MemorizedSensor : Sensor
     {
-        #region Fields
         Sensor m_Sensor;
         List<Percept> m_Percepts = new List<Percept>();
         int m_Persistance;
-        #endregion
 
-        #region Properties
         public Sensor Sensor
         {
             get { return m_Sensor; }
         }
-        #endregion
 
-        #region Init
         /// <summary>
         /// 
         /// </summary>
@@ -41,20 +33,16 @@ namespace djack.RogueSurvivor.Engine.AI
             m_Sensor = noMemorySensor;
             m_Persistance = persistance;
         }
-        #endregion
 
-        #region Clear memory
         public void Clear()
         {
             m_Percepts.Clear();
         }
-        #endregion
 
-        #region Sensor
         public override List<Percept> Sense(RogueGame game, Actor actor)
         {
             // Forget aged percepts
-            for(int i = 0; i < m_Percepts.Count; )
+            for (int i = 0; i < m_Percepts.Count;)
             {
                 if (m_Percepts[i].GetAge(actor.Location.Map.LocalTime.TurnCounter) > m_Persistance)
                     m_Percepts.RemoveAt(i);
@@ -63,7 +51,7 @@ namespace djack.RogueSurvivor.Engine.AI
             }
 
             // Forget dead actors or actors that are not anymore in the same map.
-            for (int i = 0; i < m_Percepts.Count; )
+            for (int i = 0; i < m_Percepts.Count;)
             {
                 Percept p = m_Percepts[i];
                 Actor a = p.Percepted as Actor;
@@ -110,6 +98,5 @@ namespace djack.RogueSurvivor.Engine.AI
             // Return updated percepts.
             return m_Percepts;
         }
-        #endregion
     }
 }

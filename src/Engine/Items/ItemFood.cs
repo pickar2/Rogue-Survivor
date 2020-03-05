@@ -1,22 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
+using System;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Items
+namespace RogueSurvivor.Engine.Items
 {
     [Serializable]
     class ItemFood : Item
     {
-        #region Properties
         public int Nutrition { get; private set; }
         public bool IsPerishable { get; private set; }
         public WorldTime BestBefore { get; private set; }
-        #endregion
 
-        #region Init
         /// <summary>
         /// Not perishable.
         /// </summary>
@@ -47,6 +40,5 @@ namespace djack.RogueSurvivor.Engine.Items
             this.BestBefore = new WorldTime(bestBefore);
             this.IsPerishable = true;
         }
-        #endregion
     }
 }

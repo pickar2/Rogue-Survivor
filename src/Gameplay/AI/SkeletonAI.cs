@@ -1,17 +1,12 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine;
+using RogueSurvivor.Engine.Actions;
+using RogueSurvivor.Engine.AI;
+using RogueSurvivor.Gameplay.AI.Sensors;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Engine.Actions;
-using djack.RogueSurvivor.Engine.AI;
-using djack.RogueSurvivor.Gameplay.AI.Sensors;
-
-
-namespace djack.RogueSurvivor.Gameplay.AI
+namespace RogueSurvivor.Gameplay.AI
 {
     [Serializable]
     /// <summary>
@@ -19,15 +14,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
     /// </summary>
     class SkeletonAI : BaseAI
     {
-        #region
         const int IDLE_CHANCE = 80;
-        #endregion
 
-        #region Fields
         LOSSensor m_LOSSensor;
-        #endregion
 
-        #region BaseAI
         protected override void CreateSensors()
         {
             m_LOSSensor = new LOSSensor(LOSSensor.SensingFilter.ACTORS);
@@ -72,6 +62,5 @@ namespace djack.RogueSurvivor.Gameplay.AI
             m_Actor.Activity = Activity.IDLE;
             return BehaviorWander(game, null);
         }
-        #endregion
     }
 }

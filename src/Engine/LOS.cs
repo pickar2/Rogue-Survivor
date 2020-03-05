@@ -1,59 +1,15 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine
+namespace RogueSurvivor.Engine
 {
     /// <summary>
     /// Line Of Sight & Field Of View computing, line tracing and assorted utilities.
     /// </summary>
     static class LOS
     {
-        #region Line tracing
-
-#if false
-        /// <summary>
-        /// Ensure symetric results by ordering coordinates.
-        /// </summary>
-        /// <param name="maxSteps"></param>
-        /// <param name="map"></param>
-        /// <param name="xFrom"></param>
-        /// <param name="yFrom"></param>
-        /// <param name="xTo"></param>
-        /// <param name="yTo"></param>
-        /// <param name="line"></param>
-        /// <param name="fn"></param>
-        /// <returns></returns>
-        public static bool SymetricBresenhamTrace(int maxSteps, Map map, int xFrom, int yFrom, int xTo, int yTo, List<Point> line, Func<int, int, bool> fn)
-        {         
-            ///////////////////////////////////////////////
-            // Ensure symetry by arbitrary ordering points
-            ///////////////////////////////////////////////
-            if (xFrom + yFrom > xTo + yTo)
-            {
-                // swap from and to
-                int swap;
-
-                swap = xFrom;
-                xFrom = xTo;
-                xTo = swap;
-
-                swap = yFrom;
-                yFrom = yTo;
-                yTo = swap;
-            }
-
-            /////////////////////
-            // Then do bresenham
-            /////////////////////
-            return AsymetricBresenhamTrace(maxSteps, map, xFrom, yFrom, xTo, yTo, line, fn);
-        }
-#endif
-
         /// <summary>
         /// 
         /// </summary>
@@ -151,13 +107,6 @@ namespace djack.RogueSurvivor.Engine
             return true;
         }
 
-#if false
-        public static bool SymetricBresenhamTrace(Map map, int xFrom, int yFrom, int xTo, int yTo, List<Point> line, Func<int, int, bool> fn)
-        {
-            return SymetricBresenhamTrace(Int32.MaxValue, map, xFrom, yFrom, xTo, yTo, line, fn);
-        }
-#endif
-
         public static bool AsymetricBresenhamTrace(Map map, int xFrom, int yFrom, int xTo, int yTo, List<Point> line, Func<int, int, bool> fn)
         {
             return AsymetricBresenhamTrace(Int32.MaxValue, map, xFrom, yFrom, xTo, yTo, line, fn);
@@ -254,9 +203,7 @@ namespace djack.RogueSurvivor.Engine
             // done.
             return throwLineClear;
         }
-        #endregion
 
-        #region Computing FOV
         static bool FOVSub(Location fromLocation, Point toPosition, int maxRange, ref HashSet<Point> visibleSet)
         {
 #if false
@@ -326,8 +273,8 @@ namespace djack.RogueSurvivor.Engine
                         continue;
 
                     // Trace line.
-                    if(!FOVSub(fromLocation, to, maxRange, ref visibleSet))
-                    {                        
+                    if (!FOVSub(fromLocation, to, maxRange, ref visibleSet))
+                    {
                         // if its a wall (in FoV terms), remember.
                         bool isFovWall = false;
                         Tile tile = map.GetTileAt(x, y);
@@ -335,8 +282,8 @@ namespace djack.RogueSurvivor.Engine
                         if (!tile.Model.IsTransparent && !tile.Model.IsWalkable)
                             isFovWall = true;
                         else if (mapObj != null)
-                            isFovWall = true;                           
-                        if(isFovWall)
+                            isFovWall = true;
+                        if (isFovWall)
                             wallsToFix.Add(to);
 
                         // next.
@@ -373,6 +320,5 @@ namespace djack.RogueSurvivor.Engine
 
             return visibleSet;
         }
-        #endregion
     }
 }

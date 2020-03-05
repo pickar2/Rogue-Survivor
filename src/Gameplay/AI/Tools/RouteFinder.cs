@@ -1,12 +1,11 @@
-﻿using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Engine.MapObjects;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine;
+using RogueSurvivor.Engine.MapObjects;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-
-namespace djack.RogueSurvivor.Gameplay.AI.Tools
+namespace RogueSurvivor.Gameplay.AI.Tools
 {
     // alpha10 new ai helper tool
     /// <summary>
@@ -24,7 +23,6 @@ namespace djack.RogueSurvivor.Gameplay.AI.Tools
     /// <see cref="BaseAI.BehaviorBumpToward(RogueGame, Point, Func{Point, Point, float})"/>
     class RouteFinder
     {
-        #region Types
         private class Node
         {
             public bool IsVisited;
@@ -74,14 +72,10 @@ namespace djack.RogueSurvivor.Gameplay.AI.Tools
             /// </summary>
             ADJ_TO_DEST_IS_GOAL = (1 << 4)
         }
-        #endregion
 
-        #region Fields
         readonly BaseAI m_AI;
         LinkedList<Node> m_Nodes;
-        #endregion
 
-        #region Properties
         /// <summary>
         /// Actions the RouteFinder for this AI is allowed to try when checking route to a destination.
         /// Set this depending on:
@@ -90,17 +84,13 @@ namespace djack.RogueSurvivor.Gameplay.AI.Tools
         /// </summary>
         /// <see cref="RouteFinder.CanReachSimple(RogueGame, Point, int, Func{Point, Point, int})"/>
         public SpecialActions AllowedActions { get; set; }
-        #endregion
 
-        #region Init
         public RouteFinder(BaseAI ai)
         {
             m_AI = ai;
             m_Nodes = new LinkedList<Node>();
         }
-        #endregion
 
-        #region Checking reachability
         /// <summary>
         /// Can the BaseAI expect to reach this destination by using its simple movement logic BehaviorBumpToward.
         /// 
@@ -118,7 +108,7 @@ namespace djack.RogueSurvivor.Gameplay.AI.Tools
         /// <param name="distanceFn"></param>
         /// <returns></returns>
         /// <see cref="BaseAI.BehaviorBumpToward(RogueGame, Point, Func{Point, Point, float})"/>
-        public bool CanReachSimple(RogueGame game, Point dest, int maxDist, Func<Point,Point,int> distanceFn)
+        public bool CanReachSimple(RogueGame game, Point dest, int maxDist, Func<Point, Point, int> distanceFn)
         {
             Actor a = m_AI.ControlledActor;
             Point start = a.Location.Position;
@@ -137,22 +127,22 @@ namespace djack.RogueSurvivor.Gameplay.AI.Tools
             // expect we don't care about accumulated path cost as we want only to check reachability
             m_Nodes.Clear();
             m_Nodes.AddFirst(new Node() { IsVisited = false, Pos = start, DistToGoal = distanceFn(start, dest) });
-            for (;;)
+            for (; ; )
             {
                 // get most promising node, nodes are sorted by their distance to goal, similar to A*
                 LinkedListNode<Node> iCurrent = m_Nodes.First;
-                for(;;)
+                for (; ; )
                 {
                     if (iCurrent.Value.Pos == dest)
                         return true;  // found goal
 
                     if (adjToDestIsGoal)
                     {
-                        if (distanceFn(iCurrent.Value.Pos, dest) == 1) 
+                        if (distanceFn(iCurrent.Value.Pos, dest) == 1)
                             return true; // found adj to goal
                     }
 
-                    if (!iCurrent.Value.IsVisited)                    
+                    if (!iCurrent.Value.IsVisited)
                         break;  // visit this one
 
                     // node already visited, try next one.
@@ -213,11 +203,9 @@ namespace djack.RogueSurvivor.Gameplay.AI.Tools
                 m_Nodes.AddLast(newNode);
             else
                 m_Nodes.AddBefore(insertBefore, newNode);
-            
-        }
-        #endregion
 
-        #region Helpers
+        }
+
         /// <summary>
         /// Get node in list at position, if any.
         /// </summary>
@@ -251,7 +239,7 @@ namespace djack.RogueSurvivor.Gameplay.AI.Tools
                 return true;
 
             MapObject mobj = map.GetMapObjectAt(pos);
-            if (mobj == null) 
+            if (mobj == null)
                 // blocked by a wall tile
                 return false;
 
@@ -289,6 +277,5 @@ namespace djack.RogueSurvivor.Gameplay.AI.Tools
             // blocked by a mapobject we can't handle.
             return false;
         }
-        #endregion
     }
 }

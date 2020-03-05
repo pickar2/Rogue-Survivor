@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿using RogueSurvivor.UI;
 
-using djack.RogueSurvivor.Engine;
-using RogueSurvivor.UI;
-
-namespace djack.RogueSurvivor.Engine
+namespace RogueSurvivor.Engine
 {
     static class InputTranslator
     {

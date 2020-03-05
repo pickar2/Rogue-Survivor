@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace djack.RogueSurvivor.Engine
+namespace RogueSurvivor.Engine
 {
     [Serializable]
     class DiceRoller
     {
-        #region Fields
         Random m_Rng;
-        #endregion
 
-        #region Init
         public DiceRoller(int seed)
-        {            
+        {
             m_Rng = new Random(seed);
         }
 
@@ -25,9 +19,7 @@ namespace djack.RogueSurvivor.Engine
             : this((int)DateTime.UtcNow.Ticks)
         {
         }
-        #endregion
 
-        #region Rolling
         /// <summary>
         /// Roll in range [min, max[.
         /// </summary>
@@ -70,6 +62,5 @@ namespace djack.RogueSurvivor.Engine
         {
             return Roll(0, 100) < chance;
         }
-        #endregion
     }
 }

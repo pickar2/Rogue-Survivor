@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
+using System;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Actions
+namespace RogueSurvivor.Engine.Actions
 {
     class ActionMeleeAttack : ActorAction
     {
-        #region Fields
         readonly Actor m_Target;
-        #endregion
 
-        #region Init
         public ActionMeleeAttack(Actor actor, RogueGame game, Actor target)
             : base(actor, game)
         {
@@ -22,9 +15,7 @@ namespace djack.RogueSurvivor.Engine.Actions
 
             m_Target = target;
         }
-        #endregion
 
-        #region ActorAction
         public override bool IsLegal()
         {
             return true;    // handled before in rules
@@ -34,6 +25,5 @@ namespace djack.RogueSurvivor.Engine.Actions
         {
             m_Game.DoMeleeAttack(m_Actor, m_Target);
         }
-        #endregion
     }
 }

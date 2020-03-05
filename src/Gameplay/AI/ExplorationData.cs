@@ -1,25 +1,18 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using System;
 using System.Collections.Generic;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Gameplay.AI
+namespace RogueSurvivor.Gameplay.AI
 {
     // alpha10.1 added Age concept, changed implementation from Queue to List (LinkedList is probably not worth it)
     [Serializable]
     class ExplorationData
     {
-        #region Fields
         int m_LocationsQueueSize;
         List<Location> m_LocationsQueue;  // from oldest to most recent
         int m_ZonesQueueSize;
         List<Zone> m_ZonesQueue;  // from oldest to most recent
-        #endregion
 
-        #region Properties
-        #endregion
-
-        #region Init
         public ExplorationData(int locationsToRemember, int zonesToRemember)
         {
             if (locationsToRemember < 1)
@@ -38,9 +31,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             m_LocationsQueue.Clear();
             m_ZonesQueue.Clear();
         }
-        #endregion
 
-        #region Exploring
         public bool HasExplored(Location loc)
         {
             return m_LocationsQueue.Contains(loc);
@@ -135,9 +126,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             return youngestAge;
         }
-        #endregion
 
-        #region Updating
         public void Update(Location location)
         {
             // location.
@@ -157,6 +146,5 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 }
             }
         }
-        #endregion
     }
 }

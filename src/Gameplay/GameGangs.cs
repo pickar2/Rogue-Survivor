@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace djack.RogueSurvivor.Gameplay
+namespace RogueSurvivor.Gameplay
 {
     static class GameGangs
     {
@@ -14,19 +14,19 @@ namespace djack.RogueSurvivor.Gameplay
             GANGSTA_FLOODS
         }
 
-        public static readonly IDs[] GANGSTAS = 
+        public static readonly IDs[] GANGSTAS =
         {
             IDs.GANGSTA_CRAPS,
             IDs.GANGSTA_FLOODS
         };
 
-        public static readonly IDs[] BIKERS = 
+        public static readonly IDs[] BIKERS =
         {
             IDs.BIKER_HELLS_SOULS,
             IDs.BIKER_FREE_ANGELS
         };
 
-        public static readonly string[] NAMES = 
+        public static readonly string[] NAMES =
         {
             "(no gang)",
             "Hell's Souls",
@@ -35,7 +35,7 @@ namespace djack.RogueSurvivor.Gameplay
             "Floods"
         };
 
-        public static readonly GameItems.IDs[][] BAD_GANG_OUTFITS = new GameItems.IDs[][] 
+        public static readonly GameItems.IDs[][] BAD_GANG_OUTFITS = new GameItems.IDs[][]
         { 
             // none
             new GameItems.IDs[] {},
@@ -49,7 +49,7 @@ namespace djack.RogueSurvivor.Gameplay
             new GameItems.IDs[] { GameItems.IDs.ARMOR_FREE_ANGELS_JACKET,  GameItems.IDs.ARMOR_HELLS_SOULS_JACKET, GameItems.IDs.ARMOR_POLICE_JACKET, GameItems.IDs.ARMOR_POLICE_RIOT }
         };
 
-        public static readonly GameItems.IDs[][] GOOD_GANG_OUTFITS = new GameItems.IDs[][] 
+        public static readonly GameItems.IDs[][] GOOD_GANG_OUTFITS = new GameItems.IDs[][]
         { 
             // none
             new GameItems.IDs[] {},
@@ -62,6 +62,5 @@ namespace djack.RogueSurvivor.Gameplay
             // Gangs Floods
             new GameItems.IDs[] {}
         };
-
     }
 }

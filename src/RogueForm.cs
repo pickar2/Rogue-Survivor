@@ -1,19 +1,19 @@
-﻿using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Gameplay;
-using System.Drawing;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using RogueSurvivor.Engine;
 using RogueSurvivor.Extensions;
+using RogueSurvivor.Gameplay;
 using RogueSurvivor.UI;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Xna = Microsoft.Xna.Framework;
 
-namespace djack.RogueSurvivor
+namespace RogueSurvivor
 {
     public class RogueForm : Xna.Game, IRogueUI
     {

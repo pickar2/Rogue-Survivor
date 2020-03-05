@@ -1,4 +1,4 @@
-﻿namespace djack.RogueSurvivor
+﻿namespace RogueSurvivor
 {
     partial class Bugreport
     {

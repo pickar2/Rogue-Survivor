@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine.MapObjects;
+using System;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine.MapObjects;
-
-namespace djack.RogueSurvivor.Engine.Actions
+namespace RogueSurvivor.Engine.Actions
 {
-    class ActionCloseDoor: ActorAction
+    class ActionCloseDoor : ActorAction
     {
-        #region Fields
         DoorWindow m_Door;
-        #endregion
 
-        #region Init
         public ActionCloseDoor(Actor actor, RogueGame game, DoorWindow door)
             : base(actor, game)
         {
@@ -23,9 +16,7 @@ namespace djack.RogueSurvivor.Engine.Actions
 
             m_Door = door;
         }
-        #endregion
 
-        #region ActorAction
         public override bool IsLegal()
         {
             return m_Game.Rules.IsClosableFor(m_Actor, m_Door, out m_FailReason);
@@ -35,6 +26,5 @@ namespace djack.RogueSurvivor.Engine.Actions
         {
             m_Game.DoCloseDoor(m_Actor, m_Door);
         }
-        #endregion
     }
 }

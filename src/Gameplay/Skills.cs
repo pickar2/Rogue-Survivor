@@ -1,14 +1,10 @@
-﻿using System;
+﻿using RogueSurvivor.Engine;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
 using System.IO;
 
-using djack.RogueSurvivor;
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
-
-namespace djack.RogueSurvivor.Gameplay
+namespace RogueSurvivor.Gameplay
 {
     static class Skills
     {
@@ -16,8 +12,6 @@ namespace djack.RogueSurvivor.Gameplay
         public enum IDs
         {
             _FIRST = 0,
-
-            #region Living skills
 
             _FIRST_LIVING = _FIRST,
 
@@ -123,9 +117,6 @@ namespace djack.RogueSurvivor.Gameplay
 
             _LAST_LIVING = UNSUSPICIOUS,
 
-            #endregion
-
-            #region Undead skills
             _FIRST_UNDEAD,
             Z_AGILE = _FIRST_UNDEAD,
             Z_EATER,
@@ -137,7 +128,6 @@ namespace djack.RogueSurvivor.Gameplay
             Z_TOUGH,
             Z_TRACKER,
             _LAST_UNDEAD = Z_TRACKER,
-            #endregion
 
             _COUNT
         }
@@ -194,7 +184,6 @@ namespace djack.RogueSurvivor.Gameplay
             return (IDs)roller.Roll((int)IDs._FIRST_UNDEAD, (int)IDs._LAST_UNDEAD + 1);
         }
 
-        #region Data
         struct SkillData
         {
             public const int COUNT_FIELDS = 6;
@@ -218,7 +207,6 @@ namespace djack.RogueSurvivor.Gameplay
             }
         }
 
-        #region Helpers
         static void Notify(IRogueUI ui, string what, string stage)
         {
             ui.UI_Clear(Color.Black);
@@ -304,16 +292,14 @@ namespace djack.RogueSurvivor.Gameplay
             Notify(ui, kind, "done!");
             return true;
         }
-        #endregion
 
-        #region Loading
         public static bool LoadSkillsFromCSV(IRogueUI ui, string path)
         {
             SkillData[] data;
 
             LoadDataFromCSV<SkillData>(ui, path, "skills", SkillData.COUNT_FIELDS, SkillData.FromCSVLine,
                 new IDs[] { IDs.AGILE, IDs.AWAKE, IDs.BOWS, IDs.CARPENTRY, IDs.CHARISMATIC, IDs.FIREARMS, IDs.HARDY, IDs.HAULER,
-                            IDs.HIGH_STAMINA, IDs.LEADERSHIP, IDs.LIGHT_EATER, IDs.LIGHT_FEET, IDs.LIGHT_SLEEPER, IDs.MARTIAL_ARTS, IDs.MEDIC, 
+                            IDs.HIGH_STAMINA, IDs.LEADERSHIP, IDs.LIGHT_EATER, IDs.LIGHT_FEET, IDs.LIGHT_SLEEPER, IDs.MARTIAL_ARTS, IDs.MEDIC,
                             IDs.NECROLOGY, IDs.STRONG, IDs.STRONG_PSYCHE, IDs.TOUGH, IDs.UNSUSPICIOUS,
                             IDs.Z_AGILE, IDs.Z_EATER, IDs.Z_GRAB, IDs.Z_INFECTOR, IDs.Z_LIGHT_EATER, IDs.Z_LIGHT_FEET, IDs.Z_STRONG, IDs.Z_TOUGH, IDs.Z_TRACKER },
                 out data);
@@ -325,7 +311,7 @@ namespace djack.RogueSurvivor.Gameplay
 
             // then skills value.
             SkillData s;
-            
+
             s = data[(int)IDs.AGILE];
             Rules.SKILL_AGILE_ATK_BONUS = (int)s.VALUE1;
             Rules.SKILL_AGILE_DEF_BONUS = (int)s.VALUE2;
@@ -417,7 +403,7 @@ namespace djack.RogueSurvivor.Gameplay
 
             s = data[(int)IDs.Z_LIGHT_FEET];
             Rules.SKILL_ZLIGHT_FEET_TRAP_BONUS = (int)s.VALUE1;
-            
+
             s = data[(int)IDs.Z_STRONG];
             Rules.SKILL_ZSTRONG_DMG_BONUS = (int)s.VALUE1;
 
@@ -429,8 +415,5 @@ namespace djack.RogueSurvivor.Gameplay
 
             return true;
         }
-        #endregion
-
-        #endregion
     }
 }

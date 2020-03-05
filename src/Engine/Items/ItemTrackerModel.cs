@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
+using System;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Items
+namespace RogueSurvivor.Engine.Items
 {
     class ItemTrackerModel : ItemModel
     {
-        #region Types
         [Flags]
         public enum TrackingFlags
         {
@@ -33,15 +28,11 @@ namespace djack.RogueSurvivor.Engine.Items
             /// </summary>
             POLICE_FACTION = (1 << 3)
         }
-        #endregion
 
-        #region Fields
         TrackingFlags m_Tracking;
         int m_MaxBatteries;
         bool m_HasClock;  // alpha10
-        #endregion
 
-        #region Properties
         public TrackingFlags Tracking
         {
             get { return m_Tracking; }
@@ -52,14 +43,11 @@ namespace djack.RogueSurvivor.Engine.Items
             get { return m_MaxBatteries; }
         }
 
-        // alpha10
         public bool HasClock
         {
             get { return m_HasClock; }
         }
-        #endregion
 
-        #region Init
         public ItemTrackerModel(string aName, string theNames, string imageID, TrackingFlags tracking, int maxBatteries, bool hasClock)
             : base(aName, theNames, imageID)
         {
@@ -68,6 +56,5 @@ namespace djack.RogueSurvivor.Engine.Items
             m_HasClock = hasClock;  // alpha10
             this.DontAutoEquip = true;
         }
-        #endregion
     }
 }

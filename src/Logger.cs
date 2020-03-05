@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 
-
-namespace djack.RogueSurvivor
+namespace RogueSurvivor
 {
     static class Logger
     {
@@ -21,7 +19,7 @@ namespace djack.RogueSurvivor
             INIT_SOUND,
             RUN_SOUND,
             CLEAN_SOUND
-        };            
+        };
 
         static List<string> s_Lines = new List<string>();
 
@@ -35,7 +33,7 @@ namespace djack.RogueSurvivor
         public static void Clear()
         {
             lock (s_Mutex)
-            { 
+            {
 
                 // clear lines.
                 s_Lines.Clear();
@@ -45,7 +43,7 @@ namespace djack.RogueSurvivor
         public static void CreateFile()
         {
             lock (s_Mutex)
-            { 
+            {
                 // delete previous file.
                 if (File.Exists(LogFilePath()))
                 {
@@ -59,8 +57,8 @@ namespace djack.RogueSurvivor
                     emptyFile.Close();
                 }
             }
-        }     
-       
+        }
+
 
         public static void WriteLine(Stage stage, string text)
         {

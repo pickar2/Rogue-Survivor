@@ -1,28 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine.Items;
 using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine.Items;
-
-namespace djack.RogueSurvivor.Engine.Actions
+namespace RogueSurvivor.Engine.Actions
 {
     class ActionThrowGrenade : ActorAction
     {
-        #region Fields
         Point m_ThrowPos;
-        #endregion
 
-        #region Init
         public ActionThrowGrenade(Actor actor, RogueGame game, Point throwPos)
             : base(actor, game)
         {
             m_ThrowPos = throwPos;
         }
-        #endregion
 
-        #region ActorAction
         public override bool IsLegal()
         {
             return m_Game.Rules.CanActorThrowTo(m_Actor, m_ThrowPos, null, out m_FailReason);
@@ -37,6 +28,5 @@ namespace djack.RogueSurvivor.Engine.Actions
             else
                 m_Game.DoThrowGrenadeUnprimed(m_Actor, m_ThrowPos);
         }
-        #endregion
     }
 }

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace djack.RogueSurvivor.Data
+namespace RogueSurvivor.Data
 {
     [Serializable]
     enum DayPhase
@@ -24,18 +21,15 @@ namespace djack.RogueSurvivor.Data
         // 12h
         MIDDAY,
         // 13h-14h-15h-16h-17h
-        AFTERNOON       
+        AFTERNOON
     }
 
     [Serializable]
     class WorldTime
     {
-        #region Constants
         public const int TURNS_PER_HOUR = 30;
         public const int TURNS_PER_DAY = TURNS_PER_HOUR * 24;
-        #endregion
 
-        #region Fields
         int m_TurnCounter;
 
         int m_Day;
@@ -45,9 +39,7 @@ namespace djack.RogueSurvivor.Data
 
         bool m_IsStrikeOfMidnight;
         bool m_IsStrikeOfMidday;
-        #endregion
 
-        #region Properties
         public int TurnCounter
         {
             get { return m_TurnCounter; }
@@ -98,9 +90,7 @@ namespace djack.RogueSurvivor.Data
         {
             get { return m_IsStrikeOfMidday; }
         }
-        #endregion
 
-        #region Init
         public WorldTime()
             : this(0)
         {
@@ -118,9 +108,7 @@ namespace djack.RogueSurvivor.Data
             m_TurnCounter = turnCounter;
             RecomputeDate();
         }
-        #endregion
 
-        #region Date
         void RecomputeDate()
         {
             int counter = m_TurnCounter;
@@ -162,9 +150,7 @@ namespace djack.RogueSurvivor.Data
 
             }
         }
-        #endregion
 
-        #region Formating
         public override string ToString()
         {
             return String.Format("day {0} hour {1:D2}", this.Day, this.Hour);
@@ -195,7 +181,5 @@ namespace djack.RogueSurvivor.Data
             else
                 return string.Format("about {0} days", time.Day);
         }
-
-        #endregion
     }
 }

@@ -1,23 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
 using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Actions
+namespace RogueSurvivor.Engine.Actions
 {
     class ActionMoveStep : ActorAction
     {
-        #region Fields
         Location m_NewLocation;
-        #endregion
 
-        #region Properties
-        #endregion
-
-        #region Init
         public ActionMoveStep(Actor actor, RogueGame game, Direction direction)
             : base(actor, game)
         {
@@ -29,9 +18,7 @@ namespace djack.RogueSurvivor.Engine.Actions
         {
             m_NewLocation = new Location(actor.Location.Map, to);
         }
-        #endregion
 
-        #region ActorAction implementation
         public override bool IsLegal()
         {
             return m_Game.Rules.IsWalkableFor(m_Actor, m_NewLocation, out m_FailReason);
@@ -41,6 +28,5 @@ namespace djack.RogueSurvivor.Engine.Actions
         {
             m_Game.DoMoveActor(m_Actor, m_NewLocation);
         }
-        #endregion
     }
 }

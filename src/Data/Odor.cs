@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 
-namespace djack.RogueSurvivor.Data
+namespace RogueSurvivor.Data
 {
     [Serializable]
     enum Odor
@@ -53,8 +50,6 @@ namespace djack.RogueSurvivor.Data
             else if (str > MAX_STRENGTH) str = MAX_STRENGTH;
 
             this.Strength = str;
-
         }
-
     }
 }

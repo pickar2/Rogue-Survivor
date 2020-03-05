@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Items
+namespace RogueSurvivor.Engine.Items
 {
     class ItemBodyArmorModel : ItemModel
     {
-        #region Fields
         int m_Protection_Hit;
         int m_Protection_Shot;
         int m_Encumbrance;
         int m_Weight;
-        #endregion
 
-        #region Properties
         public int Protection_Hit
         {
             get { return m_Protection_Hit; }
@@ -33,9 +25,7 @@ namespace djack.RogueSurvivor.Engine.Items
         {
             get { return m_Weight; }
         }
-        #endregion
 
-        #region Init
         public ItemBodyArmorModel(string aName, string theNames, string imageID, int protection_hit, int protection_shot, int encumbrance, int weight)
             : base(aName, theNames, imageID)
         {
@@ -44,13 +34,10 @@ namespace djack.RogueSurvivor.Engine.Items
             m_Encumbrance = encumbrance;
             m_Weight = weight;
         }
-        #endregion
 
-        #region Conversion
         public Defence ToDefence()
         {
             return new Defence(-m_Encumbrance, m_Protection_Hit, m_Protection_Shot);
         }
-        #endregion
     }
 }

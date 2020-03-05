@@ -1,7 +1,7 @@
-﻿using djack.RogueSurvivor.Data;
+﻿using RogueSurvivor.Data;
 using System.Drawing;
 
-namespace djack.RogueSurvivor.Engine.Actions
+namespace RogueSurvivor.Engine.Actions
 {
     class ActionBuildFortification : ActorAction
     {

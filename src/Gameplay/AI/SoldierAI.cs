@@ -1,17 +1,14 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine;
+using RogueSurvivor.Engine.Actions;
+using RogueSurvivor.Engine.AI;
+using RogueSurvivor.Gameplay.AI.Sensors;
+using RogueSurvivor.Gameplay.AI.Tools;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;   // Point
+using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Engine.Actions;
-using djack.RogueSurvivor.Engine.AI;
-using djack.RogueSurvivor.Gameplay.AI.Sensors;
-using djack.RogueSurvivor.Gameplay.AI.Tools;
-
-namespace djack.RogueSurvivor.Gameplay.AI
+namespace RogueSurvivor.Gameplay.AI
 {
     [Serializable]
     /// <summary>
@@ -19,7 +16,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
     /// </summary>
     class SoldierAI : OrderableAI
     {
-        #region Constants
         const int LOS_MEMORY = 10;
         const int FOLLOW_LEADER_MIN_DIST = 1;
         const int FOLLOW_LEADER_MAX_DIST = 2;
@@ -33,22 +29,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         const int DONT_LEAVE_BEHIND_EMOTE_CHANCE = 50;
 
-        static string[] FIGHT_EMOTES = 
+        static string[] FIGHT_EMOTES =
         {
             "Damn",
             "Fuck I'm cornered",
             "Die"
-        };  
-        #endregion
+        };
 
-        #region Fields
         LOSSensor m_LOSSensor;
         MemorizedSensor m_MemLOSSensor;
 
         ExplorationData m_Exploration;
-        #endregion
-        
-        #region BaseAI
+
         public override void TakeControl(Actor actor)
         {
             base.TakeControl(actor);
@@ -84,7 +76,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // end alpha10
 
             // 1. Follow order
-            #region
             if (this.Order != null)
             {
                 ActorAction orderAction = ExecuteOrder(game, this.Order, mapPercepts, m_Exploration);
@@ -96,7 +87,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return orderAction;
                 }
             }
-            #endregion
 
             /////////////////////////////////////
             // 0 run away from primed explosives.
@@ -126,17 +116,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
             m_Exploration.Update(m_Actor.Location);
 
             // 0 run away from primed explosives.
-            #region
             ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(game, mapPercepts));
             if (runFromExplosives != null)
             {
                 m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
                 return runFromExplosives;
             }
-            #endregion
 
             // 1 throw grenades at enemies.
-            #region
             if (hasCurrentEnemies)
             {
                 ActorAction throwAction = BehaviorThrowGrenade(game, m_LOSSensor.FOV, currentEnemies);
@@ -145,27 +132,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return throwAction;
                 }
             }
-            #endregion
-
-            // alpha10 obsolete
-            // 2 equip weapon/armor
-            //#region
-            //ActorAction equipWpnAction = BehaviorEquipWeapon(game);
-            //if (equipWpnAction != null)
-            //{
-            //    m_Actor.Activity = Activity.IDLE;
-            //    return equipWpnAction;
-            //}
-            //ActorAction equipArmAction = BehaviorEquipBestBodyArmor(game);
-            //if (equipArmAction != null)
-            //{
-            //    m_Actor.Activity = Activity.IDLE;
-            //    return equipArmAction;
-            //}
-            //#endregion
 
             // 3 shout, fire/hit at nearest enemy.
-            #region
             if (hasCurrentEnemies)
             {
                 // shout?
@@ -205,48 +173,26 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return fightOrFlee;
                 }
             }
-            #endregion
 
             // 4 rest if tired
-            #region
             ActorAction restAction = BehaviorRestIfTired(game);
             if (restAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
                 return restAction;
             }
-            #endregion
-
-            // alpha10 obsolete and redundant with rule 3!
-            //// 5 charge enemy
-            //#region
-            //if (hasAnyEnemies)
-            //{
-            //    Percept nearestEnemy = FilterNearest(game, allEnemies);
-            //    ActorAction chargeAction = BehaviorChargeEnemy(game, nearestEnemy, false, false);
-            //    if (chargeAction != null)
-            //    {
-            //        m_Actor.Activity = Activity.FIGHTING;
-            //        m_Actor.TargetActor = nearestEnemy.Percepted as Actor;
-            //        return chargeAction;
-            //    }
-            //}
-            //#endregion
 
             // 6 use medicine
-            #region
             ActorAction useMedAction = BehaviorUseMedecine(game, 2, 1, 2, 4, 2);
             if (useMedAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
                 return useMedAction;
             }
-            #endregion
 
             // 7 sleep.
-            #region
-            if ( !hasAnyEnemies && WouldLikeToSleep(game, m_Actor) && IsInside(m_Actor) && game.Rules.CanActorSleep(m_Actor))
-            {               
+            if (!hasAnyEnemies && WouldLikeToSleep(game, m_Actor) && IsInside(m_Actor) && game.Rules.CanActorSleep(m_Actor))
+            {
                 // secure sleep?
                 ActorAction secureSleepAction = BehaviorSecurePerimeter(game, m_LOSSensor.FOV);
                 if (secureSleepAction != null)
@@ -264,10 +210,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return sleepAction;
                 }
             }
-            #endregion
 
             // 8 chase old enemy
-            #region
             List<Percept> oldEnemies = Filter(game, allEnemies, (p) => p.Turn != m_Actor.Location.Map.LocalTime.TurnCounter);
             if (oldEnemies != null)
             {
@@ -290,10 +234,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return chargeAction;
                 }
             }
-            #endregion
 
             // 9 build fortification
-            #region
             // large fortification.
             if (game.Rules.RollChance(BUILD_LARGE_FORT_CHANCE))
             {
@@ -314,10 +256,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return buildAction;
                 }
             }
-            #endregion
 
             // 10 hang around leader.
-            #region
             if (checkOurLeader)
             {
                 Point lastKnownLeaderPosition = m_Actor.Leader.Location.Position;
@@ -329,10 +269,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return followAction;
                 }
             }
-            #endregion
 
             // 11 (leader) don't leave followers behind.
-            #region
             if (m_Actor.CountFollowers > 0)
             {
                 Actor target;
@@ -358,24 +296,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return stickTogether;
                 }
             }
-            #endregion
 
             // 12 explore
-            #region
             ActorAction exploreAction = BehaviorExplore(game, m_Exploration);
             if (exploreAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
                 return exploreAction;
             }
-            #endregion
 
             // 13 wander
-            #region
             m_Actor.Activity = Activity.IDLE;
             return BehaviorWander(game, m_Exploration);
-            #endregion
         }
-        #endregion
     }
 }

@@ -1,19 +1,15 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine.Items;
+using System;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine.Items;
-
-namespace djack.RogueSurvivor.Engine.Actions
+namespace RogueSurvivor.Engine.Actions
 {
     // alpha10
     class ActionSprayOdorSuppressor : ActorAction
     {
-        #region Fields
         readonly ItemSprayScent m_Spray;
         readonly Actor m_SprayOn;
-        #endregion
 
-        #region Init
         public ActionSprayOdorSuppressor(Actor actor, RogueGame game, ItemSprayScent spray, Actor sprayOn)
             : base(actor, game)
         {
@@ -23,9 +19,7 @@ namespace djack.RogueSurvivor.Engine.Actions
             m_Spray = spray;
             m_SprayOn = sprayOn;
         }
-        #endregion
 
-        #region ActorAction
         public override bool IsLegal()
         {
             return m_Game.Rules.CanActorSprayOdorSuppressor(m_Actor, m_Spray, m_SprayOn, out m_FailReason);
@@ -35,6 +29,5 @@ namespace djack.RogueSurvivor.Engine.Actions
         {
             m_Game.DoSprayOdorSuppressor(m_Actor, m_Spray, m_SprayOn);
         }
-        #endregion
     }
 }

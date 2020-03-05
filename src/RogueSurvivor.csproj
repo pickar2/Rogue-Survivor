@@ -12,7 +12,7 @@
     <AssemblyName>RogueSurvivor</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <StartupObject>djack.RogueSurvivor.Program</StartupObject>
+    <StartupObject>RogueSurvivor.Program</StartupObject>
     <ManifestCertificateThumbprint>FEE48166C5B004BB2E5F7DA54BA8BF0CA148007C</ManifestCertificateThumbprint>
     <ManifestKeyFile>WRogue_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>false</GenerateManifests>
@@ -81,6 +81,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>

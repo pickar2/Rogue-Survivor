@@ -1,7 +1,7 @@
-﻿using System.Drawing;
-using RogueSurvivor.UI;
+﻿using RogueSurvivor.UI;
+using System.Drawing;
 
-namespace djack.RogueSurvivor.Engine
+namespace RogueSurvivor.Engine
 {
     /// <summary>
     /// Provides UI functionalities to a Rogue game.

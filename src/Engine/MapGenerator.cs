@@ -1,22 +1,15 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine.MapObjects;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;   // Point
+using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine.MapObjects;
-using djack.RogueSurvivor.Gameplay;
-
-namespace djack.RogueSurvivor.Engine
+namespace RogueSurvivor.Engine
 {
     abstract class MapGenerator
     {
-        #region Fields
         protected readonly Rules m_Rules;
-        #endregion
 
-        #region Init
         public MapGenerator(Rules rules)
         {
             if (rules == null)
@@ -24,15 +17,9 @@ namespace djack.RogueSurvivor.Engine
 
             m_Rules = rules;
         }
-        #endregion
 
-        #region Generating a new map
         public abstract Map Generate(int seed);
-        #endregion
 
-        #region Generation helpers
-
-        #region Tile filling
         public void TileFill(Map map, TileModel model)
         {
             TileFill(map, model, null);
@@ -92,7 +79,7 @@ namespace djack.RogueSurvivor.Engine
                 TileModel prevmodel = map.GetTileAt(x, top).Model;
                 map.SetTileModelAt(x, top, model);
                 if (decoratorFn != null)
-                    decoratorFn(map.GetTileAt(x, top), prevmodel,x, top);
+                    decoratorFn(map.GetTileAt(x, top), prevmodel, x, top);
             }
         }
 
@@ -208,9 +195,7 @@ namespace djack.RogueSurvivor.Engine
 
             }
         }
-        #endregion
 
-        #region Placing actors
         public bool ActorPlace(DiceRoller roller, int maxTries, Map map, Actor actor)
         {
             return ActorPlace(roller, maxTries, map, actor, null);
@@ -251,9 +236,7 @@ namespace djack.RogueSurvivor.Engine
             // failed.
             return false;
         }
-        #endregion
 
-        #region Map Objects
         public void MapObjectPlace(Map map, int x, int y, MapObject mapObj)
         {
             if (map.GetMapObjectAt(x, y) == null)
@@ -318,9 +301,7 @@ namespace djack.RogueSurvivor.Engine
             if (mapObj != null)
                 map.PlaceMapObjectAt(mapObj, goodList[iValid]);
         }
-        #endregion
 
-        #region Items
         public void ItemsDrop(Map map, Rectangle rect, Func<Point, bool> isGoodPositionFn, Func<Point, Item> createFn)
         {
             Point p = new Point();
@@ -340,22 +321,20 @@ namespace djack.RogueSurvivor.Engine
                 }
             }
         }
-        #endregion
 
-        #region Clearing whole areas
         /// <summary>
         /// Remove all Actors, MapOjects, Items, Decorations and Zones in a rect.
         /// </summary>
         /// <param name="rect"></param>
         /// <param name="clearZones"></param>  // alpha10
-        protected void ClearRectangle(Map map, Rectangle rect, bool clearZones=true)
+        protected void ClearRectangle(Map map, Rectangle rect, bool clearZones = true)
         {
-            for(int x = rect.Left; x <rect.Right;x++)
+            for (int x = rect.Left; x < rect.Right; x++)
                 for (int y = rect.Top; y < rect.Bottom; y++)
                 {
                     map.RemoveMapObjectAt(x, y);
 
-                    Inventory stack = map.GetItemsAt(x,y);
+                    Inventory stack = map.GetItemsAt(x, y);
                     if (stack != null)
                     {
                         while (!stack.IsEmpty)
@@ -372,9 +351,7 @@ namespace djack.RogueSurvivor.Engine
                         map.RemoveActor(actorThere);
                 }
         }
-        #endregion
 
-        #region Predicates and Actions
         /// <summary>
         /// Apply an action on each adjacent tiles within map bounds.
         /// </summary>
@@ -384,7 +361,7 @@ namespace djack.RogueSurvivor.Engine
         /// <param name="doFn">action to apply at each point</param>
         public void ForEachAdjacent(Map map, int x, int y, Action<Point> doFn)
         {
-            Point p = new Point(x,y);
+            Point p = new Point(x, y);
 
             foreach (Direction d in Direction.COMPASS)
             {
@@ -441,7 +418,6 @@ namespace djack.RogueSurvivor.Engine
             return CountForEachAdjacent(map, x, y, (pt) => map.GetMapObjectAt(pt.X, pt.Y) as DoorWindow != null);
         }
 
-        // alpha10.1
         public int CountAdjMapObjects(Map map, int x, int y)
         {
             return CountForEachAdjacent(map, x, y, (pt) => map.GetMapObjectAt(pt.X, pt.Y) != null);
@@ -500,8 +476,5 @@ namespace djack.RogueSurvivor.Engine
 
             return false;
         }
-        #endregion
-
-        #endregion
     }
 }

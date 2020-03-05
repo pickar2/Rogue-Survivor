@@ -1,11 +1,10 @@
-﻿using djack.RogueSurvivor.Data;
+﻿using RogueSurvivor.Data;
 using System.Drawing;
 
-namespace djack.RogueSurvivor.Gameplay
+namespace RogueSurvivor.Gameplay
 {
     class GameTiles : TileModelDB
     {
-        #region IDs
         public enum IDs
         {
             _FIRST = 0,
@@ -35,9 +34,7 @@ namespace djack.RogueSurvivor.Gameplay
 
             _COUNT
         }
-        #endregion
 
-        #region Colors
         static readonly Color DRK_GRAY1 = Color.DimGray;
         static readonly Color DRK_GRAY2 = Color.DarkGray;
         static readonly Color DRK_RED = Color.FromArgb(128, 0, 0);
@@ -45,13 +42,9 @@ namespace djack.RogueSurvivor.Gameplay
         static readonly Color LIT_GRAY2 = Color.LightGray;
         static readonly Color LIT_GRAY3 = Color.FromArgb(230, 230, 230);
         static readonly Color LIT_BROWN = Color.BurlyWood;
-        #endregion
 
-        #region Fields
-        TileModel[] m_Models = new TileModel[(int) IDs._COUNT];
-        #endregion
+        TileModel[] m_Models = new TileModel[(int)IDs._COUNT];
 
-        #region Properties
         public override TileModel this[int id]
         {
             get { return m_Models[id]; }
@@ -86,9 +79,7 @@ namespace djack.RogueSurvivor.Gameplay
         public TileModel WALL_SEWER { get { return this[IDs.WALL_SEWER]; } }
         public TileModel WALL_STONE { get { return this[IDs.WALL_STONE]; } }
         public TileModel WALL_SUBWAY { get { return this[IDs.WALL_SUBWAY]; } }
-        #endregion
 
-        #region Init
         public GameTiles()
         {
             // bind.
@@ -96,7 +87,6 @@ namespace djack.RogueSurvivor.Gameplay
 
             this[IDs.UNDEF] = TileModel.UNDEF;
 
-            #region Floors
             this[IDs.FLOOR_ASPHALT] = new TileModel(GameImages.TILE_FLOOR_ASPHALT, LIT_GRAY1, true, true);
             this[IDs.FLOOR_CONCRETE] = new TileModel(GameImages.TILE_FLOOR_CONCRETE, LIT_GRAY2, true, true);
             this[IDs.FLOOR_GRASS] = new TileModel(GameImages.TILE_FLOOR_GRASS, Color.Green, true, true);
@@ -108,9 +98,7 @@ namespace djack.RogueSurvivor.Gameplay
             this[IDs.ROAD_ASPHALT_EW] = new TileModel(GameImages.TILE_ROAD_ASPHALT_EW, LIT_GRAY1, true, true);
             this[IDs.ROAD_ASPHALT_NS] = new TileModel(GameImages.TILE_ROAD_ASPHALT_NS, LIT_GRAY1, true, true);
             this[IDs.RAIL_EW] = new TileModel(GameImages.TILE_RAIL_ES, LIT_GRAY1, true, true);
-            #endregion
 
-            #region Walls
             this[IDs.WALL_BRICK] = new TileModel(GameImages.TILE_WALL_BRICK, DRK_GRAY1, false, false);
             this[IDs.WALL_CHAR_OFFICE] = new TileModel(GameImages.TILE_WALL_CHAR_OFFICE, DRK_RED, false, false);
             this[IDs.WALL_HOSPITAL] = new TileModel(GameImages.TILE_WALL_HOSPITAL, Color.White, false, false);
@@ -118,17 +106,12 @@ namespace djack.RogueSurvivor.Gameplay
             this[IDs.WALL_SEWER] = new TileModel(GameImages.TILE_WALL_SEWER, Color.DarkGreen, false, false);
             this[IDs.WALL_STONE] = new TileModel(GameImages.TILE_WALL_STONE, DRK_GRAY1, false, false);
             this[IDs.WALL_SUBWAY] = new TileModel(GameImages.TILE_WALL_STONE, Color.Blue, false, false);
-            #endregion
         }
 
-        #endregion
-
-        #region Helpers
         public bool IsRoadModel(TileModel model)
         {
             return model == this[IDs.ROAD_ASPHALT_EW] || model == this[IDs.ROAD_ASPHALT_NS];
         }
-        #endregion
     }
 }
 

@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RogueSurvivor.Data;
+using System;
 
-using djack.RogueSurvivor.Data;
-
-namespace djack.RogueSurvivor.Engine.Actions
+namespace RogueSurvivor.Engine.Actions
 {
     class ActionSay : ActorAction
     {
-        #region Fields
         Actor m_Target;
         string m_Text;
         RogueGame.Sayflags m_Flags;
-        #endregion
 
-        #region Init
         public ActionSay(Actor actor, RogueGame game, Actor target, string text, RogueGame.Sayflags flags)
             : base(actor, game)
         {
@@ -26,9 +19,7 @@ namespace djack.RogueSurvivor.Engine.Actions
             m_Text = text;
             m_Flags = flags;
         }
-        #endregion
 
-        #region ActorAction
         public override bool IsLegal()
         {
             return true;
@@ -38,6 +29,5 @@ namespace djack.RogueSurvivor.Engine.Actions
         {
             m_Game.DoSay(m_Actor, m_Target, m_Text, m_Flags);
         }
-        #endregion
     }
 }

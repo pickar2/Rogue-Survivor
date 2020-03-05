@@ -1,15 +1,12 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine;
+using RogueSurvivor.Engine.AI;
+using RogueSurvivor.Gameplay.AI.Sensors;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Engine.Actions;
-using djack.RogueSurvivor.Engine.AI;
-using djack.RogueSurvivor.Gameplay.AI.Sensors;
-
-namespace djack.RogueSurvivor.Gameplay.AI
+namespace RogueSurvivor.Gameplay.AI
 {
     [Serializable]
     /// <summary>
@@ -18,7 +15,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
     /// </summary>
     class InsaneHumanAI : BaseAI
     {
-        #region Constants
         // const int ATTACK_CHANCE = 80;  // alpha10.1 obsolete
         const int SHOUT_CHANCE = 80;
         const int USE_EXIT_CHANCE = 50;
@@ -82,13 +78,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
             "THAT WAS COMPLETLY UNCALLED FOR!",
             "ROBOTS WON'T FOOL ME!"
         };
-        #endregion
 
-        #region Fields
         LOSSensor m_LOSSensor;
-        #endregion
 
-        #region BaseAI
         protected override void CreateSensors()
         {
             m_LOSSensor = new LOSSensor(LOSSensor.SensingFilter.ACTORS);
@@ -124,16 +116,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return bestEquip;
             }
 
-            //// 1 equip weapon
-            //ActorAction equipWpnAction = BehaviorEquipWeapon(game);
-            //if (equipWpnAction != null)
-            //{
-            //    m_Actor.Activity = Activity.IDLE;
-            //    return equipWpnAction;
-            //}
-
             // 2 (chance) move closer to an enemy, nearest & visible enemies first
-            #region
             // alpha10.1 always try to attack if (game.Rules.RollChance(ATTACK_CHANCE))
             {
                 List<Percept> enemies = FilterEnemies(game, mapPercepts);
@@ -202,17 +185,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
             }
-            #endregion
 
             // 3 (chance) shout insanities.
-            #region
             if (game.Rules.RollChance(SHOUT_CHANCE))
             {
                 string insanity = INSANITIES[game.Rules.Roll(0, INSANITIES.Length)];
                 m_Actor.Activity = Activity.IDLE;
                 game.DoEmote(m_Actor, insanity, true);
             }
-            #endregion
 
             // 4 (chance) use exit.
             if (game.Rules.RollChance(USE_EXIT_CHANCE))
@@ -229,6 +209,5 @@ namespace djack.RogueSurvivor.Gameplay.AI
             m_Actor.Activity = Activity.IDLE;
             return BehaviorWander(game, null);
         }
-        #endregion
     }
 }

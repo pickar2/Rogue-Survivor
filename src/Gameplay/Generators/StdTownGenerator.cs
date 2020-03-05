@@ -1,7 +1,7 @@
-﻿using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine;
 
-namespace djack.RogueSurvivor.Gameplay.Generators
+namespace RogueSurvivor.Gameplay.Generators
 {
     class StdTownGenerator : BaseTownGenerator
     {

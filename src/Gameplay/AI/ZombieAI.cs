@@ -1,16 +1,12 @@
-﻿using System;
+﻿using RogueSurvivor.Data;
+using RogueSurvivor.Engine;
+using RogueSurvivor.Engine.AI;
+using RogueSurvivor.Gameplay.AI.Sensors;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 
-using djack.RogueSurvivor.Data;
-using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Engine.Actions;
-using djack.RogueSurvivor.Engine.AI;
-using djack.RogueSurvivor.Gameplay.AI.Sensors;
-
-namespace djack.RogueSurvivor.Gameplay.AI
+namespace RogueSurvivor.Gameplay.AI
 {
     [Serializable]
     /// <summary>
@@ -18,7 +14,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
     /// </summary>
     class ZombieAI : BaseAI
     {
-        #region Constants
         const int LOS_MEMORY = 20;
 
         const int EXPLORATION_LOCATIONS = 30;
@@ -27,17 +22,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
         const int USE_EXIT_CHANCE = 50;
         const int FOLLOW_SCENT_THROUGH_EXIT_CHANCE = 90;
         const int PUSH_OBJECT_CHANCE = 20;
-        #endregion
 
-        #region Fields
         MemorizedSensor m_MemLOSSensor;
         SmellSensor m_LivingSmellSensor;
         SmellSensor m_MasterSmellSensor;
 
         ExplorationData m_Exploration;
-        #endregion
 
-        #region BaseAI
         public override void TakeControl(Actor actor)
         {
             base.TakeControl(actor);
@@ -87,7 +78,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 
             // 1 move closer to an enemy, nearest & visible enemies first
-            #region
             List<Percept> enemies = FilterEnemies(game, mapPercepts);
             if (enemies != null)
             {
@@ -153,7 +143,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
             }
-            #endregion
 
             // 2 eat corpses.
             List<Percept> corpses = FilterCorpses(game, mapPercepts);
@@ -168,7 +157,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 
             // 3 use exit (if ability)
-            #region
             // move before following scents so the AI is more likely to move into basements etc...
             if (m_Actor.Model.Abilities.AI_CanUseAIExits && game.Rules.RollChance(USE_EXIT_CHANCE))
             {
@@ -181,10 +169,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return useExit;
                 }
             }
-            #endregion
 
             // 4 move close to nearest undead master (if not master)
-            #region
             if (!m_Actor.Model.Abilities.IsUndeadMaster)
             {
                 Percept nearestMaster = FilterNearest(game, FilterActors(game, mapPercepts, (a) => a.Model.Abilities.IsUndeadMaster));
@@ -200,10 +186,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
             }
-            #endregion
 
             // 5 move to highest undead master scent (if not master)
-            #region
             if (!m_Actor.Model.Abilities.IsUndeadMaster)
             {
                 ActorAction trackMasterAction = BehaviorTrackScent(game, m_MasterSmellSensor.Scents);
@@ -213,21 +197,17 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return trackMasterAction;
                 }
             }
-            #endregion
 
             // 6 move to highest living scent
-            #region
             ActorAction trackLivingAction = BehaviorTrackScent(game, m_LivingSmellSensor.Scents);
             if (trackLivingAction != null)
             {
                 m_Actor.Activity = Activity.TRACKING;
                 return trackLivingAction;
             }
-            #endregion
 
             // 7 **DISABLED** assault breakables (if ability)
 #if false
-            #region
             if (m_Actor.Model.Abilities.ZombieAI_AssaultBreakables)
             {
                 ActorAction assaultAction = BehaviorAssaultBreakables(game, fov);
@@ -237,11 +217,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return assaultAction;
                 }
             }
-            #endregion
 #endif
 
             // 8 randomly push objects around (if ability OR skill STRONG)
-            #region
             if (game.Rules.HasActorPushAbility(m_Actor) && game.Rules.RollChance(PUSH_OBJECT_CHANCE))
             {
 #if false 
@@ -258,10 +236,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return pushAction;
                 }
             }
-            #endregion
 
             // 9 explore (if ability)
-            #region
             if (m_Actor.Model.Abilities.ZombieAI_Explore)
             {
                 ActorAction exploreAction = BehaviorExplore(game, m_Exploration);
@@ -271,12 +247,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return exploreAction;
                 }
             }
-            #endregion
 
             // 9 wander
             m_Actor.Activity = Activity.IDLE;
             return BehaviorWander(game, null);
         }
-        #endregion
     }
 }
