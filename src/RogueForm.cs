@@ -6,23 +6,36 @@ using RogueSurvivor.Gameplay;
 using RogueSurvivor.UI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using Forms = System.Windows.Forms;
 using Xna = Microsoft.Xna.Framework;
+#if DEBUG_STATS
+using RogueSurvivor.Data;
+#endif
 
 namespace RogueSurvivor
 {
     public class RogueForm : Xna.Game, IRogueUI
     {
+        class BreakException : Exception { }
+
         private Xna.GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private List<IDrawItem> drawItems = new List<IDrawItem>();
         private int frame = 0;
         private Texture2D m_MinimapTexture;
         private Xna.Color[] m_MinimapColors = new Xna.Color[RogueGame.MAP_MAX_WIDTH * RogueGame.MAP_MAX_HEIGHT];
+        private KeyboardState prevKeyboardState;
+        private MouseState prevMouseState;
+        private bool shutdown, clearCalled;
+        private Color lastClearColor;
+        private object window;
+        private MethodInfo updateMouseState;
 
         RogueGame m_Game;
         SpriteFont m_NormalFont;
@@ -39,12 +52,13 @@ namespace RogueSurvivor
         {
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "Creating main form...");
 
-            graphics = new Xna.GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = RogueGame.CANVAS_WIDTH;
-            graphics.PreferredBackBufferHeight = RogueGame.CANVAS_HEIGHT;
-            graphics.HardwareModeSwitch = false;
-            //graphics.IsFullScreen = true; 
-            // !FIXME
+            graphics = new Xna.GraphicsDeviceManager(this)
+            {
+                PreferredBackBufferWidth = RogueGame.CANVAS_WIDTH,
+                PreferredBackBufferHeight = RogueGame.CANVAS_HEIGHT,
+                HardwareModeSwitch = false,
+                IsFullScreen = true
+            };
         }
 
         protected override void Initialize()
@@ -55,6 +69,9 @@ namespace RogueSurvivor
 
             Window.Title = "Rogue Survivor - " + SetupConfig.GAME_VERSION;
             IsMouseVisible = true;
+
+            Forms.Form form = (Forms.Form)Forms.Control.FromHandle(Window.Handle);
+            form.FormClosed += Form_FormClosed;
 
             spriteBatch = new SpriteBatch(graphics.GraphicsDevice);
 
@@ -67,26 +84,41 @@ namespace RogueSurvivor
             m_Game = new RogueGame(this);
         }
 
+        private void Form_FormClosed(object sender, Forms.FormClosedEventArgs e)
+        {
+            shutdown = true;
+        }
+
         protected override void Update(Xna.GameTime gameTime)
         {
             base.Update(gameTime);
 
-            switch (frame)
+            try
             {
-                case 0:
-                    // do nothing on first frame
-                    break;
-                case 1:
-                    Logger.WriteLine(Logger.Stage.INIT_GFX, "loading images...");
-                    GameImages.LoadResources(this);
-                    Logger.WriteLine(Logger.Stage.INIT_GFX, "loading images done");
 
-                    m_Game.Init();
-                    break;
-                default:
-                    if (!m_Game.Update())
-                        Exit();
-                    break;
+                switch (frame)
+                {
+                    case 0:
+                        // do nothing on first frame
+                        break;
+                    case 1:
+                        Logger.WriteLine(Logger.Stage.INIT_GFX, "loading images...");
+                        GameImages.LoadResources(this);
+                        Logger.WriteLine(Logger.Stage.INIT_GFX, "loading images done");
+
+                        m_Game.Init();
+                        break;
+                    default:
+                        if (!m_Game.Update())
+                            Exit();
+                        break;
+                }
+            }
+            catch (BreakException)
+            {
+                Logger.WriteLine(Logger.Stage.CLEAN_MAIN, "window closed, shutting down...");
+                m_Game.Exit();
+                Exit();
             }
 
             ++frame;
@@ -108,10 +140,11 @@ namespace RogueSurvivor
             }
         }
 
-        private KeyboardState prevKeyboardState;
         public Key UI_PeekKey()
         {
-            System.Windows.Forms.Application.DoEvents();
+            Forms.Application.DoEvents();
+            if (shutdown)
+                throw new BreakException();
 
             KeyboardState keyboardState = Keyboard.GetState();
 
@@ -161,19 +194,24 @@ namespace RogueSurvivor
                 }
             }
 
+            if (key == (Key.Enter | Key.Alt))
+            {
+                graphics.ToggleFullScreen();
+                Forms.Application.DoEvents();
+                UI_Repaint();
+            }
+
+            HandleDebugKey(key);
+
             prevKeyboardState = keyboardState;
             return key;
         }
 
-        // !FIXME
-        /*public void UI_PostKey(KeyEventArgs e)
+        [Conditional("DEBUG")]
+        private void HandleDebugKey(Key key)
         {
-            ///////////
-            // Cheats
-            ///////////
-#if DEBUG
             // F6 - CHEAT - reveal all
-            if (e.KeyCode == Key.F6)
+            if (key == Key.F6)
             {
                 if (m_Game.Session != null && m_Game.Session.CurrentMap != null)
                 {
@@ -181,30 +219,17 @@ namespace RogueSurvivor
                     UI_Repaint();
                 }
             }
-            // F7 - DEV - toggle FPS
-            if (e.KeyCode == Key.F7)
-            {
-                // FIXME
-                //m_GameCanvas.ShowFPS = !m_GameCanvas.ShowFPS;
-                UI_Repaint();
-            }
-            // F8 - DEV - resize to normal size
-            if (e.KeyCode == Key.F8)
-            {
-                // FIXME
-                //m_GameCanvas.NeedRedraw = true;
-                //SetClientSizeCore(RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT);
-                UI_Repaint();
-            }
-            // F9 - DEV - Show actors stats
-            if (e.KeyCode == Key.F9)
+
+            // F7 - DEV - Show actors stats
+            if (key == Key.F7)
             {
                 m_Game.DEV_ToggleShowActorsStats();
                 UI_Repaint();
             }
-            // F10 - DEV - Show pop graph.
+
 #if DEBUG_STATS
-            if (e.KeyCode == Key.F10)
+            // F8 - DEV - Show pop graph.
+            if (key == Key.F10)
             {
                 District d = m_Game.Player.Location.Map.District;
 
@@ -240,15 +265,15 @@ namespace RogueSurvivor
             }
 #endif
 
-            // F11 - DEV - Toggle player invincibility
-            if (e.KeyCode == Key.F11)
+            // F9 - DEV - Toggle player invincibility
+            if (key == Key.F9)
             {
                 m_Game.DEV_TogglePlayerInvincibility();
                 UI_Repaint();
             }
 
-            // F12 - DEV - Max trust for all player followers
-            if (e.KeyCode == Key.F12)
+            // F10 - DEV - Max trust for all player followers
+            if (key == Key.F12)
             {
                 m_Game.DEV_MaxTrust();
                 UI_Repaint();
@@ -256,19 +281,18 @@ namespace RogueSurvivor
 
             // alpha10.1
             // INSERT - DEV - Toggle bot mode
-            if (e.KeyCode == Key.Insert)
+            if (key == Key.Insert)
             {
                 m_Game.BotToggleControl();
                 UI_Repaint();
             }
-#endif
-        }*/
-
-        private object window;
-        private MethodInfo updateMouseState;
+        }
 
         private void RefreshMouse()
         {
+            if (shutdown)
+                throw new BreakException();
+
             if (updateMouseState == null)
             {
                 object platform = GetType()
@@ -287,18 +311,26 @@ namespace RogueSurvivor
         {
             RefreshMouse();
             Xna.Point point = Mouse.GetState().Position;
-            return new Point(point.X, point.Y);
+            float scaleX = (float)Graphics.GraphicsDevice.DisplayMode.Width / RogueGame.CANVAS_WIDTH;
+            float scaleY = (float)Graphics.GraphicsDevice.DisplayMode.Height / RogueGame.CANVAS_HEIGHT;
+            return new Point((int)(point.X / scaleX), (int)(point.Y / scaleY));
         }
 
         public MouseButton UI_PeekMouseButtons()
         {
             MouseState mouseState = Mouse.GetState();
-            if (mouseState.LeftButton == ButtonState.Pressed)
-                return MouseButton.Left;
-            else if (mouseState.RightButton == ButtonState.Pressed)
-                return MouseButton.Right;
-            else
+            if (prevMouseState == null)
+            {
+                prevMouseState = mouseState;
                 return MouseButton.None;
+            }
+            MouseButton button = MouseButton.None;
+            if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
+                button = MouseButton.Left;
+            else if (mouseState.RightButton == ButtonState.Pressed && prevMouseState.RightButton == ButtonState.Released)
+                button = MouseButton.Right;
+            prevMouseState = mouseState;
+            return button;
         }
 
         public void UI_Wait(int msecs)
@@ -310,7 +342,20 @@ namespace RogueSurvivor
         private bool takeScreenshot;
         public void UI_Repaint()
         {
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            if (!clearCalled)
+                graphics.GraphicsDevice.Clear(lastClearColor.ToXna());
+
+            Xna.Matrix matrix;
+            if (graphics.IsFullScreen)
+            {
+                matrix = Xna.Matrix.CreateScale(new Xna.Vector3(
+                    (float)Graphics.GraphicsDevice.DisplayMode.Width / RogueGame.CANVAS_WIDTH,
+                    (float)Graphics.GraphicsDevice.DisplayMode.Height / RogueGame.CANVAS_HEIGHT,
+                    1f));
+            }
+            else
+                matrix = Xna.Matrix.Identity;
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, transformMatrix: matrix);
 
             foreach (IDrawItem drawItem in drawItems)
             {
@@ -327,8 +372,8 @@ namespace RogueSurvivor
                     case DrawImageItem drawImage:
                         if (drawImage.transform)
                         {
-                            spriteBatch.Draw(drawImage.image, drawImage.pos, null, drawImage.tint, drawImage.rotation,
-                                Xna.Vector2.Zero, drawImage.scale, SpriteEffects.None, 0.0f);
+                            spriteBatch.Draw(drawImage.image, drawImage.pos, null, drawImage.tint, Xna.MathHelper.ToRadians(drawImage.rotation),
+                                drawImage.origin, drawImage.scale, SpriteEffects.None, 0.0f);
                         }
                         else
                             spriteBatch.Draw(drawImage.image, drawImage.pos, drawImage.tint);
@@ -351,11 +396,16 @@ namespace RogueSurvivor
             spriteBatch.End();
 
             if (!takeScreenshot)
+            {
+                clearCalled = false;
                 EndDraw();
+            }
         }
 
         public void UI_Clear(Color clearColor)
         {
+            clearCalled = true;
+            lastClearColor = clearColor;
             graphics.GraphicsDevice.Clear(clearColor.ToXna());
             drawItems.Clear();
         }
@@ -382,10 +432,12 @@ namespace RogueSurvivor
 
         public void UI_DrawImageTransform(string imageID, int gx, int gy, float rotation, float scale)
         {
+            Texture2D image = GameImages.Get(imageID);
             drawItems.Add(new DrawImageItem
             {
-                image = GameImages.Get(imageID),
-                pos = new Xna.Vector2(gx, gy),
+                image = image,
+                pos = new Xna.Vector2(gx + image.Width / 2, gy + image.Height / 2),
+                origin = new Xna.Vector2(image.Width / 2, image.Height / 2),
                 tint = Xna.Color.White,
                 rotation = rotation,
                 scale = scale,
@@ -650,25 +702,12 @@ namespace RogueSurvivor
             {
                 image = m_MinimapTexture,
                 pos = new Xna.Vector2(gx, gy),
+                origin = Xna.Vector2.Zero,
                 tint = Xna.Color.White,
                 rotation = 0,
                 scale = RogueGame.MINITILE_SIZE,
                 transform = true
             });
-        }
-
-        public float UI_GetCanvasScaleX()
-        {
-            // !FIXME
-            return 1;
-            //return m_GameCanvas.ScaleX;
-        }
-
-        public float UI_GetCanvasScaleY()
-        {
-            // !FIXME
-            return 1;
-            //return m_GameCanvas.ScaleY;
         }
 
         public bool UI_SaveScreenshot(string filePath)

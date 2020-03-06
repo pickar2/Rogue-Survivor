@@ -33,8 +33,6 @@ namespace RogueSurvivor.Engine
         void UI_ClearMinimap(Color color);
         void UI_SetMinimapColor(int x, int y, Color color);
         void UI_DrawMinimap(int gx, int gy);
-        float UI_GetCanvasScaleX();
-        float UI_GetCanvasScaleY();
         bool UI_SaveScreenshot(string filePath);
     }
 }

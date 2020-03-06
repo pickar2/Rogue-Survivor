@@ -3,6 +3,9 @@ using System;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+#if DEBUG_STATS
+using System.Collections.Generic;
+#endif
 
 namespace RogueSurvivor.Engine
 {
@@ -476,9 +479,7 @@ namespace RogueSurvivor.Engine
 
         public void Reset()
         {
-            // !FIXME
-            Seed = 1488618496;
-            //this.Seed = (int)DateTime.UtcNow.TimeOfDay.Ticks;
+            Seed = (int)DateTime.UtcNow.TimeOfDay.Ticks;
             m_CurrentMap = null;
             m_Scoring = new Scoring();
             m_World = null;

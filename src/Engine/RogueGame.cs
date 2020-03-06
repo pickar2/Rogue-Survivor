@@ -1093,6 +1093,13 @@ namespace RogueSurvivor.Engine
             LoadHiScoreTable();
         }
 
+        public void Exit()
+        {
+            StopSimThread(true);
+            m_MusicManager.Stop();
+            m_IsGameRunning = false;
+        }
+
         public bool Update()
         {
             Tick();
@@ -2762,7 +2769,7 @@ namespace RogueSurvivor.Engine
             lock (district)  // alpha10 lock district
             {
 #if DEBUG_STATS
-            Session.UpdateStats(district);
+                Session.UpdateStats(district);
 #endif
 
                 // 0. Remember if current district.
@@ -19007,16 +19014,11 @@ namespace RogueSurvivor.Engine
 
         Point MouseToMap(int mouseX, int mouseY)
         {
-            mouseX = (int)(mouseX / m_UI.UI_GetCanvasScaleX());
-            mouseY = (int)(mouseY / m_UI.UI_GetCanvasScaleY());
             return ScreenToMap(mouseX, mouseY);
         }
 
         Point MouseToInventorySlot(int invX, int invY, int mouseX, int mouseY)
         {
-            mouseX = (int)(mouseX / m_UI.UI_GetCanvasScaleX());
-            mouseY = (int)(mouseY / m_UI.UI_GetCanvasScaleY());
-
             return new Point((mouseX - invX) / 32, (mouseY - invY) / 32);
         }
 

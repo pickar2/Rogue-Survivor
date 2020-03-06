@@ -25,7 +25,7 @@ namespace RogueSurvivor.UI
     public class DrawImageItem : IDrawItem
     {
         public Texture2D image;
-        public Vector2 pos;
+        public Vector2 pos, origin;
         public Color tint;
         public float rotation;
         public float scale;
