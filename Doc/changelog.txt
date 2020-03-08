@@ -1,0 +1,4 @@
+V 10.2:
++ converted rendering & music handling to Monogame
++ upgraded .net framework version
++ alt+enter to switch between fullscreen and windowed mode

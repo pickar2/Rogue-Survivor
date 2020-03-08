@@ -1,32 +1,42 @@
-# Rogue Survivor Alpha 9
-Rogue Survivor game original source code from 2012
+# Rogue Survivor Reanimated 10.2
 
+## About this fork
 
-<h3>WHAT IS THIS</h3>
-<p>
-This is the game source source from 2012. I did not touch it since then.<br>
-There is no data files or resources, you have to download the game for that (see next section).<br>
-There is no project files or libraries. They are probably obsolete by now anyway and I don't even know if the code will compile in recent C# compilers/IDEs.<br>
-I can't provide support for compiling or answer code/gameplay questions, it's been a long time and I've moved on. I hope you'll understand!
-</p>
+This is modification to game Rogue Survival Alpha 10.1 (last version from 2018).
 
-<h3>GET THE GAME</h3>
-<p>
-The original blog where you can get the game is still alive, so go there:
-http://roguesurvivor.blogspot.com/<br>
-You'll need this for the resources (data files, images etc...)
-</p>
+Original created by roguedjack: https://roguesurvivor.blogspot.com/
 
-<h3>WHAT YOU CAN DO WITH IT</h3>
-<p>
-Anything but nothing commercial <i>please</i>. See the license file.
-</p>
+Modification by Tomashu: https://github.com/Tomash667/Rogue-Survivor
 
-<h3>THANK YOU & CLOSING WORDS</h3>
-<p>
-That's a thank you from ME to YOU guys!<br>
-Some of you guys have some serious dedication for this game! It is both scary and awesome... scarysome!?<br>
-Sorry for failing you by not working more on the game or being more responsive!<br>
-From time to time I secretly tried to revive the game or start a new incarnation. I didn't tell you guys because all I had to show was a couple of prototypes that didn't go very far and I didn't want to repeat the RS2 fiasco...<br>
-Anyway, I don't plan on updating the game, so go ahead and have fun!!
-</p>
+Diffrences with original game:
++ converted rendering & music handling to Monogame
++ upgraded .net framework version
++ alt+enter to switch between fullscreen and windowed mode
+
+## The Game
+
+On the stroke of midnight you suddenly wake up and find someone in the corner of your bedroom staring at you. 
+What was THAT noise?
+
+'Hey! What are you doing in...
+-Brains! :D
+-What?
+-Brrrrrr! :)
+-What the hell dude? Get out of my bedroom!
+-Mmmh? :(
+-Plus you stink! Why do you... ZOMG YOU ARE A ZOMBIE!
+-Mhhgmgg ;)'
+
+Yes. It was a Zombie and it wanted your brain. Just like in those movies. So you kicked and punched till it did not move anymore. That's how a Zombie dies.
+Then another came through the window.
+And another through the door.
+And another.
+And then it never ended.
+
+## Setting & objective
+You must survive an urban Zombie apocalypse.
+You have to find ways to survive : food, shelter, weapons and companions.
+Your city has a persistent urban legend about some sort of monster lurking in the Sewers.
+Your home town is also known for being the headquarters of the world famous C.H.A.R. Corporation. Recently you've heard strange rumors about them...
+You can also play the game as an undead or reincarnate into different characters. These play modes are mostly for fun.
+Most of the manual is written with playing a survivor in mind.

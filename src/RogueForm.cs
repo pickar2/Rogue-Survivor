@@ -23,6 +23,12 @@ namespace RogueSurvivor
     public class RogueForm : Xna.Game, IRogueUI
     {
         class BreakException : Exception { }
+        class KeyState
+        {
+            public Key key;
+            public decimal time;
+            public bool up, handled, received;
+        }
 
         private Xna.GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
@@ -30,12 +36,13 @@ namespace RogueSurvivor
         private int frame = 0;
         private Texture2D m_MinimapTexture;
         private Xna.Color[] m_MinimapColors = new Xna.Color[RogueGame.MAP_MAX_WIDTH * RogueGame.MAP_MAX_HEIGHT];
-        private KeyboardState prevKeyboardState;
         private MouseState prevMouseState;
         private bool shutdown, clearCalled;
         private Color lastClearColor;
         private object window;
         private MethodInfo updateMouseState;
+        private List<KeyState> keyStates = new List<KeyState>();
+        private Stopwatch stopwatch;
 
         RogueGame m_Game;
         SpriteFont m_NormalFont;
@@ -67,7 +74,7 @@ namespace RogueSurvivor
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "Initializing game...");
 
-            Window.Title = "Rogue Survivor - " + SetupConfig.GAME_VERSION;
+            Window.Title = "Rogue Survivor Reanimated - " + SetupConfig.GAME_VERSION;
             IsMouseVisible = true;
 
             Forms.Form form = (Forms.Form)Forms.Control.FromHandle(Window.Handle);
@@ -81,6 +88,8 @@ namespace RogueSurvivor
             m_NormalFont = Content.Load<SpriteFont>("NormalFont");
             m_BoldFont = Content.Load<SpriteFont>("BoldFont");
 
+            stopwatch = Stopwatch.StartNew();
+            stopwatch.Start();
             m_Game = new RogueGame(this);
         }
 
@@ -140,58 +149,92 @@ namespace RogueSurvivor
             }
         }
 
+        private const decimal KEY_REPEAT = 0.5M;
+        private const decimal KEY_REPEAT_INTERVAL = 0.1M;
         public Key UI_PeekKey()
         {
             Forms.Application.DoEvents();
             if (shutdown)
                 throw new BreakException();
 
+            decimal dt = stopwatch.ElapsedMilliseconds / 1000M;
+            stopwatch.Restart();
+
             KeyboardState keyboardState = Keyboard.GetState();
-
             Keys[] keys = keyboardState.GetPressedKeys();
-            if (keys.Length == 0)
-            {
-                prevKeyboardState = keyboardState;
-                return Key.None;
-            }
-
-            Key key = Key.None;
             bool control = false, alt = false, shift = false;
-            foreach (Keys k in keys)
+            keys = keys.Where(k =>
             {
                 switch (k)
                 {
                     case Keys.LeftControl:
                     case Keys.RightControl:
                         control = true;
-                        break;
+                        return false;
                     case Keys.LeftShift:
                     case Keys.RightShift:
                         shift = true;
-                        break;
+                        return false;
                     case Keys.LeftAlt:
                     case Keys.RightAlt:
                         alt = true;
-                        break;
+                        return false;
                     default:
-                        key = (Key)k;
-                        break;
+                        return true;
+                }
+            }).ToArray();
+
+            foreach (KeyState keyState in keyStates)
+                keyState.handled = false;
+
+            foreach (Key k in keys)
+            {
+                KeyState keyState = keyStates.FirstOrDefault(x => x.key == k);
+                if (keyState != null)
+                {
+                    keyState.handled = true;
+                    keyState.up = false;
+                    keyState.time += dt;
+                    if (keyState.time >= KEY_REPEAT)
+                    {
+                        keyState.time -= KEY_REPEAT_INTERVAL;
+                        keyState.received = false;
+                    }
+                }
+                else
+                {
+                    keyStates.Add(new KeyState
+                    {
+                        key = k,
+                        time = 0,
+                        up = false,
+                        handled = true,
+                        received = false
+                    });
                 }
             }
 
+            Key key = Key.None;
+            foreach (KeyState keyState in keyStates)
+            {
+                if (!keyState.received && key == Key.None)
+                {
+                    key = keyState.key;
+                    keyState.received = true;
+                }
+                if (!keyState.handled)
+                    keyState.up = true;
+            }
+            keyStates.RemoveAll(x => x.received && x.up);
+
             if (key != Key.None)
             {
-                if (prevKeyboardState.GetPressedKeys().Contains((Keys)key))
-                    key = Key.None;
-                else
-                {
-                    if (control)
-                        key |= Key.Control;
-                    if (alt)
-                        key |= Key.Alt;
-                    if (shift)
-                        key |= Key.Shift;
-                }
+                if (control)
+                    key |= Key.Control;
+                if (shift)
+                    key |= Key.Shift;
+                if (alt)
+                    key |= Key.Alt;
             }
 
             if (key == (Key.Enter | Key.Alt))
@@ -203,7 +246,6 @@ namespace RogueSurvivor
 
             HandleDebugKey(key);
 
-            prevKeyboardState = keyboardState;
             return key;
         }
 
@@ -280,12 +322,14 @@ namespace RogueSurvivor
             }
 
             // alpha10.1
+#if DEBUG
             // INSERT - DEV - Toggle bot mode
             if (key == Key.Insert)
             {
                 m_Game.BotToggleControl();
                 UI_Repaint();
             }
+#endif
         }
 
         private void RefreshMouse()
@@ -335,7 +379,6 @@ namespace RogueSurvivor
 
         public void UI_Wait(int msecs)
         {
-            UI_Repaint();
             Thread.Sleep(msecs);
         }
 

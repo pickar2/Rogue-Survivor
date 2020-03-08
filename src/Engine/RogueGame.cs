@@ -1993,7 +1993,7 @@ namespace RogueSurvivor.Engine
             // text.
             if (saveToTextfile)
             {
-                file.Append(String.Format("ROGUE SURVIVOR {0}", SetupConfig.GAME_VERSION));
+                file.Append(String.Format("ROGUE SURVIVOR REANIMATED {0}", SetupConfig.GAME_VERSION));
                 file.Append("Hi Scores");
                 file.Append("Rank | Name, Skills, Death       |  Score |Difficulty|Survival|  Kills |Achievm.|      Game Time | Playing time");
             }
@@ -5237,7 +5237,7 @@ namespace RogueSurvivor.Engine
 
                 // 2. Get input.
                 // Peek keyboard & mouse until we got an event.
-                m_UI.UI_PeekKey();  // consume keys to avoid repeats.
+                //m_UI.UI_PeekKey();  // consume keys to avoid repeats.
                 bool inputLoop = true;
                 bool hasKey = false;
                 Key inKey;
@@ -5261,6 +5261,8 @@ namespace RogueSurvivor.Engine
                             inputLoop = false;
                         }
                     }
+                    if (inputLoop)
+                        m_UI.UI_Wait(10);
                 }
                 while (inputLoop);
 
@@ -10855,7 +10857,7 @@ namespace RogueSurvivor.Engine
         void WaitKeyOrMouse(out Key key, out Point mousePos, out MouseButton mouseButton)
         {
             // Peek keyboard & mouse until we got an event.
-            m_UI.UI_PeekKey();  // consume keys to avoid repeats.
+            //m_UI.UI_PeekKey();  // consume keys to avoid repeats.
             Key inKey;
             Point prevMousePos = m_UI.UI_GetMousePosition();
             mousePos = new Point(-1, -1);
@@ -16354,7 +16356,7 @@ namespace RogueSurvivor.Engine
             ///////////////////////////////////
             TextFile graveyard = new TextFile();
 
-            graveyard.Append(String.Format("ROGUE SURVIVOR {0}", SetupConfig.GAME_VERSION));
+            graveyard.Append(String.Format("ROGUE SURVIVOR REANIMATED {0}", SetupConfig.GAME_VERSION));
             graveyard.Append("POST MORTEM");
 
             graveyard.Append(String.Format("{0} was {1} and {2}.", name, AorAn(m_Player.Model.Name), AorAn(m_Player.Faction.MemberName)));
@@ -19330,7 +19332,7 @@ namespace RogueSurvivor.Engine
 
         void DrawHeader()
         {
-            m_UI.UI_DrawStringBold(Color.Red, "ROGUE SURVIVOR - " + SetupConfig.GAME_VERSION, 0, 0, Color.DarkRed);
+            m_UI.UI_DrawStringBold(Color.Red, "ROGUE SURVIVOR REANIMATED - " + SetupConfig.GAME_VERSION, 0, 0, Color.DarkRed);
         }
 
         void DrawFootnote(Color color, string text)
