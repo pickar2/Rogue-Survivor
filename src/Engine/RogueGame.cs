@@ -581,6 +581,7 @@ namespace RogueSurvivor.Engine
             public GameActors.IDs UndeadModel { get; set; }
             public bool IsMale { get; set; }
             public Skills.IDs StartingSkill { get; set; }
+            public Actor Actor { get; set; }
         }
 
         [Flags]
@@ -1358,6 +1359,15 @@ namespace RogueSurvivor.Engine
                     return false;
                 m_CharGen.IsMale = isMale;
             }
+            
+            ///////////////////////////////////
+            // Choose appearance (living only)
+            ///////////////////////////////////
+
+            if (!isUndead) {
+                if (!HandleNewCharacterAppearance(roller, ref m_CharGen))
+                    return false;
+            }
 
             /////////////////////////////
             // Choose skill (living only)
@@ -1620,6 +1630,83 @@ namespace RogueSurvivor.Engine
 
             // done.
             return choiceDone;
+        }
+
+        bool HandleNewCharacterAppearance(DiceRoller roller, ref CharGen charGen) {
+            var playerModel = charGen.IsMale ? m_GameActors.MaleCivilian : m_GameActors.FemaleCivilian;
+            var player = playerModel.CreateAnonymous(m_GameFactions.TheCivilians, 0);
+            m_TownGenerator.DressCivilian(roller, player);
+            
+            string[] menuEntries = new string[]
+            {
+                "*Randomize*",
+                "Continue",
+            };
+            string[] descs = new string[]
+            {
+                "(changes appearance)",
+                "(selects current appearance)",
+            };
+            
+            bool loop = true;
+            bool choiceDone = false;
+            int selected = 0;
+            do
+            {
+                // display.
+                m_UI.UI_Clear(Color.Black);
+                int gx, gy;
+                gx = gy = 0;
+                m_UI.UI_DrawStringBold(Color.Yellow, String.Format("[{0}] New Living - Choose Appearance", Session.DescGameMode(m_Session.GameMode)), gx, gy);
+                gy += 2 * BOLD_LINE_SPACING;
+                DrawMenuOrOptions(selected, Color.White, menuEntries, Color.LightGray, descs, gx, ref gy);
+                DrawFootnote(Color.White, "cursor to move, ENTER to select, ESC to cancel");
+                
+                DrawActorSpriteSimple(player, new Point(50, 100), 4);
+
+                m_UI.UI_Repaint();
+
+                // get menu action.
+                Key key = m_UI.UI_WaitKey();
+                switch (key)
+                {
+                    case Key.Up:       // move up
+                        if (selected > 0) --selected;
+                        else selected = menuEntries.Length - 1;
+                        break;
+                    case Key.Down:     // move down
+                        selected = (selected + 1) % menuEntries.Length;
+                        break;
+
+                    case Key.Escape:
+                        choiceDone = false;
+                        loop = false;
+                        break;
+
+                    case Key.Enter:
+                        {
+                            switch (selected)
+                            {
+                                case 0: { // randomize
+                                    m_TownGenerator.DressCivilian(roller, player);
+                                    break;
+                                }
+                                case 1: { // continue
+                                    choiceDone = true;
+                                    loop = false;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                }
+
+            }
+            while (loop);
+            
+            charGen.Actor = player;
+
+            return true;
         }
 
         bool HandleNewCharacterGender(DiceRoller roller, out bool isMale)
@@ -17908,6 +17995,27 @@ namespace RogueSurvivor.Engine
                 drawFn(GameImages.EFFECT_ONFIRE, screen.X, screen.Y);
         }
 
+        public void DrawActorSpriteSimple(Actor actor, Point screen, float scale) 
+        {
+            int gx = screen.X;
+            int gy = screen.Y;
+
+            gx += ACTOR_OFFSET;
+            gy += ACTOR_OFFSET;
+
+            // model
+            if (actor.Model.ImageID != null)
+                m_UI.UI_DrawImageTransform(actor.Model.ImageID, gx, gy, 0, scale);
+
+            // skinning/clothing
+            DrawActorDecoration(actor, gx, gy, DollPart.SKIN, 0, scale);
+            DrawActorDecoration(actor, gx, gy, DollPart.FEET, 0, scale);
+            DrawActorDecoration(actor, gx, gy, DollPart.LEGS, 0, scale);
+            DrawActorDecoration(actor, gx, gy, DollPart.TORSO, 0, scale);
+            DrawActorDecoration(actor, gx, gy, DollPart.EYES, 0, scale);
+            DrawActorDecoration(actor, gx, gy, DollPart.HEAD, 0, scale);
+        }
+
         public void DrawActorSprite(Actor actor, Point screen, Color tint)
         {
             int gx = screen.X;
@@ -20443,8 +20551,8 @@ namespace RogueSurvivor.Engine
             {
                 // Create living.
                 playerModel = m_CharGen.IsMale ? m_GameActors.MaleCivilian : m_GameActors.FemaleCivilian;
-                player = playerModel.CreateAnonymous(m_GameFactions.TheCivilians, 0);
-                townGen.DressCivilian(roller, player);
+
+                player = m_CharGen.Actor;
                 townGen.GiveNameToActor(roller, player);
                 player.Sheet.SkillTable.AddOrIncreaseSkill((int)m_CharGen.StartingSkill);
 
