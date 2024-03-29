@@ -7640,7 +7640,7 @@ namespace RogueSurvivor.Engine
             /////////////////////////////////////
             // Check skill & has enough material.
             /////////////////////////////////////
-            if (player.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.CARPENTRY) == 0)
+            if (Rules.ActorGetSkillLevelWithLeader(player, (int) Skills.IDs.CARPENTRY) == 0)
             {
                 AddMessage(MakeErrorMessage("need carpentry skill."));
                 return false;
@@ -11166,8 +11166,14 @@ namespace RogueSurvivor.Engine
             // 7. Skills
             if (actor.Sheet.SkillTable != null && actor.Sheet.SkillTable.CountSkills > 0)
             {
-                foreach (Skill sk in actor.Sheet.SkillTable.Skills)
-                    lines.Add(String.Format("{0}-{1}", sk.Level, Skills.Name(sk.ID)));
+                foreach (Skill sk in actor.Sheet.SkillTable.Skills) {
+                    var modifiedSkillLevel = m_Rules.ActorGetSkillLevelWithLeader(actor, sk.ID);
+                    if (m_Rules.SkillCanBeIncreasedByLeader(sk.ID) && modifiedSkillLevel > sk.Level) {
+                        lines.Add(String.Format("{0}({1})-{2}", sk.Level, modifiedSkillLevel, Skills.Name(sk.ID)));
+                    } else {
+                        lines.Add(String.Format("{0}-{1}", sk.Level, Skills.Name(sk.ID)));
+                    }
+                }
                 lines.Add(" ");
             }
 
@@ -11412,7 +11418,7 @@ namespace RogueSurvivor.Engine
             lines.Add(" ");
 
             // 2. Necrology infos.
-            int necrology = m_Player.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.NECROLOGY);
+            int necrology = Rules.ActorGetSkillLevelWithLeader(m_Player, (int) Skills.IDs.NECROLOGY);
 
             string deadSince = "???";
             if (necrology > 0)
@@ -18943,10 +18949,14 @@ namespace RogueSurvivor.Engine
                         break;
                 }
 
-                m_UI.UI_DrawString(skColor, String.Format("{0}-", sk.Level), x, y);
-                x += 16;
-                m_UI.UI_DrawString(skColor, Skills.Name(sk.ID), x, y);
-                x -= 16;
+                if (actor.HasLeader && m_Rules.SkillCanBeIncreasedByLeader(sk.ID)) {
+                    int increasedSkill = m_Rules.ActorGetSkillLevelWithLeader(actor, sk.ID);
+                    m_UI.UI_DrawString(skColor, String.Format("{0}({1})-", sk.Level, increasedSkill), x, y);
+                    m_UI.UI_DrawString(skColor, Skills.Name(sk.ID), x + 40, y);
+                } else {
+                    m_UI.UI_DrawString(skColor, String.Format("{0}-", sk.Level), x, y);
+                    m_UI.UI_DrawString(skColor, Skills.Name(sk.ID), x + 16, y);
+                }
 
                 if (++count >= SKILLTABLE_LINES)
                 {
