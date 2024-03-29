@@ -14,6 +14,7 @@ namespace RogueSurvivor.Data
         float m_Rotation;
         float m_Scale;
         Actor m_DraggedBy;
+        string m_DeathReason;
 
         public Actor DeadGuy { get { return m_DeadGuy; } }
         public int Turn { get { return m_Turn; } }
@@ -55,7 +56,13 @@ namespace RogueSurvivor.Data
             set { m_DraggedBy = value; }
         }
 
-        public Corpse(Actor deadGuy, int hitPoints, int maxHitPoints, int corpseTurn, float rotation, float scale)
+        public string DeathReason 
+        {
+            get { return m_DeathReason; }
+            set { m_DeathReason = value; }
+        }
+
+        public Corpse(Actor deadGuy, int hitPoints, int maxHitPoints, int corpseTurn, float rotation, float scale, string deathReason)
         {
             m_DeadGuy = deadGuy;
             m_Turn = corpseTurn;
@@ -64,6 +71,7 @@ namespace RogueSurvivor.Data
             m_Rotation = rotation;
             m_Scale = scale;
             m_DraggedBy = null;
+            m_DeathReason = deathReason;
         }
     }
 }

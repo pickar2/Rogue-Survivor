@@ -296,6 +296,7 @@ namespace RogueSurvivor.Engine
         public static int SKILL_MEDIC_LEVEL_FOR_REVIVE_EST = 1;
 
         public static int SKILL_NECROLOGY_UNDEAD_BONUS = 2;
+        public static int SKILL_NECROLOGY_CAUSE_OF_DEATH = 3;
         public static int SKILL_NECROLOGY_CORPSE_BONUS = 4;
         public static int SKILL_NECROLOGY_LEVEL_FOR_INFECTION = 3;
         public static int SKILL_NECROLOGY_LEVEL_FOR_RISE = 5;

@@ -11419,6 +11419,12 @@ namespace RogueSurvivor.Engine
                 deadSince = WorldTime.MakeTimeDurationMessage(m_Session.WorldTime.TurnCounter - c.Turn);
             lines.Add(String.Format("Death     : {0}.", deadSince));
 
+            string causeOfDeath = "???";
+            if (necrology >= Rules.SKILL_NECROLOGY_CAUSE_OF_DEATH) {
+                causeOfDeath = c.DeathReason;
+            }
+            lines.Add(String.Format("Cause of death : {0}.", causeOfDeath));
+
             string infectionEst = "???";
             if (necrology >= Rules.SKILL_NECROLOGY_LEVEL_FOR_INFECTION)
             {
@@ -15884,7 +15890,7 @@ namespace RogueSurvivor.Engine
             {
                 if (!deadGuy.Model.Abilities.IsUndead && canDropCorpse)
                 {
-                    DropCorpse(deadGuy);
+                    DropCorpse(deadGuy, reason);
                 }
             }
 
@@ -16228,7 +16234,7 @@ namespace RogueSurvivor.Engine
                 tile.AddDecoration(GameImages.DECO_ZOMBIE_REMAINS);
         }
 
-        public void DropCorpse(Actor deadGuy)
+        public void DropCorpse(Actor deadGuy, string deathReason)
         {
             // add blood to deadguy.
             deadGuy.Doll.AddDecoration(DollPart.TORSO, GameImages.BLOODIED);
@@ -16238,7 +16244,7 @@ namespace RogueSurvivor.Engine
             float rotation = m_Rules.Roll(30, 60);
             if (m_Rules.RollChance(50)) rotation = -rotation;
             float scale = 1.0f;
-            Corpse corpse = new Corpse(deadGuy, corpseHp, corpseHp, deadGuy.Location.Map.LocalTime.TurnCounter, rotation, scale);
+            Corpse corpse = new Corpse(deadGuy, corpseHp, corpseHp, deadGuy.Location.Map.LocalTime.TurnCounter, rotation, scale, deathReason);
             deadGuy.Location.Map.AddCorpseAt(corpse, deadGuy.Location.Position);
         }
 
