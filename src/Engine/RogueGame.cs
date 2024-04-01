@@ -13224,7 +13224,8 @@ namespace RogueSurvivor.Engine
                 DoSay(target, aggressor, "BASTARD! TRAITOR!", Sayflags.IS_FREE_ACTION | Sayflags.IS_DANGER);
 
             // aggressor and selfdefence
-            aggressor.MarkAsAgressorOf(target);
+            if (!aggressor.IsAttackingForFood)
+                aggressor.MarkAsAgressorOf(target);
             target.MarkAsSelfDefenceFrom(aggressor);
 
 
@@ -13411,6 +13412,7 @@ namespace RogueSurvivor.Engine
 
                 // roll damage - double potential if def is sleeping.
                 int dmgRoll = m_Rules.RollDamage(defender.IsSleeping ? attack.DamageValue * 2 : attack.DamageValue) - defence.Protection_Hit;
+                if (attacker.IsAttackingForFood) dmgRoll = (int) Math.Ceiling(dmgRoll / 2.0d);
                 // damage?
                 if (dmgRoll > 0)
                 {
@@ -13485,6 +13487,16 @@ namespace RogueSurvivor.Engine
                     }
                     else
                     {
+                        if (attacker.IsAttackingForFood &&
+                            defender.Inventory.HasItemOfType(typeof(ItemFood)) &&
+                            Rules.DiceRoller.RollFloat() >= Rules.ATTACK_FOR_FOOD_DROP_CHANCE) {
+                            var foodItem = defender.Inventory.GetFirstByType(typeof(ItemFood));
+                            if (foodItem != null) {
+                                defender.Location.Map.DropItemAt(foodItem, attacker.Location.Position);
+                                defender.Inventory.RemoveAllQuantity(foodItem);
+                            }
+                        }
+
                         // show
                         if (isAttVisible || isDefVisible)
                         {

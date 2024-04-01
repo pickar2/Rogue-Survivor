@@ -467,6 +467,8 @@ namespace RogueSurvivor.Data
             get { return m_OdorSuppressorCounter; }
             set { m_OdorSuppressorCounter = value; }
         }
+        
+        public bool IsAttackingForFood { get; set; }
 
         public Actor(ActorModel model, Faction faction, string name, bool isProperName, bool isPluralName, int spawnTime)
         {

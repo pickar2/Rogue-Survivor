@@ -506,6 +506,8 @@ namespace RogueSurvivor.Gameplay.AI
                 }
             }
 
+            if (m_Actor.IsAttackingForFood && !game.Rules.IsActorHungry(m_Actor)) m_Actor.IsAttackingForFood = false;
+
             // 14 if hungry and no food, charge at people for food (option, not follower or law enforcer)
             if (RogueGame.Options.IsAggressiveHungryCiviliansOn &&
                 mapPercepts != null && !m_Actor.HasLeader && !m_Actor.Model.Abilities.IsLawEnforcer &&
@@ -531,8 +533,8 @@ namespace RogueSurvivor.Gameplay.AI
                 {
                     // alpha10 hungry civs can break and push
                     ActorAction chargeAction = BehaviorChargeEnemy(game, targetForFood, true, true);
-                    if (chargeAction != null)
-                    {
+                    if (chargeAction != null) {
+                        m_Actor.IsAttackingForFood = true;
                         // randomly emote.
                         if (game.Rules.RollChance(HUNGRY_CHARGE_EMOTE_CHANCE))
                             game.DoSay(m_Actor, targetForFood.Percepted as Actor, "HEY! YOU! SHARE SOME FOOD!", RogueGame.Sayflags.IS_FREE_ACTION | RogueGame.Sayflags.IS_DANGER);

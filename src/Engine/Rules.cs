@@ -334,6 +334,8 @@ namespace RogueSurvivor.Engine
         public static float SKILL_ZLIGHT_EATER_MAXFOOD_BONUS = 0.15f;
         public static float SKILL_ZLIGHT_EATER_FOOD_BONUS = 0.10f;
 
+        public static float ATTACK_FOR_FOOD_DROP_CHANCE = 0.5f;
+
         readonly DiceRoller m_DiceRoller;
 
         public DiceRoller DiceRoller { get { return m_DiceRoller; } }
